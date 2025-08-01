@@ -9,17 +9,17 @@ string next_token(string& s, int& index){
 
     //TODO replace with regex
     //TODO check for things like (x + y) where there is no space between tokens
-    while((s[index] == ' ' || s[index] == '\n' || s[index] == '\t') && s.size() > index){
+    while(s.size() <= index && (s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
         index++;
     }
 
-    while(!(s[index] == ' ' || s[index] == '\n' || s[index] == '\t') && s.size() > index){
+    while(s.size <= index && !(s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
         token += s[index];
         index++;
     }
 
     if(token == ""){
-        return "$";
+        return "";
     }
 
     return token;
@@ -28,7 +28,7 @@ string next_token(string& s, int& index){
 vector<Token> tokenizer (string& s){
     int index = 0;
 
-    while(next_token(s, index) != "$"){
+    while(next_token(s, index) != ""){
         //do stuff
     }
 }
