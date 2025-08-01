@@ -4,6 +4,9 @@
 #include <sstream>
 #include <vector>
 
+#include "token.hpp"
+#include "ast.hpp"
+
 using namespace std;
 
 int main(int argc, char* argv[]){
@@ -23,14 +26,8 @@ int main(int argc, char* argv[]){
     buffer << robin.rdbuf();
 
     string contents = buffer.str();
-    cout << contents;
+    
 
-    for(char c : contents){
-        if(c == '\n'){
-            cout << "\\n";
-        }
-        cout << c;
-    }
 
     return 0;
 }
