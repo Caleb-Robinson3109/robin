@@ -27,8 +27,8 @@ inline const regex re_kw_main(R"(^main$)");
 inline const regex re_kw_arrow(R"(^->$)");
 
 //peren, braces, and brackes oh my!
-inline const regex re_kw_open_curly(R"(^{$)");
-inline const regex re_kw_close_curly(R"(^}$)");
+inline const regex re_kw_open_curly(R"(^\{$)");
+inline const regex re_kw_close_curly(R"(^\}$)");
 
 //Scope
 inline const regex re_kw_IO(R"(^IO$)");
