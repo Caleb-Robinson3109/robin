@@ -1,0 +1,13 @@
+Program > Function Main
+
+Fucntion > FuncDef FuncBody Function | e
+
+FuncDef > ident -> Param Type
+
+Param > Type ident -> Param | e
+
+Type > int | char | string | bool | float
+
+FuncBody > Scope
+
+Scope > ScopeType { ScopeBody }
