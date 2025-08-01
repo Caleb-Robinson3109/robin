@@ -6,6 +6,7 @@
 
 #include "token.hpp"
 #include "ast.hpp"
+#include "tokenizer.hpp"
 
 using namespace std;
 
@@ -25,9 +26,9 @@ int main(int argc, char* argv[]){
     stringstream buffer;
     buffer << robin.rdbuf();
 
-    string contents = buffer.str();
-    
+    string contents = buffer.str();    
 
+    vector<Token> tokens = tokenizer(contents);
 
     return 0;
 }
