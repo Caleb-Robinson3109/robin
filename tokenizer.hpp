@@ -8,16 +8,15 @@
 #include "regex.hpp"
 
 string next_token(string& s, int& index){
-    bool whitespace = true;
     string token = "";
-
+    //TODO spaces in strings and char
     //TODO replace with regex
     //TODO check for things like (x + y) where there is no space between tokens
-    while(s.size() <= index && (s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
+    while(index < s.size() && (s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
         index++;
     }
 
-    while(s.size() <= index && !(s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
+    while(index < s.size() && !(s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
         token += s[index];
         index++;
     }
@@ -35,7 +34,6 @@ vector<Token> tokenizer (string& s){
     //while(next_token(s, index) != ""){
         
     //}
-
     for(string token = next_token(s,index); token != ""; token = next_token(s, index)){
         tokens.push_back(string_to_token(token));
     }
