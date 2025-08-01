@@ -11,7 +11,7 @@ struct Token{
     string value;
     
     void print_token_struct() const {
-        cout << "Token.type = " << type << " Token.value = " << value << "\n";
+        cout << "Token.type = " << type << ", Token.value = " << value << "\n";
     }
 };
 

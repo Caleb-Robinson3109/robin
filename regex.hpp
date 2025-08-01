@@ -30,12 +30,21 @@ inline const regex re_kw_arrow(R"(^->$)");
 inline const regex re_kw_open_curly(R"(^\{$)");
 inline const regex re_kw_close_curly(R"(^\}$)");
 
+inline const regex re_kw_semicolon(R"(^;$)");
+
 //Scope
 inline const regex re_kw_IO(R"(^IO$)");
 inline const regex re_kw_State(R"(^State$)");
 inline const regex re_kw_Pure(R"(^Pure$)");
 
+//functions
+inline const regex re_kw_output(R"(^output$)");
+inline const regex re_kw_return(R"(^return$)");
+
+
 Token string_to_token(string& s){
+    //keywords
+    //types
     if(regex_match(s, re_kw_int)){
         return {"kw_int", s};
     }
@@ -51,18 +60,26 @@ Token string_to_token(string& s){
     else if(regex_match(s, re_kw_string)){
         return {"kw_string", s};
     }
+    
     else if(regex_match(s, re_kw_main)){
         return {"kw_main", s};
     }
     else if(regex_match(s, re_kw_arrow)){
         return {"kw_arrow", s};
     }
+    
+    //symbols
     else if(regex_match(s, re_kw_open_curly)){
         return {"kw_open_curly", s};
     }
     else if(regex_match(s, re_kw_close_curly)){
         return {"kw_close_curly", s};
     }
+    else if(regex_match(s, re_kw_semicolon)){
+        return {"kw_semicolon", s};
+    }
+    
+    //Scope
     else if(regex_match(s, re_kw_IO)){
         return {"kw_IO", s};
     }
@@ -72,6 +89,18 @@ Token string_to_token(string& s){
     else if(regex_match(s, re_kw_Pure)){
         return {"kw_Pure", s};
     }
+
+    //functions
+    else if(regex_match(s, re_kw_output)){
+        return {"kw_output", s};
+    }
+    else if(regex_match(s, re_kw_return)){
+        return {"kw_return", s};
+    }
+
+
+    //user input
+    //types
     else if(regex_match(s, re_int)){
         return {"int", s};
     }
