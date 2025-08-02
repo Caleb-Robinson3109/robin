@@ -5,29 +5,31 @@
 #include <vector>
 #include <iostream>
 
+#include "token.hpp"
+
 using namespace std;
 
 class Node {
 private:
     string type;
-    string value;
+    Token value;
     bool terminal;
     vector<Node> children;
 
 public:
     // Constructor
-    Node(const string& t, const string& v, bool x)
+    Node(const string& t, const Token& v, bool x)
         : type(t), value(v), terminal(x) {}
 
     // Getters
     string getType() const { return type; }
-    string getValue() const { return value; }
+    Token getValue() const { return value; }
     bool getTerminal() const { return terminal; }
     vector<Node>& getChildren() { return children; }
 
     // Setters
     void setType(const string& t) { type = t; }
-    void setValue(const string& v) { value = v; }
+    void setValue(const Token& v) { value = v; }
     void setTerminal(bool x) { terminal = x; }
 
     // Add child
