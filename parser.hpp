@@ -11,10 +11,10 @@ using namespace std;
 class Ret {
 public:
     bool valid;
-    AST ast;
+    Node ast;
     int index;
 
-    Ret(bool v, const AST& a, int i)
+    Ret(bool v, const Node& a, int i)
         : valid(v), ast(a), index(i) {}
 };
 
