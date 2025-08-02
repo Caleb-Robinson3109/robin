@@ -11,3 +11,35 @@ Type > int | char | string | bool | float
 FuncBody > Scope
 
 Scope > ScopeType { ScopeBody }
+
+ScopeType > Pure | IO | State | e
+
+ScopeBody > Code
+
+Code > Statement Code'| Loop Code'| Conditional Code'| Scope Code'
+
+Code' > Code | e
+
+Statement > IO | Return
+
+IO > Print | Input | Output
+
+Print > print String ;
+
+Input > input ident Value ;
+
+Output > output String ;
+
+String > string | idnet | StringConcat
+
+Return > return Value ;
+
+Value > String | Int | Char | Bool | Float | void
+
+Int > int | Expression | ident
+
+Expression > TODO
+
+Main > MainDef FuncBody
+
+MainDef > main -> int | main -> int argc -> string[] argv -> int
