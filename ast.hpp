@@ -1,3 +1,6 @@
+#ifndef AST_HPP
+#define AST_HPP
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -44,3 +47,5 @@ public:
         return root;
     }
 };
+
+#endif
