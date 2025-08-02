@@ -12,7 +12,7 @@ FuncBody > Scope
 
 Scope > ScopeType { ScopeBody }
 
-ScopeType > Pure | IO | State | e
+ScopeType > 'Pure' | 'IO' | 'State' | e
 
 ScopeBody > Code
 
