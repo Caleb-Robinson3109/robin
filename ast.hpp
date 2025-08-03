@@ -25,7 +25,7 @@ public:
     string getType() const { return type; }
     Token getValue() const { return value; }
     bool getTerminal() const { return terminal; }
-    vector<Node>& getChildren() { return children; }
+    const vector<Node>& getChildren() const { return children; }
 
     // Setters
     void setType(const string& t) { type = t; }
@@ -47,6 +47,18 @@ public:
 
     Node& getRoot() {
         return root;
+    }
+
+    void printNode(const Node& node, int depth) {
+        for (int i = 0; i < depth; ++i) cout << "  ";
+
+        cout << (node.getTerminal() ? "T" : "NT") << " - ";
+        cout << node.getType() << " : ";
+        cout << node.getValue().value << endl;
+
+        for (const Node& child : node.getChildren()) {
+            printNode(child, depth + 1);
+        }
     }
 };
 
