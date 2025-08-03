@@ -159,9 +159,41 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
 }
 
 Ret parse_ScopeBody(vector<Token>& tokens, int index){
-    
+    AST ScopeBody(Node("ScopeBody", Token(), false));
+    Ret parsed_Code = parse_Code1(tokens, index);
+    if(parsed_Code.valid){
+        ScopeBody.getRoot().addChild(parsed_Code.ast);
+        Ret okay(true, ScopeBody.getRoot(), parsed_Code.index);
+        return okay;
+    }
+    else{
+        Ret error(false, Node("error", Token(), false), index);
+        return error;
+    }
 }
-Ret parse_Code1(vector<Token>& tokens, int index);
+
+Ret parse_Code1(vector<Token>& tokens, int index){
+    AST Code(Node("Code", Token(), false));
+    Ret parsed_Statement = parse_Statement(tokens, index);
+    if(parsed_Statement.valid){
+        Code.getRoot().addChild(parsed_Statement.ast);
+        Ret parsed_Code = parse_Code2(tokens, parsed_Statement.index);
+        if(parsed_Code.valid){
+            Code.getRoot().addChild(parsed_Code.ast);
+            Ret okay(true, Code.getRoot(), parsed_Code.index);
+            return okay;
+        }
+        else{
+            Ret error(false, Node("error", Token(), false), index);
+            return error;
+        }
+    }
+    else{
+        Ret error(false, Node("error", Token(), false), index);
+        return error;
+    }
+}
+
 Ret parse_Code2(vector<Token>& tokens, int index);
 Ret parse_Statement(vector<Token>& tokens, int index);
 Ret parse_IO(vector<Token>& tokens, int index);
