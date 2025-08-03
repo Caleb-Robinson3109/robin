@@ -7,6 +7,7 @@
 #include "token.hpp"
 #include "ast.hpp"
 #include "tokenizer.hpp"
+#include "parser.hpp"
 
 using namespace std;
 
@@ -33,6 +34,10 @@ int main(int argc, char* argv[]){
     for(Token t : tokens){
         t.print_token_struct();
     }
+
+    AST parsed = parser(tokens);
+
+    parsed.printNode(parsed.getRoot(), 3);
 
     return 0;
 }
