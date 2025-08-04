@@ -13,11 +13,14 @@ using namespace std;
 
 int main(int argc, char* argv[]){
     if(argc != 2){
-        cerr << "Needs correct number of arguments";
-        return 1;
+        cerr << "Needs correct number of arguments\nUsing default hello.txt file\n";
+        //return 1;
     }
-
-    fstream robin(argv[1]);
+    fstream robin("hello.txt");
+    if(argc == 2){
+            robin.close();
+            robin.open(argv[1], ios::in);
+    }
 
     if(!robin){
         cerr << "Cannot open file";
@@ -36,11 +39,7 @@ int main(int argc, char* argv[]){
     }
 
     AST parsed = parser(tokens);
-
-    vector<Node> x = parsed.getRoot().getChildren();
-    for(Node child : x){
-        cout << child.getValue().value << "\n";
-    }
-
+    
+    robin.close();
     return 0;
 }
