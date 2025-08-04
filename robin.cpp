@@ -34,9 +34,9 @@ int main(int argc, char* argv[]){
 
     vector<Token> tokens = tokenizer(contents);
 
-    for(Token t : tokens){
+    /*for(Token t : tokens){
         t.print_token_struct();
-    }
+    }*/
 
     AST parsed = parser(tokens);
     

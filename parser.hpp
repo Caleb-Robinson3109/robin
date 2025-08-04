@@ -16,6 +16,11 @@ public:
 
     Ret(bool v, const Node& a, int i)
         : valid(v), ast(a), index(i) {}
+
+    void printRet(){
+        cout << "valid: " << valid << " index: " << index << " ast: ";
+        ast.printNode();
+    }
 };
 
 

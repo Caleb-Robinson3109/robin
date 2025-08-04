@@ -10,12 +10,14 @@ AST parser (vector<Token>& tokens){
     cout << "parser\n";
     int index = 0;
     Ret parsed = parse_Program(tokens, index);
+    parsed.printRet();
 
     if(parsed.valid){
-        return parsed.ast;
+        Node okay = parsed.ast;
+        return AST(okay);
     }
     else{
-        Node error("error", Token(), false);
+        Node error("error", tokens.at(index), false);
         return AST(error);
     }
 }
@@ -23,12 +25,15 @@ AST parser (vector<Token>& tokens){
 Ret parse_Program(vector<Token>& tokens, int index){
     cout << "program\n";
     Ret parsed_Main = parse_Main(tokens, index);
+    parsed_Main.printRet();
     if(parsed_Main.valid){
-        parsed_Main.ast.printNode();
-        return parsed_Main;
+        index = parsed_Main.index;
+        Ret okay(true, parsed_Main.ast, index);
+        okay.printRet();
+        return okay;
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
@@ -37,24 +42,30 @@ Ret parse_Main(vector<Token>& tokens, int index){
     cout << "main\n";
     AST Main(Node("Main", Token(), false));
     Ret parsed_MainDef = parse_MainDef(tokens, index);
+    parsed_MainDef.printRet();
     
     if(parsed_MainDef.valid){
-        Ret parsed_FuncBody = parse_FuncBody(tokens, parsed_MainDef.index);
+        index = parsed_MainDef.index;
+        Ret parsed_FuncBody = parse_FuncBody(tokens, index);
         Main.getRoot().addChild(parsed_MainDef.ast);
+        parsed_FuncBody.printRet();
 
         if(parsed_FuncBody.valid){
             Main.getRoot().addChild(parsed_FuncBody.ast);
             parsed_MainDef.ast.printNode();
             parsed_FuncBody.ast.printNode();
-            return Ret(true, Main.getRoot(), parsed_FuncBody.index);
+            index = parsed_FuncBody.index;
+            Ret okay(true, Main.getRoot(), index);
+            okay.printRet();
+            return okay;
         }
         else{
-            Ret error(false, Node("error", Token(), false), index);
+            Ret error(false, Node("error", tokens.at(index), false), index);
             return error;
         }
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
@@ -72,16 +83,21 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
                 MainDef.getRoot().addChild(Node("kw_int", tokens.at(index), true));
                 index++;
                 Ret okay(true, MainDef.getRoot(), index);
+                okay.printRet();
                 return okay;
+            }
+            else{
+                Ret error(false, Node("error", tokens.at(index), false), index);
+                return error;
             }
         }
         else{
-            Ret error(false, Node("error", Token(), false), index);
+            Ret error(false, Node("error", tokens.at(index), false), index);
             return error;
         }
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
@@ -90,13 +106,17 @@ Ret parse_FuncBody(vector<Token>& tokens, int index){
     cout << "body\n";
     AST FuncBody(Node("FuncBody", Token(), false));
     Ret parsed_Scope = parse_Scope(tokens, index);
+    parsed_Scope.printRet();
     
     if(parsed_Scope.valid){
         FuncBody.getRoot().addChild(parsed_Scope.ast);
-        return Ret(true, FuncBody.getRoot(), parsed_Scope.index);
+        index = parsed_Scope.index;
+        Ret okay(true, FuncBody.getRoot(), index);
+        okay.printRet();
+        return okay;
     }
     else{
-        Ret error(false, Node("error", Token(), false), parsed_Scope.index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 
@@ -106,40 +126,45 @@ Ret parse_Scope(vector<Token>& tokens, int index){
     cout << "scope\n";
     AST Scope(Node("Scope", Token(), false));
     Ret parsed_ScopeType = parse_ScopeType(tokens, index);
+    parsed_ScopeType.printRet();
     if(parsed_ScopeType.valid){
-        cout << "typev\n";
+        //cout << "typev\n";
         Scope.getRoot().addChild(parsed_ScopeType.ast);
-        if(tokens.at(parsed_ScopeType.index).type == "kw_open_curly"){
-            cout << "{\n";
-            Scope.getRoot().addChild(Node("kw_open_curly", tokens.at(parsed_ScopeType.index), true));
-            parsed_ScopeType.index++;
-            Ret parsed_ScopeBody = parse_ScopeBody(tokens, parsed_ScopeType.index);
+        index = parsed_ScopeType.index;
+        if(tokens.at(index).type == "kw_open_curly"){
+            //cout << "{\n";
+            Scope.getRoot().addChild(Node("kw_open_curly", tokens.at(index), true));
+            index++;
+            Ret parsed_ScopeBody = parse_ScopeBody(tokens, index);
+            parsed_ScopeBody.printRet();
             if(parsed_ScopeBody.valid){
                 Scope.getRoot().addChild(parsed_ScopeBody.ast);
-                if(tokens.at(parsed_ScopeBody.index).type == "kw_close_curly"){
-                    Scope.getRoot().addChild(Node("kw_close_curly", tokens.at(parsed_ScopeBody.index), true));
-                    parsed_ScopeBody.index++;
+                index = parsed_ScopeBody.index;
+                if(tokens.at(index).type == "kw_close_curly"){
+                    Scope.getRoot().addChild(Node("kw_close_curly", tokens.at(index), true));
+                    index++;
 
-                    Ret okay(true, Scope.getRoot(), parsed_ScopeBody.index);
+                    Ret okay(true, Scope.getRoot(), index);
+                    okay.printRet();
                     return okay;
                 }
                 else{
-                    Ret error(false, Node("error", Token(), false), index);
+                    Ret error(false, Node("error", tokens.at(index), false), index);
                     return error;
                 }
             }
             else{
-                Ret error(false, Node("error", Token(), false), index);
+                Ret error(false, Node("error", tokens.at(index), false), index);
                 return error;
             }
         }
         else{
-            Ret error(false, Node("error", Token(), false), index);
+            Ret error(false, Node("error", tokens.at(index), false), index);
             return error;
         }
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
@@ -147,44 +172,53 @@ Ret parse_Scope(vector<Token>& tokens, int index){
 Ret parse_ScopeType(vector<Token>& tokens, int index){
     cout << "type\n";
     AST ScopeType(Node("ScopeType", Token(), false));
-    cout << tokens.at(index).value << "\n";
+    //cout << tokens.at(index).value << "\n";
     if(tokens.at(index).type == "kw_Pure"){
         ScopeType.getRoot().addChild(Node("kw_Pure", tokens.at(index), true));
         index++;
         Ret okay(true, ScopeType.getRoot(), index);
+        okay.printRet();
         return okay;
     }
     else if(tokens.at(index).type == "kw_IO"){
         ScopeType.getRoot().addChild(Node("kw_IO", tokens.at(index), true));
+        cout << "index: " << index << "\n";
         index++;
+        cout << "index: " << index << "\n";
         Ret okay(true, ScopeType.getRoot(), index);
+        okay.printRet();
         return okay;
     }
     else if(tokens.at(index).type == "kw_State"){
         ScopeType.getRoot().addChild(Node("kw_State", tokens.at(index), true));
         index++;
         Ret okay(true, ScopeType.getRoot(), index);
+        okay.printRet();
         return okay;
     }
     else{
-        cout << "dddddd\n";
-        ScopeType.getRoot().addChild(Node("empty", Token(), true));
+        //cout << "dddddd\n";
+        ScopeType.getRoot().addChild(Node("empty", {"empty", ""}, true));
         Ret okay(true, ScopeType.getRoot(), index);
+        okay.printRet();
         return okay;
     }
 }
 
 Ret parse_ScopeBody(vector<Token>& tokens, int index){
-    cout << "body\n";
+    cout << "sbody\n";
     AST ScopeBody(Node("ScopeBody", Token(), false));
     Ret parsed_Code = parse_Code1(tokens, index);
+    parsed_Code.printRet();
     if(parsed_Code.valid){
         ScopeBody.getRoot().addChild(parsed_Code.ast);
-        Ret okay(true, ScopeBody.getRoot(), parsed_Code.index);
+        index = parsed_Code.index;
+        Ret okay(true, ScopeBody.getRoot(), index);
+        okay.printRet();
         return okay;
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
@@ -193,37 +227,46 @@ Ret parse_Code1(vector<Token>& tokens, int index){
     cout << "code\n";
     AST Code(Node("Code", Token(), false));
     Ret parsed_Statement = parse_Statement(tokens, index);
+    parsed_Statement.printRet();
     if(parsed_Statement.valid){
         Code.getRoot().addChild(parsed_Statement.ast);
-        Ret parsed_Code = parse_Code2(tokens, parsed_Statement.index);
+        index = parsed_Statement.index;
+        Ret parsed_Code = parse_Code2(tokens, index);
+        parsed_Code.printRet();
         if(parsed_Code.valid){
             Code.getRoot().addChild(parsed_Code.ast);
-            Ret okay(true, Code.getRoot(), parsed_Code.index);
+            index = parsed_Code.index;
+            Ret okay(true, Code.getRoot(), index);
+            okay.printRet();
             return okay;
         }
         else{
-            Ret error(false, Node("error", Token(), false), index);
+            Ret error(false, Node("error", tokens.at(index), false), index);
             return error;
         }
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
 
 Ret parse_Code2(vector<Token>& tokens, int index){
-    cout << "code\n";
+    cout << "code'\n";
     AST Code(Node("Code'", Token(), false));
     Ret parsed_Code = parse_Code1(tokens, index);
+    parsed_Code.printRet();
     if(parsed_Code.valid){
         Code.getRoot().addChild(parsed_Code.ast);
-        Ret okay(true, Code.getRoot(), parsed_Code.index);
+        index = parsed_Code.index;
+        Ret okay(true, Code.getRoot(), index);
+        okay.printRet();
         return okay;
     }
     else{
         Code.getRoot().addChild(Node("empty", Token(), true));
-        Ret okay(true, Code.getRoot(), parsed_Code.index);
+        Ret okay(true, Code.getRoot(), index);
+        okay.printRet();
         return okay;
     }
 }
@@ -232,19 +275,25 @@ Ret parse_Statement(vector<Token>& tokens, int index){
     cout << "stmt\n";
     AST Statement(Node("Statement", Token(), false));
     Ret parsed_IO = parse_IO(tokens, index);
+    parsed_IO.printRet();
     Ret parsed_Return = parse_Return(tokens, index);
+    parsed_Return.printRet();
     if(parsed_IO.valid){
         Statement.getRoot().addChild(parsed_IO.ast);
-        Ret okay(true, Statement.getRoot(), parsed_IO.index);
+        index = parsed_IO.index;
+        Ret okay(true, Statement.getRoot(), index);
+        okay.printRet();
         return okay;
     }
     else if(parsed_Return.valid){
         Statement.getRoot().addChild(parsed_Return.ast);
-        Ret okay(true, Statement.getRoot(), parsed_Return.index);
+        index = parsed_Return.index;
+        Ret okay(true, Statement.getRoot(), index);
+        okay.printRet();
         return okay;
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
@@ -253,13 +302,16 @@ Ret parse_IO(vector<Token>& tokens, int index){
     cout << "io\n";
     AST IO(Node("IO", Token(), false));
     Ret parsed_Output = parse_Output(tokens, index);
+    parsed_Output.printRet();
     if(parsed_Output.valid){
         IO.getRoot().addChild(parsed_Output.ast);
-        Ret okay(true, IO.getRoot(), parsed_Output.index);
+        index = parsed_Output.index;
+        Ret okay(true, IO.getRoot(), index);
+        okay.printRet();
         return okay;
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
@@ -278,26 +330,31 @@ Ret parse_Return(vector<Token>& tokens, int index){
                 Return.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
                 index++;
                 Ret okay(true, Return.getRoot(), index);
+                okay.printRet();
                 return okay;
             }
             else{
-                Ret error(false, Node("error", Token(), false), index);
+                Ret error(false, Node("error", tokens.at(index), false), index);
                 return error;
             }
         }
         else{
-            Ret error(false, Node("error", Token(), false), index);
+            Ret error(false, Node("error", tokens.at(index), false), index);
             return error;
         }
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
 
 Ret parse_Output(vector<Token>& tokens, int index){
     cout << "out\n";
+    tokens.at(index).print_token_struct();
+    tokens.at(index + 1).print_token_struct();
+    tokens.at(index+ 2).print_token_struct();
+    tokens.at(index+ 3).print_token_struct();
     AST Output(Node("Output", Token(), false));
     if(tokens.at(index).type == "kw_output"){
         Output.getRoot().addChild(Node("kw_output", tokens.at(index), true));
@@ -310,19 +367,21 @@ Ret parse_Output(vector<Token>& tokens, int index){
                 Output.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
                 index++;
                 Ret okay(true, Output.getRoot(), index);
+                okay.printRet();
+                return okay;
             }
             else{
-                Ret error(false, Node("error", Token(), false), index);
+                Ret error(false, Node("error", tokens.at(index), false), index);
                 return error;
             }
         }
         else{
-            Ret error(false, Node("error", Token(), false), index);
+            Ret error(false, Node("error", tokens.at(index), false), index);
             return error;
         }
     }
     else{
-        Ret error(false, Node("error", Token(), false), index);
+        Ret error(false, Node("error", tokens.at(index), false), index);
         return error;
     }
 }
