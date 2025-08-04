@@ -24,6 +24,7 @@ Ret parse_Program(vector<Token>& tokens, int index){
     cout << "program\n";
     Ret parsed_Main = parse_Main(tokens, index);
     if(parsed_Main.valid){
+        parsed_Main.ast.printNode();
         return parsed_Main;
     }
     else{
@@ -43,6 +44,8 @@ Ret parse_Main(vector<Token>& tokens, int index){
 
         if(parsed_FuncBody.valid){
             Main.getRoot().addChild(parsed_FuncBody.ast);
+            parsed_MainDef.ast.printNode();
+            parsed_FuncBody.ast.printNode();
             return Ret(true, Main.getRoot(), parsed_FuncBody.index);
         }
         else{

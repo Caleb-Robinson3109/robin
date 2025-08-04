@@ -36,6 +36,17 @@ public:
     void addChild(const Node& node) {
         children.push_back(node);
     }
+
+    void printNode() {
+        cout << "Node - type: " << type << " terminal: " << terminal << " value: ";
+        value.print_token_struct();
+
+        cout << "children: ";
+        for (Node child : children){
+            child.getValue().print_token_struct();
+        }
+        cout << "---------------------------------------------------------\n";
+    }
 };
 
 class AST {
@@ -49,16 +60,16 @@ public:
         return root;
     }
 
-    void printNode(const Node& node, int depth) {
-        for (int i = 0; i < depth; ++i) cout << "  ";
+    void printAST() {
+        Node node = getRoot();
+        cout << "Node - type: " << node.getType() << " terminal: " << node.getTerminal() << " value: ";
+        node.getValue().print_token_struct();
 
-        cout << (node.getTerminal() ? "T" : "NT") << " - ";
-        cout << node.getType() << " : ";
-        cout << node.getValue().value << endl;
-
-        for (const Node& child : node.getChildren()) {
-            printNode(child, depth + 1);
+        cout << "children: ";
+        for (Node child : node.getChildren()){
+            child.getValue().print_token_struct();
         }
+        cout << "---------------------------------------------------------\n";
     }
 };
 
