@@ -41,7 +41,7 @@ public:
         cout << "Node - type: " << type << " terminal: " << terminal << " value: ";
         value.print_token_struct();
 
-        cout << "children: ";
+        cout << "children:\n";
         for (Node child : children){
             child.getValue().print_token_struct();
         }
