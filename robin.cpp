@@ -37,7 +37,10 @@ int main(int argc, char* argv[]){
 
     AST parsed = parser(tokens);
 
-    parsed.printNode(parsed.getRoot(), 3);
+    vector<Node> x = parsed.getRoot().getChildren();
+    for(Node child : x){
+        cout << child.getValue().value << "\n";
+    }
 
     return 0;
 }
