@@ -40,7 +40,7 @@ int main(int argc, char* argv[]){
 
     AST parsed = parser(tokens);
 
-    //parsed.printAST();
+    parsed.printAST();
     
     robin.close();
     return 0;

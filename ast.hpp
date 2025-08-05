@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <queue>
+#include <iomanip>
 
 #include "token.hpp"
 
@@ -61,31 +61,27 @@ public:
         return root;
     }
 
-    void printAST() {
-        queue<Node> myQueue;
-        myQueue.push(root);
-
-        while (!myQueue.empty()) {
-            int levelSize = myQueue.size(); // Number of nodes at current level
-
-            for (int i = 0; i < levelSize; ++i) {
-                Node current = myQueue.front();
-                myQueue.pop();
-
-                // Print node information (you can customize this)
-                cout << "[" << current.getType() << ": ";
-                current.getValue().print_token_struct();
-                cout << "] ";
-
-                // Enqueue all children of the current node
-                for (const Node& child : current.getChildren()) {
-                    myQueue.push(child);
-                }
-            }
-
-            cout << "\n"; // Newline after finishing a level
+    void printASTHelper(Node& n, int depth){
+        for(int i = 0; i < depth; i++){
+            cout << " ";
         }
-    } 
-};
+
+        cout << left << setw(20) << n.getType() << right << setw(4) << depth << "\n";
+
+        for (Node child : n.getChildren()){
+            printASTHelper(child, depth + 1);
+        }
+    }
+
+    void printAST() {
+        int depth = 0;
+
+        cout << left << setw(20) << root.getType() << right << setw(4) << depth << "\n";
+
+        for(Node child : root.getChildren()){
+            printASTHelper(child, 1);
+        }
+    }
+    };
 
 #endif
