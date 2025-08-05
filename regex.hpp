@@ -4,6 +4,7 @@
 #include <regex>
 
 #include "token.hpp"
+#include "tokenizer.hpp"
 
 using namespace std;
 
@@ -42,82 +43,82 @@ inline const regex re_kw_output(R"(^output$)");
 inline const regex re_kw_return(R"(^return$)");
 
 
-Token string_to_token(string& s){
+string string_to_token(string& s){
     //keywords
     //types
     if(regex_match(s, re_kw_int)){
-        return {"kw_int", s};
+        return "kw_int";
     }
     else if(regex_match(s, re_kw_float)){
-        return {"kw_float", s};
+        return "kw_float";
     }
     else if(regex_match(s, re_kw_bool)){
-        return {"kw_bool", s};
+        return "kw_bool";
     }
     else if(regex_match(s, re_kw_char)){
-        return {"kw_char", s};
+        return "kw_char";
     }
     else if(regex_match(s, re_kw_string)){
-        return {"kw_string", s};
+        return "kw_string";
     }
     
     else if(regex_match(s, re_kw_main)){
-        return {"kw_main", s};
+        return "kw_main";
     }
     else if(regex_match(s, re_kw_arrow)){
-        return {"kw_arrow", s};
+        return "kw_arrow";
     }
     
     //symbols
     else if(regex_match(s, re_kw_open_curly)){
-        return {"kw_open_curly", s};
+        return "kw_open_curly";
     }
     else if(regex_match(s, re_kw_close_curly)){
-        return {"kw_close_curly", s};
+        return "kw_close_curly";
     }
     else if(regex_match(s, re_kw_semicolon)){
-        return {"kw_semicolon", s};
+        return "kw_semicolon";
     }
     
     //Scope
     else if(regex_match(s, re_kw_IO)){
-        return {"kw_IO", s};
+        return "kw_IO";
     }
     else if(regex_match(s, re_kw_State)){
-        return {"kw_State", s};
+        return "kw_State";
     }
     else if(regex_match(s, re_kw_Pure)){
-        return {"kw_Pure", s};
+        return "kw_Pure";
     }
 
     //functions
     else if(regex_match(s, re_kw_output)){
-        return {"kw_output", s};
+        return "kw_output";
     }
     else if(regex_match(s, re_kw_return)){
-        return {"kw_return", s};
+        return "kw_return";
     }
 
 
     //user input
     //types
     else if(regex_match(s, re_int)){
-        return {"int", s};
+        return "int";
     }
     else if(regex_match(s, re_float)){
-        return {"float", s};
+        return "float";
     }
     else if(regex_match(s, re_char)){
-        return {"char", s};
+        return "char";
     }
     else if(regex_match(s, re_bool)){
-        return {"bool", s};
+        return "bool";
     }
     else if(regex_match(s, re_string)){
-        return {"string", s};
+        return "string";
     }
     else{
-        return {"error", s};
+        return "error";
     }
 }
 
