@@ -41,7 +41,7 @@ Ret parse_Program(vector<Token>& tokens, int index){
 
 Ret parse_Main(vector<Token>& tokens, int index){
     cout << "main\n";
-    AST Main(Node("Main", {"Main", ""}, false));
+    AST Main(Node("Main", {"Main", "", 0, 0}, false));
     Ret parsed_MainDef = parse_MainDef(tokens, index);
     //parsed_MainDef.printRet();
     
@@ -75,7 +75,7 @@ Ret parse_Main(vector<Token>& tokens, int index){
 
 Ret parse_MainDef(vector<Token>& tokens, int index){
     cout << "def\n";
-    AST MainDef(Node("MainDef", {"MainDef", ""}, false));
+    AST MainDef(Node("MainDef", {"MainDef", "", 0, 0}, false));
     if(tokens.at(index).type == "kw_main"){
         MainDef.getRoot().addChild(Node("kw_main", tokens.at(index), true));
         index++;
@@ -110,7 +110,7 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
 
 Ret parse_FuncBody(vector<Token>& tokens, int index){
     cout << "body\n";
-    AST FuncBody(Node("FuncBody", {"FuncBody", ""}, false));
+    AST FuncBody(Node("FuncBody", {"FuncBody", "", 0, 0}, false));
     Ret parsed_Scope = parse_Scope(tokens, index);
     //parsed_Scope.printRet();
     
@@ -131,7 +131,7 @@ Ret parse_FuncBody(vector<Token>& tokens, int index){
 
 Ret parse_Scope(vector<Token>& tokens, int index){
     cout << "scope\n";
-    AST Scope(Node("Scope", {"Scope", ""}, false));
+    AST Scope(Node("Scope", {"Scope", "", 0, 0}, false));
     Ret parsed_ScopeType = parse_ScopeType(tokens, index);
     //parsed_ScopeType.printRet();
     if(parsed_ScopeType.valid){
@@ -182,7 +182,7 @@ Ret parse_Scope(vector<Token>& tokens, int index){
 
 Ret parse_ScopeType(vector<Token>& tokens, int index){
     cout << "type\n";
-    AST ScopeType(Node("ScopeType", {"ScopeType", ""}, false));
+    AST ScopeType(Node("ScopeType", {"ScopeType", "", 0, 0}, false));
     //cout << tokens.at(index).value << "\n";
     if(tokens.at(index).type == "kw_Pure"){
         ScopeType.getRoot().addChild(Node("kw_Pure", tokens.at(index), true));
@@ -209,7 +209,7 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
     }
     else{
         //cout << "dddddd\n";
-        ScopeType.getRoot().addChild(Node("empty", {"empty", ""}, true));
+        ScopeType.getRoot().addChild(Node("empty", {"empty", "", 0, 0}, true));
         Ret okay(true, ScopeType.getRoot(), index);
         okay.printRet();
         return okay;
@@ -218,7 +218,7 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
 
 Ret parse_ScopeBody(vector<Token>& tokens, int index){
     cout << "sbody\n";
-    AST ScopeBody(Node("ScopeBody", {"ScopeBody", ""}, false));
+    AST ScopeBody(Node("ScopeBody", {"ScopeBody", "", 0, 0}, false));
     Ret parsed_Code = parse_Code(tokens, index);
     //parsed_Code.printRet();
     if(parsed_Code.valid){
@@ -237,7 +237,7 @@ Ret parse_ScopeBody(vector<Token>& tokens, int index){
 
 Ret parse_Code(vector<Token>& tokens, int index){
     cout << "code\n";
-    AST Code(Node("Code", {"Code", ""}, false));
+    AST Code(Node("Code", {"Code", "", 0, 0}, false));
     Ret parsed_Statement = parse_Statement(tokens, index);
     //parsed_Statement.printRet();
     Ret parsed_Scope = parse_Scope(tokens, index);
@@ -287,7 +287,7 @@ Ret parse_Code(vector<Token>& tokens, int index){
 
 Ret parse_Codep(vector<Token>& tokens, int index){
     cout << "code'\n";
-    AST Code(Node("Code'", {"Code'", ""}, false));
+    AST Code(Node("Code'", {"Code'", "", 0, 0}, false));
     Ret parsed_Code = parse_Code(tokens, index);
     //parsed_Code.printRet();
     if(parsed_Code.valid){
@@ -298,7 +298,7 @@ Ret parse_Codep(vector<Token>& tokens, int index){
         return okay;
     }
     else{
-        Code.getRoot().addChild(Node("empty", {"empty", ""}, true));
+        Code.getRoot().addChild(Node("empty", {"empty", "", 0, 0}, true));
         Ret okay(true, Code.getRoot(), index);
         okay.printRet();
         return okay;
@@ -307,7 +307,7 @@ Ret parse_Codep(vector<Token>& tokens, int index){
 
 Ret parse_Statement(vector<Token>& tokens, int index){
     cout << "stmt\n";
-    AST Statement(Node("Statement", {"Statement", ""}, false));
+    AST Statement(Node("Statement", {"Statement", "", 0, 0}, false));
     Ret parsed_IO = parse_IO(tokens, index);
     //parsed_IO.printRet();
     Ret parsed_Return = parse_Return(tokens, index);
@@ -335,7 +335,7 @@ Ret parse_Statement(vector<Token>& tokens, int index){
 
 Ret parse_IO(vector<Token>& tokens, int index){
     cout << "io\n";
-    AST IO(Node("IO", {"IO", ""}, false));
+    AST IO(Node("IO", {"IO", "", 0, 0}, false));
     Ret parsed_Output = parse_Output(tokens, index);
     //parsed_Output.printRet();
     if(parsed_Output.valid){
@@ -354,7 +354,7 @@ Ret parse_IO(vector<Token>& tokens, int index){
 
 Ret parse_Return(vector<Token>& tokens, int index){
     cout << "ret\n";
-    AST Return(Node("Return", {"Return", ""}, false));
+    AST Return(Node("Return", {"Return", "", 0, 0}, false));
     if(tokens.at(index).type == "kw_return"){
         Return.getRoot().addChild(Node("kw_return", tokens.at(index), true));
         index++;
@@ -394,7 +394,7 @@ Ret parse_Output(vector<Token>& tokens, int index){
     //tokens.at(index + 1).print_token_struct();
     //tokens.at(index+ 2).print_token_struct();
     //tokens.at(index+ 3).print_token_struct();
-    AST Output(Node("Output", {"Output", ""}, false));
+    AST Output(Node("Output", {"Output", "", 0, 0}, false));
     if(tokens.at(index).type == "kw_output"){
         Output.getRoot().addChild(Node("kw_output", tokens.at(index), true));
         index++;
