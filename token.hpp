@@ -10,13 +10,13 @@ class Token{
 public:
     string type;
     string value;
-    unsigned long long line;
-    unsigned long long col;
+    int line;
+    int col;
     
     Token(string t, string v, int l, int c){
         type = t;
         value = v;
-        line = 1;
+        line = l;
         col = c;
     }
 
