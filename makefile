@@ -1,23 +1,30 @@
-# Compiler
 CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -O2 -g
 
-# Find all .cpp files
-SRCS = $(wildcard *.cpp)
+OBJDIR = obj
+BINDIR = bin
+SRCDIR = src
 
-# Object files
-OBJS = $(SRCS:.cpp=.o)
+# Find all .cpp files in src/
+SRCS = $(wildcard $(SRCDIR)/*.cpp)
 
-# Output binary
-TARGET = robin
+# Convert source files in src/ to object files in obj/
+OBJS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
-# Default rule
+TARGET = $(BINDIR)/robin
+
+# Create directories as needed
+$(shell mkdir -p $(BINDIR) $(OBJDIR))
+
 all: $(TARGET)
 
-# Link objects to make executable
+# Link object files to create the executable
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-# Clean rule
+# Compile .cpp files from src/ into .o files in obj/
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(OBJDIR)/*.o $(TARGET)
