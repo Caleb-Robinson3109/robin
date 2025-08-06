@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++20 -Wall -Wextra -O2 -g
+CXXFLAGS = -std=c++23 -Wall -Wextra -O2 -g
 
 OBJDIR = obj
 BINDIR = bin
