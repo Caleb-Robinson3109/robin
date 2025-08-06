@@ -1,6 +1,6 @@
 main -> int
 {
-    IO {
+    {
         output "Hello_World" ;
     }
     return 0 ;

@@ -1,10 +1,15 @@
 #include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
 
 #include "token.hpp"
 #include "ast.hpp"
 #include "parser.hpp"
 
 using namespace std;
+
+static vector<string> scope_context;
 
 AST parser (vector<Token>& tokens){
     //cout << "parser\n";
@@ -148,6 +153,7 @@ Ret parse_Scope(vector<Token>& tokens, int index){
                 Scope.getRoot().addChild(parsed_ScopeBody.ast);
                 index = parsed_ScopeBody.index;
                 if(tokens.at(index).type == "kw_close_curly"){
+                    scope_context.pop_back();
                     Scope.getRoot().addChild(Node("kw_close_curly", tokens.at(index), true));
                     index++;
 
@@ -185,6 +191,7 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
     AST ScopeType(Node("ScopeType", {"ScopeType", "", tokens.at(index).line, tokens.at(index).col}, false));
     //cout << tokens.at(index).value << "\n";
     if(tokens.at(index).type == "kw_Pure"){
+        scope_context.push_back("Pure");
         ScopeType.getRoot().addChild(Node("kw_Pure", tokens.at(index), true));
         index++;
         Ret okay(true, ScopeType.getRoot(), index);
@@ -192,6 +199,12 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
         return okay;
     }
     else if(tokens.at(index).type == "kw_IO"){
+        if(find(scope_context.begin(), scope_context.end(), "Pure") != scope_context.end()){
+            cerr << "error on line: " << tokens.at(index).line << " column: " << tokens.at(index).line << "\n";
+            cerr << "cannot open an IO scope in a Pure scope\n";
+            exit(1);
+        }
+        scope_context.push_back("IO");
         ScopeType.getRoot().addChild(Node("kw_IO", tokens.at(index), true));
         //cout << "index: " << index << "\n";
         index++;
@@ -201,6 +214,12 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
         return okay;
     }
     else if(tokens.at(index).type == "kw_State"){
+        if(find(scope_context.begin(), scope_context.end(), "Pure") != scope_context.end()){
+            cerr << "error on line: " << tokens.at(index).line << " column: " << tokens.at(index).line << "\n";
+            cerr << "cannot open a State scope in a Pure scope\n";
+            exit(1);
+        }
+        scope_context.push_back("State");
         ScopeType.getRoot().addChild(Node("kw_State", tokens.at(index), true));
         index++;
         Ret okay(true, ScopeType.getRoot(), index);
@@ -208,6 +227,7 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
         return okay;
     }
     else{
+        scope_context.push_back("empty");
         //cout << "dddddd\n";
         ScopeType.getRoot().addChild(Node("empty", {"empty", "", tokens.at(index).line, tokens.at(index).col}, true));
         Ret okay(true, ScopeType.getRoot(), index);
@@ -313,6 +333,11 @@ Ret parse_Statement(vector<Token>& tokens, int index){
     Ret parsed_Return = parse_Return(tokens, index);
     //parsed_Return.printRet();
     if(parsed_IO.valid){
+        if(!(find(scope_context.begin(), scope_context.end(), "IO") != scope_context.end())){
+            cerr << "error on line: " << tokens.at(index).line << " column: " << tokens.at(index).line << "\n";
+            cerr << "must be in an IO scope to preform IO actions\n";
+            exit(1);
+        }
         Statement.getRoot().addChild(parsed_IO.ast);
         index = parsed_IO.index;
         Ret okay(true, Statement.getRoot(), index);
