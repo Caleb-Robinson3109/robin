@@ -8,6 +8,7 @@
 #include "ast.hpp"
 #include "tokenizer.hpp"
 #include "parser.hpp"
+#include "generator.hpp"
 
 using namespace std;
 
@@ -30,7 +31,9 @@ int main(int argc, char* argv[]){
     stringstream buffer;
     buffer << robin.rdbuf();
 
-    string contents = buffer.str();    
+    string contents = buffer.str();
+
+    robin.close();
 
     vector<Token> tokens = tokenizer(contents);
 
@@ -40,8 +43,9 @@ int main(int argc, char* argv[]){
 
     AST parsed = parser(tokens);
 
-    parsed.printAST();
+    //parsed.printAST();
+
+    generator(parsed);
     
-    robin.close();
     return 0;
 }
