@@ -4,6 +4,7 @@ CXXFLAGS = -std=c++23 -Wall -Wextra -O2 -g
 OBJDIR = obj
 BINDIR = bin
 SRCDIR = src
+GENDIR = gen
 
 # Find all .cpp files in src/
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
@@ -14,7 +15,7 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 TARGET = $(BINDIR)/robin
 
 # Create directories as needed
-$(shell mkdir -p $(BINDIR) $(OBJDIR))
+$(shell mkdir -p $(BINDIR) $(OBJDIR) $(GENDIR))
 
 all: $(TARGET)
 
