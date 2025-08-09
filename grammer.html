@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robin Grammer</title>
+    <!--<link rel="icon" type="image/png" href="favicon.png">-->
+</head>
+<style>
+    .done{
+        color: green;
+    }
+    .change{
+        color: red;
+    }
+</style>
+<body>
+    <p>Program &gt; Function Main</p>
+    <p>Fucntion &gt; FuncDef FuncBody Function | e</p>
+    <p>FuncDef &gt; ident -&gt; Param Type</p>
+    <p>Param &gt; Type ident -&gt; Param | e</p>
+    <p>Type &gt; int | char | string | bool | float</p>
+    <p>FuncBody &gt; Scope</p>
+    <p>Scope &gt; ScopeType { ScopeBody }</p>
+    <p>ScopeType &gt; 'Pure' | 'IO' | 'State' | e</p>
+    <p>ScopeBody &gt; Code</p>
+    <p>Code &gt; Statement Code'| Loop Code'| Conditional Code'| Scope Code'</p>
+    <p>Code' &gt; Code | e</p>
+    <p>Statement &gt; IO | Return</p>
+    <p>IO &gt; Print | Input | Output</p>
+    <p>Print &gt; print String ;</p>
+    <p>Input &gt; input ident Value ;</p>
+    <p>Output &gt; output String ;</p>
+    <p>String &gt; string | idnet | StringConcat</p>
+    <p>Return &gt; return Value ;</p>
+    <p>Value &gt; String | Int | Char | Bool | Float | void</p>
+    <p>Int &gt; int | Expression | ident</p>
+    <p>Expression &gt; TODO</p>
+    <p>Main &gt; MainDef FuncBody</p>
+    <p>MainDef &gt; main -&gt; int | main -&gt; int argc -&gt; string[] argv -&gt; int</p>
+    
+</body>
+</html>

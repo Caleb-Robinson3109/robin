@@ -29,11 +29,13 @@ AST parser (vector<Token>& tokens){
 
 Ret parse_Program(vector<Token>& tokens, int index){
     //cout << "program\n";
+    AST Program(Node("Program", {"Program", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_Main = parse_Main(tokens, index);
     //parsed_Main.printRet();
     if(parsed_Main.valid){
         index = parsed_Main.index;
-        Ret okay(true, parsed_Main.ast, index);
+        Program.getRoot().addChild(parsed_Main.ast);
+        Ret okay(true, Program.getRoot(), index);
         //okay.printRet();
         return okay;
     }
