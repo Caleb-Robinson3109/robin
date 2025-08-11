@@ -45,7 +45,36 @@ void generator(AST& tree){
         exit(1);
     }
 
-    generator_helper(tree.getRoot(), cpp);
+    gen_Program(tree.getRoot(), cpp);
 
     cpp.close();
 }
+
+void gen_Program(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    gen_Main(children.at(0), file);
+}
+
+void gen_Main(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    gen_MainDef(children.at(0), file);
+    gen_FuncBody(children.at(1), file);
+}
+
+void gen_MainDef(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    file << node_to_cpp(children.at(2));
+    file << node_to_cpp(children.at(0));
+    file << "()\n";
+}
+
+void gen_FuncBody(Node& node, ofstream& file);
+void gen_Scope(Node& node, ofstream& file);
+void gen_ScopeType(Node& node, ofstream& file);
+void gen_ScopeBody(Node& node, ofstream& file);
+void gen_Code(Node& node, ofstream& file);
+void gen_Codep(Node& node, ofstream& file);
+void gen_Statement(Node& node, ofstream& file);
+void gen_IO(Node& node, ofstream& file);
+void gen_voidurn(Node& node, ofstream& file);
+void gen_Output(Node& node, ofstream& file);
