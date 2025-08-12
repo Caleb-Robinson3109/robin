@@ -79,6 +79,9 @@ string string_to_token(string& s){
     else if(regex_match(s, re_string)){
         return "string";
     }
+    else if(regex_match(s, re_ident)){
+        return "ident";
+    }
     else{
         return "error";
     }
