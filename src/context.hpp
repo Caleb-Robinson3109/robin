@@ -9,12 +9,14 @@ public:
     bool mut;
     string value;
     string type;
+    int line;
+    int col;
 };
 
 class Table{
 private:
     vector<vector<Var>> table;
-    int scope_depth = 0;
+    int scope_depth;
 
 public:
     void push_scope();
@@ -23,4 +25,5 @@ public:
     void mod_value(string var_name, string var_value);
     string get_value(string var_name);
 
+    Table();
 };
