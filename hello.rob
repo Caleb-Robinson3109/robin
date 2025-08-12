@@ -2,7 +2,6 @@ main -> int
 {
     IO {
         output "Hello_World" ;
-        output "hi" ;
     }
     return 0 ;
 }
