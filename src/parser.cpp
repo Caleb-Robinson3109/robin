@@ -6,10 +6,12 @@
 #include "token.hpp"
 #include "ast.hpp"
 #include "parser.hpp"
+#include "context.hpp"
 
 using namespace std;
 
 static vector<string> scope_context;
+static Table variable_table;
 
 AST parser (vector<Token>& tokens){
     //cout << "parser\n";
@@ -138,6 +140,7 @@ Ret parse_FuncBody(vector<Token>& tokens, int index){
 
 Ret parse_Scope(vector<Token>& tokens, int index){
     //cout << "scope\n";
+    
     AST Scope(Node("Scope", {"Scope", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_ScopeType = parse_ScopeType(tokens, index);
     //parsed_ScopeType.printRet();
@@ -149,12 +152,14 @@ Ret parse_Scope(vector<Token>& tokens, int index){
             //cout << "{\n";
             Scope.getRoot().addChild(Node("kw_open_curly", tokens.at(index), true));
             index++;
+            variable_table.push_scope();
             Ret parsed_ScopeBody = parse_ScopeBody(tokens, index);
             //parsed_ScopeBody.printRet();
             if(parsed_ScopeBody.valid){
                 Scope.getRoot().addChild(parsed_ScopeBody.ast);
                 index = parsed_ScopeBody.index;
                 if(tokens.at(index).type == "kw_close_curly"){
+                    variable_table.pop_scope();
                     scope_context.pop_back();
                     Scope.getRoot().addChild(Node("kw_close_curly", tokens.at(index), true));
                     index++;
