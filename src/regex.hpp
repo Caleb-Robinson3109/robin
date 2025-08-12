@@ -14,7 +14,7 @@ inline const regex re_int(R"(^-?\d+$)");
 inline const regex re_float(R"(^-?\d+\.\d+$)");
 inline const regex re_char(R"(^'[a-zA-Z0-9_ ]'$)");
 inline const regex re_bool(R"(\b(true|false)\b)");
-inline const regex re_string(R"(^\"[a-zA-Z0-9_ ]+\"$)");
+inline const regex re_string(R"(^\"([a-zA-Z0-9_ ]|\\[nt\"\\])*\"$)");
 inline const regex re_ident(R"(^[a-zA-Z_][a-zA-Z0-9_]*$)");
 
 //keywords
