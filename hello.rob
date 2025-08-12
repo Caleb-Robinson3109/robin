@@ -1,7 +1,8 @@
 main -> int
 {
-    {
+    IO {
         output "Hello_World" ;
+        output " " ;
     }
     return 0 ;
 }
