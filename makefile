@@ -32,3 +32,6 @@ clean:
 
 robin:
 	$(CXX) -o gen/a.out $(GENDIR)/out.cpp
+
+gclean:
+	rm -rf $(GENDIR)/*
