@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
         cerr << "Needs correct number of arguments\nUsing default hello.txt file\n";
         //return 1;
     }
-    fstream robin("hello.txt");
+    fstream robin("hello.rob");
     if(argc == 2){
             robin.close();
             robin.open(argv[1], ios::in);
