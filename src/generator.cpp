@@ -185,7 +185,7 @@ void gen_Return(Node& node, ofstream& file){
 void gen_Output(Node& node, ofstream& file){
     //cout << "out\n";
     vector<Node> children = node.getChildren();
-    file << "std:://cout << ";
+    file << "std::cout << ";
     file << node_to_cpp(children.at(1));
     file << node_to_cpp(children.at(2));
     file << "\n";

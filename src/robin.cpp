@@ -43,7 +43,7 @@ int main(int argc, char* argv[]){
 
     AST parsed = parser(tokens);
 
-    parsed.printAST();
+    //parsed.printAST();
 
     generator(parsed);
     
