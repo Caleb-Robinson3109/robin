@@ -29,3 +29,6 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 clean:
 	rm -rf $(OBJDIR)/*.o $(TARGET)
+
+robin:
+	$(CXX) -o gen/a.out $(GENDIR)/out.cpp
