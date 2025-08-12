@@ -4,8 +4,6 @@
 
 void generator(AST& tree);
 
-void generator_helper(Node& node, ofstream& file);
-
 string node_to_cpp(Node& node);
 
 void gen_Program(Node& node, ofstream& file);
@@ -13,11 +11,10 @@ void gen_Main(Node& node, ofstream& file);
 void gen_MainDef(Node& node, ofstream& file);
 void gen_FuncBody(Node& node, ofstream& file);
 void gen_Scope(Node& node, ofstream& file);
-void gen_ScopeType(Node& node, ofstream& file);
 void gen_ScopeBody(Node& node, ofstream& file);
 void gen_Code(Node& node, ofstream& file);
 void gen_Codep(Node& node, ofstream& file);
 void gen_Statement(Node& node, ofstream& file);
 void gen_IO(Node& node, ofstream& file);
-void gen_voidurn(Node& node, ofstream& file);
+void gen_Return(Node& node, ofstream& file);
 void gen_Output(Node& node, ofstream& file);
