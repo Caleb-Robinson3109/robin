@@ -1,0 +1,5 @@
+main -> int {
+    mut x = 4 ;
+    int y = 5 ;
+    return 0 ;
+}
