@@ -9,6 +9,10 @@
 using namespace std;
 
 string node_to_cpp(Node& node){
+    return node.getValue().value + (string)" ";
+}
+
+string node_to_cpp2(Node& node){
     if(node.getValue().type == "int"){
         return node.getValue().value + (string)" ";
     }
@@ -164,6 +168,9 @@ void gen_Statement(Node& node, ofstream& file){
     else if(children.at(0).getType() == "Return"){
         gen_Return(children.at(0), file);
     }
+    else if(children.at(0).getType() == "Decloration"){
+        gen_Decloration(children.at(0), file);
+    }
 }
 
 void gen_IO(Node& node, ofstream& file){
@@ -189,4 +196,39 @@ void gen_Output(Node& node, ofstream& file){
     file << node_to_cpp(children.at(1));
     file << node_to_cpp(children.at(2));
     file << "\n";
+}
+
+void gen_Decloration(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    if(children.at(0).getType() == "Mut"){
+        gen_Mut(children.at(0), file);
+    }
+    else if(children.at(0).getType() == "Let"){
+        gen_Let(children.at(0), file);
+    }
+}
+
+void gen_Mut(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    gen_Type(children.at(1), file);
+    file << node_to_cpp(children.at(2));
+    file << node_to_cpp(children.at(3));
+    file << node_to_cpp(children.at(4));
+    file << node_to_cpp(children.at(5));
+    file << "\n";
+}
+
+void gen_Let(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    gen_Type(children.at(0), file);
+    file << node_to_cpp(children.at(1));
+    file << node_to_cpp(children.at(2));
+    file << node_to_cpp(children.at(3));
+    file << node_to_cpp(children.at(4));
+    file << "\n";
+}
+
+void gen_Type(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    file << node_to_cpp(children.at(0));
 }

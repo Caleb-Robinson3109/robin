@@ -37,13 +37,13 @@ int main(int argc, char* argv[]){
 
     vector<Token> tokens = tokenizer(contents);
 
-    /*for(Token t : tokens){
-        t.print_token_struct();
-    }*/
+    //for(Token t : tokens){
+    //    t.print_token_struct();
+    //}
 
     AST parsed = parser(tokens);
 
-    //parsed.printAST();
+    parsed.printAST();
 
     generator(parsed);
     

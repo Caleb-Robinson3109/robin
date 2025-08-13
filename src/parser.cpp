@@ -551,5 +551,93 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     }
 }
 
-Ret parse_Let(vector<Token>& tokens, int index);
-Ret parse_Type(vector<Token>& tokens, int index);
+Ret parse_Let(vector<Token>& tokens, int index){
+    AST Let(Node("Let", {"Let", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Ret parsed_Type = parse_Type(tokens, index);
+    if(parsed_Type.valid){
+        Let.getRoot().addChild(parsed_Type.ast);
+        index = parsed_Type.index;
+        if(tokens.at(index).type == "ident"){
+            Let.getRoot().addChild(Node("idnet", tokens.at(index), true));
+            index++;
+            if(tokens.at(index).type == "kw_equal"){
+                Let.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
+                index++;
+                if(tokens.at(index).type == "int"){
+                    Let.getRoot().addChild(Node("int", tokens.at(index), true));
+                    index++;
+                    if(tokens.at(index).type == "kw_semicolon"){
+                        Let.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+                        index++;
+                        Ret okay(true, Let.getRoot(), index);
+                        return okay;
+                    }
+                    else{
+                        Ret error(false, Node("error", tokens.at(index), false), index);
+                        //error.printRet();
+                        return error;
+                    }
+                }
+                else{
+                    Ret error(false, Node("error", tokens.at(index), false), index);
+                    //error.printRet();
+                    return error;
+                }
+            }
+            else{
+                Ret error(false, Node("error", tokens.at(index), false), index);
+                //error.printRet();
+                return error;
+            }
+        }
+        else{
+            Ret error(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+        }
+    }
+    else{
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_Type(vector<Token>& tokens, int index){
+    AST Type(Node("Type", {"Type", "", tokens.at(index).line, tokens.at(index).col}, false));
+    if(tokens.at(index).type == "kw_int"){
+        Type.getRoot().addChild(Node("kw_int", tokens.at(index), true));
+        index++;
+        Ret okay(true, Type.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "kw_char"){
+        Type.getRoot().addChild(Node("kw_char", tokens.at(index), true));
+        index++;
+        Ret okay(true, Type.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "kw_string"){
+        Type.getRoot().addChild(Node("kw_string", tokens.at(index), true));
+        index++;
+        Ret okay(true, Type.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "kw_bool"){
+        Type.getRoot().addChild(Node("kw_bool", tokens.at(index), true));
+        index++;
+        Ret okay(true, Type.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "kw_float"){
+        Type.getRoot().addChild(Node("kw_float", tokens.at(index), true));
+        index++;
+        Ret okay(true, Type.getRoot(), index);
+        return okay;
+    }
+    else{
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}

@@ -18,3 +18,7 @@ void gen_Statement(Node& node, ofstream& file);
 void gen_IO(Node& node, ofstream& file);
 void gen_Return(Node& node, ofstream& file);
 void gen_Output(Node& node, ofstream& file);
+void gen_Decloration(Node& node, ofstream& file);
+void gen_Mut(Node& node, ofstream& file);
+void gen_Let(Node& node, ofstream& file);
+void gen_Type(Node& node, ofstream& file);
