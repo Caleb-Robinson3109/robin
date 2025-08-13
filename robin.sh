@@ -1,6 +1,13 @@
 #!/bin/bash
 
-make -s
 ./bin/robin $1
-make -s robin
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+make robin -s
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
 ./gen/a.out
