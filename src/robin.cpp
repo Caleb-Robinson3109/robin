@@ -14,7 +14,7 @@ using namespace std;
 
 int main(int argc, char* argv[]){
     if(argc != 2){
-        cerr << "Needs correct number of arguments\nUsing default hello.txt file\n";
+        cerr << "Needs correct number of arguments\nUsing default hello.rob file\n";
         //return 1;
     }
     fstream robin("hello.rob");

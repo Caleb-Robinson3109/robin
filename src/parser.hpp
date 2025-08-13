@@ -38,5 +38,9 @@ Ret parse_Statement(vector<Token>& tokens, int index);
 Ret parse_IO(vector<Token>& tokens, int index);
 Ret parse_Return(vector<Token>& tokens, int index);
 Ret parse_Output(vector<Token>& tokens, int index);
+Ret parse_Decloration(vector<Token>& tokens, int index);
+Ret parse_Mut(vector<Token>& tokens, int index);
+Ret parse_Let(vector<Token>& tokens, int index);
+Ret parse_Type(vector<Token>& tokens, int index);
 
 #endif

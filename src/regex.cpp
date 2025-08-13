@@ -27,16 +27,22 @@ string string_to_token(string& s){
     else if(regex_match(s, re_kw_main)){
         return "kw_main";
     }
-    else if(regex_match(s, re_kw_arrow)){
-        return "kw_arrow";
+    else if(regex_match(s, re_kw_mut)){
+        return "kw_mut";
     }
     
     //symbols
+    else if(regex_match(s, re_kw_arrow)){
+        return "kw_arrow";
+    }
     else if(regex_match(s, re_kw_open_curly)){
         return "kw_open_curly";
     }
     else if(regex_match(s, re_kw_close_curly)){
         return "kw_close_curly";
+    }
+    else if(regex_match(s, re_kw_equal)){
+        return "kw_equal";
     }
     else if(regex_match(s, re_kw_semicolon)){
         return "kw_semicolon";
@@ -82,6 +88,7 @@ string string_to_token(string& s){
     else if(regex_match(s, re_ident)){
         return "ident";
     }
+
     else{
         return "error";
     }

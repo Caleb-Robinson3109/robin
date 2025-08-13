@@ -339,6 +339,7 @@ Ret parse_Statement(vector<Token>& tokens, int index){
     //parsed_IO.printRet();
     Ret parsed_Return = parse_Return(tokens, index);
     //parsed_Return.printRet();
+    Ret parsed_Delcoration = parse_Decloration(tokens, index);
     if(parsed_IO.valid){
         if(!(find(scope_context.begin(), scope_context.end(), "IO") != scope_context.end())){
             cerr << "error on line: " << tokens.at(index).line << " column: " << tokens.at(index).line << "\n";
@@ -356,6 +357,12 @@ Ret parse_Statement(vector<Token>& tokens, int index){
         index = parsed_Return.index;
         Ret okay(true, Statement.getRoot(), index);
         //okay.printRet();
+        return okay;
+    }
+    else if(parsed_Delcoration.valid){
+        Statement.getRoot().addChild(parsed_Delcoration.ast);
+        index = parsed_Delcoration.index;
+        Ret okay(true, Statement.getRoot(), index);
         return okay;
     }
     else{
@@ -459,3 +466,90 @@ Ret parse_Output(vector<Token>& tokens, int index){
         return error;
     }
 }
+
+Ret parse_Decloration(vector<Token>& tokens, int index){
+    AST Decloration(Node("Decloration", {"Decloration", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Ret parsed_Mut = parse_Mut(tokens, index);
+    Ret parsed_Let = parse_Let(tokens, index);
+    if(parsed_Mut.valid){
+        Decloration.getRoot().addChild(parsed_Mut.ast);
+        index = parsed_Mut.index;
+        Ret okay(true, Decloration.getRoot(), index);
+        return okay;
+    }
+    else if(parsed_Let.valid){
+        Decloration.getRoot().addChild(parsed_Let.ast);
+        index = parsed_Let.index;
+        Ret okay(true, Decloration.getRoot(), index);
+        return okay;
+    }
+    else{
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_Mut(vector<Token>& tokens, int index){
+    AST Mut(Node("Mut", {"Mut", "", tokens.at(index).line, tokens.at(index).col}, false));
+    if(tokens.at(index).type == "kw_mut"){
+        Mut.getRoot().addChild(Node("kw_mut", tokens.at(index), true));
+        index++;
+        Ret parsed_Type = parse_Type(tokens, index);
+        if(parsed_Type.valid){
+            Mut.getRoot().addChild(parsed_Type.ast);
+            index = parsed_Type.index;
+            if(tokens.at(index).type == "ident"){
+                Mut.getRoot().addChild(Node("idnet", tokens.at(index), true));
+                index++;
+                if(tokens.at(index).type == "kw_equal"){
+                    Mut.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
+                    index++;
+                    if(tokens.at(index).type == "int"){
+                        Mut.getRoot().addChild(Node("int", tokens.at(index), true));
+                        index++;
+                        if(tokens.at(index).type == "kw_semicolon"){
+                            Mut.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+                            index++;
+                            Ret okay(true, Mut.getRoot(), index);
+                            return okay;
+                        }
+                        else{
+                            Ret error(false, Node("error", tokens.at(index), false), index);
+                            //error.printRet();
+                            return error;
+                        }
+                    }
+                    else{
+                        Ret error(false, Node("error", tokens.at(index), false), index);
+                        //error.printRet();
+                        return error;
+                    }
+                }
+                else{
+                    Ret error(false, Node("error", tokens.at(index), false), index);
+                    //error.printRet();
+                    return error;
+                }
+            }
+            else{
+                Ret error(false, Node("error", tokens.at(index), false), index);
+                //error.printRet();
+                return error;
+            }
+        }
+        else{
+            Ret error(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+        }
+    }
+    else{
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_Let(vector<Token>& tokens, int index);
+Ret parse_Type(vector<Token>& tokens, int index);
