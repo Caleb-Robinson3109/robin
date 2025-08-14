@@ -1,5 +1,11 @@
 #!/bin/bash
 
+make -s
+if [ $? -ne 0 ]; then
+  echo 'robin.cpp build failed'
+  exit 1
+fi
+
 ./bin/robin $1
 if [ $? -ne 0 ]; then
   echo 'robin.cpp failed'

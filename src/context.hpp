@@ -24,6 +24,7 @@ public:
     void add_var(Var var);
     void mod_value(string var_name, string var_value);
     string get_value(string var_name);
+    void print_table();
 
     Table();
 };

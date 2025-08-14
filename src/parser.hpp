@@ -5,6 +5,7 @@
 
 #include "token.hpp"
 #include "ast.hpp"
+#include "contex.hpp"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ public:
     }
 };
 
+bool type_check(Var& var, Node& node);
 
 AST parser (vector<Token>& tokens);
 Ret parse_Program(vector<Token>& tokens, int index);

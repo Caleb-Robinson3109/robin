@@ -13,6 +13,27 @@ using namespace std;
 static vector<string> scope_context;
 static Table variable_table;
 
+bool type_check(Var& var, Node& node){
+    if(var.type == "kw_int" && node.getValue().type == "int"){
+        return true;
+    }
+    else if(var.type == "kw_float" && node.getValue().type == "float"){
+        return true;
+    }
+    else if(var.type == "kw_char" && node.getValue().type == "char"){
+        return true;
+    }
+    else if(var.type == "kw_bool" && node.getValue().type == "bool"){
+        return true;
+    }
+    else if(var.type == "kw_string" && node.getValue().type == "string"){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 AST parser (vector<Token>& tokens){
     //cout << "parser\n";
     int index = 0;
@@ -496,26 +517,39 @@ Ret parse_Decloration(vector<Token>& tokens, int index){
 
 Ret parse_Mut(vector<Token>& tokens, int index){
     AST Mut(Node("Mut", {"Mut", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Var newVar;
+    newVar.line = tokens.at(index).line;
+    newVar.col = tokens.at(index).col;
     if(tokens.at(index).type == "kw_mut"){
         Mut.getRoot().addChild(Node("kw_mut", tokens.at(index), true));
+        newVar.mut = true;
         index++;
         Ret parsed_Type = parse_Type(tokens, index);
         if(parsed_Type.valid){
+            newVar.type = parsed_Type.ast.getType();
             Mut.getRoot().addChild(parsed_Type.ast);
             index = parsed_Type.index;
             if(tokens.at(index).type == "ident"){
+                newVar.name = tokens.at(index).value;
                 Mut.getRoot().addChild(Node("idnet", tokens.at(index), true));
                 index++;
                 if(tokens.at(index).type == "kw_equal"){
                     Mut.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
                     index++;
                     if(tokens.at(index).type == "int"){
+                        if(!type_check(newVar, tokens.at(index).type)){
+                            cerr << "error at line: " << tokens.at(index).line << " column: " << tokens.at(index).col << "\n";
+                            cerr << "type defination mismatch\n";
+                            exit(1);
+                        }
+                        newVar.value = tokens.at(index).value;
                         Mut.getRoot().addChild(Node("int", tokens.at(index), true));
                         index++;
                         if(tokens.at(index).type == "kw_semicolon"){
                             Mut.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
                             index++;
                             Ret okay(true, Mut.getRoot(), index);
+                            variable_table.add_var(myVar);
                             return okay;
                         }
                         else{

@@ -57,3 +57,7 @@ string Table::get_value(string var_name){
     cerr << "error tryed to accuss indentifer without assocated value\n";
     exit(1);
 }
+
+void Table::print_table(){
+
+}
