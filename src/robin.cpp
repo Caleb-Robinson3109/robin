@@ -43,7 +43,13 @@ int main(int argc, char* argv[]){
 
     AST parsed = parser(tokens);
 
-    parsed.printAST();
+    //parsed.printAST();
+
+    
+    if(parsed.has_error()){
+        cerr << "there was an error while parsing the code\n";
+        return 1;
+    }
 
     generator(parsed);
     

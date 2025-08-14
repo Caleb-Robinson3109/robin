@@ -73,6 +73,22 @@ public:
             printASTHelper(child, 1);
         }
     }
-    };
+
+    bool has_error_helper(Node& node){
+        for(Node child : node.getChildren()){
+            if(child.getValue().type == "error"){
+                return true;
+            }
+            if(has_error_helper(child)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool has_error(){
+        return has_error_helper(root);
+    }
+};
 
 #endif
