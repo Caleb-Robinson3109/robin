@@ -1,3 +1,6 @@
+#ifndef CONTEXT_HPP
+#define CONTEXT_HPP
+
 #include <string>
 #include <vector>
 
@@ -11,11 +14,16 @@ public:
     string type;
     int line;
     int col;
+
+    void print_var(){
+        cout << line << (mut ? " mut " : " ") << type << " " << name << " = " << value << "\n";
+    }
 };
 
 class Table{
 private:
     vector<vector<Var>> table;
+    vector<vector<Var>> archive;
     int scope_depth;
 
 public:
@@ -28,3 +36,5 @@ public:
 
     Table();
 };
+
+#endif

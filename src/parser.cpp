@@ -13,23 +13,24 @@ using namespace std;
 static vector<string> scope_context;
 static Table variable_table;
 
-bool type_check(Var& var, Node& node){
-    if(var.type == "kw_int" && node.getValue().type == "int"){
+bool type_check(Var& var, Token& token){
+    if(var.type == "kw_int" && token.type == "int"){
         return true;
     }
-    else if(var.type == "kw_float" && node.getValue().type == "float"){
+    else if(var.type == "kw_float" && token.type == "float"){
         return true;
     }
-    else if(var.type == "kw_char" && node.getValue().type == "char"){
+    else if(var.type == "kw_char" && token.type == "char"){
         return true;
     }
-    else if(var.type == "kw_bool" && node.getValue().type == "bool"){
+    else if(var.type == "kw_bool" && token.type == "bool"){
         return true;
     }
-    else if(var.type == "kw_string" && node.getValue().type == "string"){
+    else if(var.type == "kw_string" && token.type == "string"){
         return true;
     }
     else{
+        cerr << var.type << " " << token.type << "\n";
         return false;
     }
 }
@@ -39,7 +40,6 @@ AST parser (vector<Token>& tokens){
     int index = 0;
     Ret parsed = parse_Program(tokens, index);
     //parsed.printRet();
-
     if(parsed.valid){
         Node okay = parsed.ast;
         return AST(okay);
@@ -526,7 +526,7 @@ Ret parse_Mut(vector<Token>& tokens, int index){
         index++;
         Ret parsed_Type = parse_Type(tokens, index);
         if(parsed_Type.valid){
-            newVar.type = parsed_Type.ast.getType();
+            newVar.type = parsed_Type.ast.getChildren().at(0).getType();
             Mut.getRoot().addChild(parsed_Type.ast);
             index = parsed_Type.index;
             if(tokens.at(index).type == "ident"){
@@ -537,7 +537,7 @@ Ret parse_Mut(vector<Token>& tokens, int index){
                     Mut.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
                     index++;
                     if(tokens.at(index).type == "int"){
-                        if(!type_check(newVar, tokens.at(index).type)){
+                        if(!type_check(newVar, tokens.at(index))){
                             cerr << "error at line: " << tokens.at(index).line << " column: " << tokens.at(index).col << "\n";
                             cerr << "type defination mismatch\n";
                             exit(1);
@@ -549,7 +549,8 @@ Ret parse_Mut(vector<Token>& tokens, int index){
                             Mut.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
                             index++;
                             Ret okay(true, Mut.getRoot(), index);
-                            variable_table.add_var(myVar);
+                            variable_table.add_var(newVar);
+                            //variable_table.print_table();
                             return okay;
                         }
                         else{
