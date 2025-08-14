@@ -220,6 +220,7 @@ void gen_Mut(Node& node, ofstream& file){
 
 void gen_Let(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
+    file << "const ";
     gen_Type(children.at(0), file);
     file << node_to_cpp(children.at(1));
     file << node_to_cpp(children.at(2));

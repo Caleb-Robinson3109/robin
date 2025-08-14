@@ -339,6 +339,7 @@ Ret parse_Statement(vector<Token>& tokens, int index){
     //parsed_IO.printRet();
     Ret parsed_Return = parse_Return(tokens, index);
     //parsed_Return.printRet();
+    //cout << "parsing Delc\n";
     Ret parsed_Delcoration = parse_Decloration(tokens, index);
     if(parsed_IO.valid){
         if(!(find(scope_context.begin(), scope_context.end(), "IO") != scope_context.end())){
@@ -469,7 +470,9 @@ Ret parse_Output(vector<Token>& tokens, int index){
 
 Ret parse_Decloration(vector<Token>& tokens, int index){
     AST Decloration(Node("Decloration", {"Decloration", "", tokens.at(index).line, tokens.at(index).col}, false));
+    //cout << "parsing mut\n";
     Ret parsed_Mut = parse_Mut(tokens, index);
+    //cout << "parsing mut\n";
     Ret parsed_Let = parse_Let(tokens, index);
     if(parsed_Mut.valid){
         Decloration.getRoot().addChild(parsed_Mut.ast);
@@ -478,6 +481,7 @@ Ret parse_Decloration(vector<Token>& tokens, int index){
         return okay;
     }
     else if(parsed_Let.valid){
+        //cout << "parsed let\n";
         Decloration.getRoot().addChild(parsed_Let.ast);
         index = parsed_Let.index;
         Ret okay(true, Decloration.getRoot(), index);
@@ -553,23 +557,31 @@ Ret parse_Mut(vector<Token>& tokens, int index){
 
 Ret parse_Let(vector<Token>& tokens, int index){
     AST Let(Node("Let", {"Let", "", tokens.at(index).line, tokens.at(index).col}, false));
+    //cout << "parsing type\n";
     Ret parsed_Type = parse_Type(tokens, index);
     if(parsed_Type.valid){
+        //cout << "parsed type\n";
         Let.getRoot().addChild(parsed_Type.ast);
         index = parsed_Type.index;
         if(tokens.at(index).type == "ident"){
+            //cout << tokens.at(index).value << "\n";
             Let.getRoot().addChild(Node("idnet", tokens.at(index), true));
             index++;
+            //cout << parsed_Type.ast.getValue().value << "\n";
             if(tokens.at(index).type == "kw_equal"){
+                //cout << tokens.at(index).value << "\n";
                 Let.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
                 index++;
                 if(tokens.at(index).type == "int"){
+                    //cout << tokens.at(index).value << "\n";
                     Let.getRoot().addChild(Node("int", tokens.at(index), true));
                     index++;
                     if(tokens.at(index).type == "kw_semicolon"){
+                        //cout << tokens.at(index).value << "\n";
                         Let.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
                         index++;
                         Ret okay(true, Let.getRoot(), index);
+                        //okay.printRet();
                         return okay;
                     }
                     else{
