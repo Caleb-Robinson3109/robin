@@ -22,6 +22,7 @@ void Table::push_scope(){
 
 void Table::pop_scope(){
     table.pop_back();
+    archive.push_back(table.back());
     scope_depth--;
 }
 
@@ -59,5 +60,16 @@ string Table::get_value(string var_name){
 }
 
 void Table::print_table(){
-
+    cout << "table\n";
+    for(int i = 0; i < table.size(); i++){
+        for(int j = 0; j < table.at(i).size(); j++){
+            table.at(i).at(j).print_var();
+        }
+    }
+    cout << "archive\n";
+    for(int i = 0; i < archive.size(); i++){
+        for(int j = 0; j < archive.at(i).size(); j++){
+            archive.at(i).at(j).print_var();
+        }
+    }
 }
