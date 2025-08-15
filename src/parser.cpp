@@ -484,9 +484,10 @@ Ret parse_Output(vector<Token>& tokens, int index){
         Output.getRoot().addChild(Node("kw_output", tokens.at(index), true));
         index++;
         //TODO expand output for more strings/ string concats not just string
-        if(tokens.at(index).type == "string"){
-            Output.getRoot().addChild(Node("string", tokens.at(index), true));
-            index++;
+        Ret parsed_Value = parse_Value(tokens, index);
+        if(parsed_Value.valid){
+            Output.getRoot().addChild(parsed_Value.ast);
+            index = parsed_Value.index;
             if(tokens.at(index).type == "kw_semicolon"){
                 Output.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
                 index++;

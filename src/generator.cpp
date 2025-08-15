@@ -95,6 +95,7 @@ void gen_Program(Node& node, ofstream& file){
     //cout << "program\n";
     vector<Node> children = node.getChildren();
     file << "#include <iostream>\n";
+    file << "#include <string>\n";
     gen_Main(children.at(0), file);
 }
 
@@ -193,7 +194,7 @@ void gen_Output(Node& node, ofstream& file){
     //cout << "out\n";
     vector<Node> children = node.getChildren();
     file << "std::cout << ";
-    file << node_to_cpp(children.at(1));
+    gen_Value(children.at(1), file);
     file << node_to_cpp(children.at(2));
     file << "\n";
 }
@@ -231,6 +232,9 @@ void gen_Let(Node& node, ofstream& file){
 
 void gen_Type(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
+    if(children.at(0).getType() == "kw_string"){
+        file << "std::";
+    }
     file << node_to_cpp(children.at(0));
 }
 
