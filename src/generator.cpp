@@ -224,12 +224,58 @@ void gen_Let(Node& node, ofstream& file){
     gen_Type(children.at(0), file);
     file << node_to_cpp(children.at(1));
     file << node_to_cpp(children.at(2));
-    file << node_to_cpp(children.at(3));
+    gen_Value(children.at(3), file);
     file << node_to_cpp(children.at(4));
     file << "\n";
 }
 
 void gen_Type(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    file << node_to_cpp(children.at(0));
+}
+
+void gen_Value(Node& node, ofstream& file){
+     vector<Node> children = node.getChildren();
+     if(children.at(0).getType() == "String"){
+        gen_String(children.at(0), file);
+     }
+     else if(children.at(0).getType() == "Int"){
+        gen_Int(children.at(0), file);
+     }
+     else if(children.at(0).getType() == "Char"){
+        gen_Char(children.at(0), file);
+     }
+     else if(children.at(0).getType() == "Bool"){
+        gen_Bool(children.at(0), file);
+     }
+     else if(children.at(0).getType() == "Float"){
+        gen_Float(children.at(0), file);
+     }
+}
+
+void gen_String(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    file << node_to_cpp(children.at(0));
+}
+
+void gen_Int(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    //cout << "gen int\n";
+    //children.at(0).printNode();
+    file << node_to_cpp(children.at(0));
+}
+
+void gen_Char(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    file << node_to_cpp(children.at(0));
+}
+
+void gen_Bool(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    file << node_to_cpp(children.at(0));
+}
+
+void gen_Float(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
     file << node_to_cpp(children.at(0));
 }

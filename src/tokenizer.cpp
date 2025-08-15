@@ -13,7 +13,7 @@ TokenData next_token(string& s, int& index, int& line, int& col){
     //TODO spaces in strings and char
     //TODO replace with regex
     //TODO check for things like (x + y) where there is no space between tokens
-    while(index < s.size() && (s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
+    while(index < static_cast<int>(s.size()) && (s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
         if(s[index] == '\n'){
             //cout << "\n\nLINEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE " << line << "\n\n";
             line++;
@@ -25,7 +25,7 @@ TokenData next_token(string& s, int& index, int& line, int& col){
         index++;
     }
 
-    while(index < s.size() && !(s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
+    while(index < static_cast<int>(s.size()) && !(s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
         token += s[index];
         if(start_col == -1){
             start_col = col;
