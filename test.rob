@@ -1,5 +1,5 @@
 main -> int {
-    mut int x = 40 ;
-    int y = 12 ;
+    int y = x ;
+    int x = 40 ;
     return 0 ;
 }

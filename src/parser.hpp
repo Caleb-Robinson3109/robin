@@ -44,6 +44,12 @@ Ret parse_Decloration(vector<Token>& tokens, int index);
 Ret parse_Mut(vector<Token>& tokens, int index);
 Ret parse_Let(vector<Token>& tokens, int index);
 Ret parse_Type(vector<Token>& tokens, int index);
+Ret parse_Value(vector<Token>& tokens, int index);
+Ret parse_String(vector<Token>& tokens, int index);
+Ret parse_Int(vector<Token>& tokens, int index);
+Ret parse_Char(vector<Token>& tokens, int index);
+Ret parse_Bool(vector<Token>& tokens, int index);
+Ret parse_Float(vector<Token>& tokens, int index);
 
 
 #endif

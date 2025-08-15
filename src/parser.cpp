@@ -14,24 +14,48 @@ static vector<string> scope_context;
 static Table variable_table;
 
 bool type_check(Var& var, Token& token){
-    if(var.type == "kw_int" && token.type == "int"){
-        return true;
-    }
-    else if(var.type == "kw_float" && token.type == "float"){
-        return true;
-    }
-    else if(var.type == "kw_char" && token.type == "char"){
-        return true;
-    }
-    else if(var.type == "kw_bool" && token.type == "bool"){
-        return true;
-    }
-    else if(var.type == "kw_string" && token.type == "string"){
-        return true;
+    if(token.type == "ident"){
+        Var v = variable_table.get_value(token.value);
+        if(var.type == "kw_int" && v.type == "kw_int"){
+            return true;
+        }
+        else if(var.type == "kw_float" && v.type == "kw_float"){
+            return true;
+        }
+        else if(var.type == "kw_char" && v.type == "kw_char"){
+            return true;
+        }
+        else if(var.type == "kw_bool" && v.type == "kw_bool"){
+            return true;
+        }
+        else if(var.type == "kw_string" && v.type == "kw_string"){
+            return true;
+        }
+        else{
+            cerr << var.type << " " << v.type << "\n";
+            return false;
+        }
     }
     else{
-        cerr << var.type << " " << token.type << "\n";
-        return false;
+        if(var.type == "kw_int" && token.type == "int"){
+            return true;
+        }
+        else if(var.type == "kw_float" && token.type == "float"){
+            return true;
+        }
+        else if(var.type == "kw_char" && token.type == "char"){
+            return true;
+        }
+        else if(var.type == "kw_bool" && token.type == "bool"){
+            return true;
+        }
+        else if(var.type == "kw_string" && token.type == "string"){
+            return true;
+        }
+        else{
+            cerr << var.type << " " << token.type << "\n";
+            return false;
+        }
     }
 }
 
@@ -496,6 +520,11 @@ Ret parse_Decloration(vector<Token>& tokens, int index){
     //cout << "parsing mut\n";
     Ret parsed_Let = parse_Let(tokens, index);
     if(parsed_Mut.valid){
+        if(find(scope_context.begin(), scope_context.end(), "Pure") != scope_context.end()){
+            cerr << "error on line: " << tokens.at(index).line << " column: " << tokens.at(index).line << "\n";
+            cerr << "declaring a mutable value in a Pure scope\n";
+            exit(1);
+        }
         Decloration.getRoot().addChild(parsed_Mut.ast);
         index = parsed_Mut.index;
         Ret okay(true, Decloration.getRoot(), index);
@@ -594,11 +623,17 @@ Ret parse_Let(vector<Token>& tokens, int index){
     AST Let(Node("Let", {"Let", "", tokens.at(index).line, tokens.at(index).col}, false));
     //cout << "parsing type\n";
     Ret parsed_Type = parse_Type(tokens, index);
+    Var newVar;
+    newVar.line = tokens.at(index).line;
+    newVar.col = tokens.at(index).col;
+    newVar.mut = false;
     if(parsed_Type.valid){
+        newVar.type = parsed_Type.ast.getChildren().at(0).getType();
         //cout << "parsed type\n";
         Let.getRoot().addChild(parsed_Type.ast);
         index = parsed_Type.index;
         if(tokens.at(index).type == "ident"){
+            newVar.name = tokens.at(index).value;
             //cout << tokens.at(index).value << "\n";
             Let.getRoot().addChild(Node("idnet", tokens.at(index), true));
             index++;
@@ -607,15 +642,23 @@ Ret parse_Let(vector<Token>& tokens, int index){
                 //cout << tokens.at(index).value << "\n";
                 Let.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
                 index++;
-                if(tokens.at(index).type == "int"){
+                Ret parsed_Value = parse_Value(tokens, index);
+                if(parsed_Value.valid){
+                    if(!type_check(newVar, tokens.at(index))){
+                            cerr << "error at line: " << tokens.at(index).line << " column: " << tokens.at(index).col << "\n";
+                            cerr << "type defination mismatch\n";
+                            exit(1);
+                        }
+                    newVar.value = tokens.at(index).value;
                     //cout << tokens.at(index).value << "\n";
-                    Let.getRoot().addChild(Node("int", tokens.at(index), true));
-                    index++;
+                    Let.getRoot().addChild(parsed_Value.ast);
+                    index = parsed_Value.index;
                     if(tokens.at(index).type == "kw_semicolon"){
                         //cout << tokens.at(index).value << "\n";
                         Let.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
                         index++;
                         Ret okay(true, Let.getRoot(), index);
+                        variable_table.add_var(newVar);
                         //okay.printRet();
                         return okay;
                     }
@@ -681,6 +724,222 @@ Ret parse_Type(vector<Token>& tokens, int index){
         index++;
         Ret okay(true, Type.getRoot(), index);
         return okay;
+    }
+    else{
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_Value(vector<Token>& tokens, int index){
+    //cout << "parse value\n";
+    AST Value(Node("Value", {"Value", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Ret parsed_String = parse_String(tokens, index);
+    Ret parsed_Int = parse_Int(tokens, index);
+    Ret parsed_Char = parse_Char(tokens, index);
+    Ret parsed_Bool = parse_Bool(tokens, index);
+    Ret parsed_Float = parse_Float(tokens, index);
+    if(parsed_String.valid){
+        Value.getRoot().addChild(parsed_String.ast);
+        index = parsed_String.index;
+        Ret okay(true, Value.getRoot(), index);
+        return okay;
+    }
+    else if(parsed_Int.valid){
+        Value.getRoot().addChild(parsed_Int.ast);
+        index = parsed_Int.index;
+        Ret okay(true, Value.getRoot(), index);
+        return okay;
+    }
+    else if(parsed_Char.valid){
+        Value.getRoot().addChild(parsed_Char.ast);
+        index = parsed_Char.index;
+        Ret okay(true, Value.getRoot(), index);
+        return okay;
+    }
+    else if(parsed_Bool.valid){
+        Value.getRoot().addChild(parsed_Bool.ast);
+        index = parsed_Bool.index;
+        Ret okay(true, Value.getRoot(), index);
+        return okay;
+    }
+    else if(parsed_Float.valid){
+        Value.getRoot().addChild(parsed_Float.ast);
+        index = parsed_Float.index;
+        Ret okay(true, Value.getRoot(), index);
+        return okay;
+    }
+    else{
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_String(vector<Token>& tokens, int index){
+    AST String(Node("String", {"String", "", tokens.at(index).line, tokens.at(index).col}, false));
+    //cout << "parse string " << tokens.at(index).value << "\n";
+    if(tokens.at(index).type == "string"){
+        //cout << "type string\n";
+        String.getRoot().addChild(Node("string", tokens.at(index), true));
+        index++;
+        Ret okay(true, String.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "ident"){
+        //cout << "str ident\n";
+        //cout << tokens.at(index).value << "\n";
+        string name = tokens.at(index).value;
+        Var v = variable_table.get_value(name);
+        
+        //cout << "hi\n";
+        if(v.type == "kw_string"){
+            String.getRoot().addChild(Node("ident", tokens.at(index), true));
+            index++;
+            Ret okay(true, String.getRoot(), index);
+            //okay.printRet();
+            return okay;
+        }
+        else{
+            //cout << "str error\n";
+            Ret error(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+        }
+    }
+    else{
+        //cout << "str error\n";
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_Int(vector<Token>& tokens, int index){
+    //cout << "parse int " << tokens.at(index).value << "\n";
+    AST Int(Node("Int", {"Int", "", tokens.at(index).line, tokens.at(index).col}, false));
+    
+    if(tokens.at(index).type == "ident"){
+        //cout << "int varrrrr\n";
+        //variable_table.get_value(tokens.at(index).value).print_var();
+    }
+    if(tokens.at(index).type == "int"){
+        Int.getRoot().addChild(Node("int", tokens.at(index), true));
+        index++;
+        Ret okay(true, Int.getRoot(), index);
+        //okay.printRet();
+        return okay;
+    }
+    else if(tokens.at(index).type == "ident"){
+        Var v = variable_table.get_value(tokens.at(index).value);
+        if(v.type == "kw_int"){
+            Int.getRoot().addChild(Node("ident", tokens.at(index), true));
+            index++;
+            Ret okay(true, Int.getRoot(), index);
+            //okay.printRet();
+            return okay;
+        }
+        else{
+            //cout << v.type << " int error\n";
+            Ret error(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+        }
+    }
+    else{
+        //cout << "int error\n";
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_Char(vector<Token>& tokens, int index){
+    AST Char(Node("Char", {"Char", "", tokens.at(index).line, tokens.at(index).col}, false));
+    if(tokens.at(index).type == "string"){
+        Char.getRoot().addChild(Node("char", tokens.at(index), true));
+        index++;
+        Ret okay(true, Char.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "ident"){
+        Var v = variable_table.get_value(tokens.at(index).value);
+        if(v.type == "kw_char"){
+            Char.getRoot().addChild(Node("ident", tokens.at(index), true));
+            index++;
+            Ret okay(true, Char.getRoot(), index);
+            //okay.printRet();
+            return okay;
+        }
+        else{
+            //cout << "char error\n";
+            Ret error(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+        }
+    }
+    else{
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_Bool(vector<Token>& tokens, int index){
+    AST Bool(Node("Bool", {"Bool", "", tokens.at(index).line, tokens.at(index).col}, false));
+    if(tokens.at(index).type == "bool"){
+        Bool.getRoot().addChild(Node("bool", tokens.at(index), true));
+        index++;
+        Ret okay(true, Bool.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "ident"){
+        Var v = variable_table.get_value(tokens.at(index).value);
+        if(v.type == "kw_bool"){
+            Bool.getRoot().addChild(Node("ident", tokens.at(index), true));
+            index++;
+            Ret okay(true, Bool.getRoot(), index);
+            //okay.printRet();
+            return okay;
+        }
+        else{
+            //cout << "bool error\n";
+            Ret error(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+        }
+    }
+    else{
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_Float(vector<Token>& tokens, int index){
+    AST Float(Node("Float", {"Float", "", tokens.at(index).line, tokens.at(index).col}, false));
+    if(tokens.at(index).type == "float"){
+        Float.getRoot().addChild(Node("float", tokens.at(index), true));
+        index++;
+        Ret okay(true, Float.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "ident"){
+        Var v = variable_table.get_value(tokens.at(index).value);
+        if(v.type == "kw_float"){
+            Float.getRoot().addChild(Node("ident", tokens.at(index), true));
+            index++;
+            Ret okay(true, Float.getRoot(), index);
+            //okay.printRet();
+            return okay;
+        }
+        else{
+            //cout << "float error\n";
+            Ret error(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+        }
     }
     else{
         Ret error(false, Node("error", tokens.at(index), false), index);
