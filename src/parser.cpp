@@ -79,18 +79,20 @@ Ret parse_Program(vector<Token>& tokens, int index){
     AST Program(Node("Program", {"Program", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_Main = parse_Main(tokens, index);
     //parsed_Main.printRet();
-    if(parsed_Main.valid){
-        index = parsed_Main.index;
-        Program.getRoot().addChild(parsed_Main.ast);
-        Ret okay(true, Program.getRoot(), index);
-        //okay.printRet();
-        return okay;
-    }
-    else{
+
+    if(!parsed_Main.valid){
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    index = parsed_Main.index;
+    Program.getRoot().addChild(parsed_Main.ast);
+
+    Ret okay(true, Program.getRoot(), index);
+    //okay.printRet();
+    return okay;
+        
 }
 
 Ret parse_Main(vector<Token>& tokens, int index){
@@ -99,67 +101,67 @@ Ret parse_Main(vector<Token>& tokens, int index){
     Ret parsed_MainDef = parse_MainDef(tokens, index);
     //parsed_MainDef.printRet();
     
-    if(parsed_MainDef.valid){
-        index = parsed_MainDef.index;
-        Ret parsed_FuncBody = parse_FuncBody(tokens, index);
-        Main.getRoot().addChild(parsed_MainDef.ast);
-        //parsed_FuncBody.printRet();
-
-        if(parsed_FuncBody.valid){
-            Main.getRoot().addChild(parsed_FuncBody.ast);
-            //parsed_MainDef.ast.printNode();
-            //parsed_FuncBody.ast.printNode();
-            index = parsed_FuncBody.index;
-            Ret okay(true, Main.getRoot(), index);
-            //okay.printRet();
-            return okay;
-        }
-        else{
-            Ret error(false, Node("error", tokens.at(index), false), index);
-            //error.printRet();
-            return error;
-        }
-    }
-    else{
+    if(!parsed_MainDef.valid){
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    index = parsed_MainDef.index;
+    Ret parsed_FuncBody = parse_FuncBody(tokens, index);
+    Main.getRoot().addChild(parsed_MainDef.ast);
+    //parsed_FuncBody.printRet();
+
+    if(!parsed_FuncBody.valid){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Main.getRoot().addChild(parsed_FuncBody.ast);
+    //parsed_MainDef.ast.printNode();
+    //parsed_FuncBody.ast.printNode();
+    index = parsed_FuncBody.index;
+    
+    Ret okay(true, Main.getRoot(), index);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_MainDef(vector<Token>& tokens, int index){
     //cout << "def\n";
     AST MainDef(Node("MainDef", {"MainDef", "", tokens.at(index).line, tokens.at(index).col}, false));
-    if(tokens.at(index).type == "kw_main"){
-        MainDef.getRoot().addChild(Node("kw_main", tokens.at(index), true));
-        index++;
-        if(tokens.at(index).type == "kw_arrow"){
-            MainDef.getRoot().addChild(Node("kw_arrow", tokens.at(index), true));
-            index++;
-            if(tokens.at(index).type == "kw_int"){
-                MainDef.getRoot().addChild(Node("kw_int", tokens.at(index), true));
-                index++;
-                Ret okay(true, MainDef.getRoot(), index);
-                //okay.printRet();
-                return okay;
-            }
-            else{
-                Ret error(false, Node("error", tokens.at(index), false), index);
-                //error.printRet();
-                return error;
-            }
-        }
-        else{
-            Ret error(false, Node("error", tokens.at(index), false), index);
-            //error.printRet();
-            return error;
-        }
-    }
-    else{
+    
+    if(!(tokens.at(index).type == "kw_main")){
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    MainDef.getRoot().addChild(Node("kw_main", tokens.at(index), true));
+    index++;
+
+    if(!(tokens.at(index).type == "kw_arrow")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    MainDef.getRoot().addChild(Node("kw_arrow", tokens.at(index), true));
+    index++;
+
+    if(!(tokens.at(index).type == "kw_int")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    MainDef.getRoot().addChild(Node("kw_int", tokens.at(index), true));
+    index++;
+
+    Ret okay(true, MainDef.getRoot(), index);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_FuncBody(vector<Token>& tokens, int index){
@@ -168,19 +170,18 @@ Ret parse_FuncBody(vector<Token>& tokens, int index){
     Ret parsed_Scope = parse_Scope(tokens, index);
     //parsed_Scope.printRet();
     
-    if(parsed_Scope.valid){
-        FuncBody.getRoot().addChild(parsed_Scope.ast);
-        index = parsed_Scope.index;
-        Ret okay(true, FuncBody.getRoot(), index);
-        //okay.printRet();
-        return okay;
-    }
-    else{
+    if(!parsed_Scope.valid){
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
 
+    FuncBody.getRoot().addChild(parsed_Scope.ast);
+    index = parsed_Scope.index;
+    
+    Ret okay(true, FuncBody.getRoot(), index);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_Scope(vector<Token>& tokens, int index){
@@ -189,59 +190,60 @@ Ret parse_Scope(vector<Token>& tokens, int index){
     AST Scope(Node("Scope", {"Scope", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_ScopeType = parse_ScopeType(tokens, index);
     //parsed_ScopeType.printRet();
-    if(parsed_ScopeType.valid){
-        //cout << "typev\n";
-        Scope.getRoot().addChild(parsed_ScopeType.ast);
-        index = parsed_ScopeType.index;
-        if(tokens.at(index).type == "kw_open_curly"){
-            //cout << "{\n";
-            Scope.getRoot().addChild(Node("kw_open_curly", tokens.at(index), true));
-            index++;
-            variable_table.push_scope();
-            Ret parsed_ScopeBody = parse_ScopeBody(tokens, index);
-            //parsed_ScopeBody.printRet();
-            if(parsed_ScopeBody.valid){
-                Scope.getRoot().addChild(parsed_ScopeBody.ast);
-                index = parsed_ScopeBody.index;
-                if(tokens.at(index).type == "kw_close_curly"){
-                    variable_table.pop_scope();
-                    scope_context.pop_back();
-                    Scope.getRoot().addChild(Node("kw_close_curly", tokens.at(index), true));
-                    index++;
-
-                    Ret okay(true, Scope.getRoot(), index);
-                    //okay.printRet();
-                    return okay;
-                }
-                else{
-                    Ret error(false, Node("error", tokens.at(index), false), index);
-                    //error.printRet();
-                    return error;
-                }
-            }
-            else{
-                Ret error(false, Node("error", tokens.at(index), false), index);
-                //error.printRet();
-                return error;
-            }
-        }
-        else{
-            Ret error(false, Node("error", tokens.at(index), false), index);
-        //error.printRet();
-            return error;
-        }
-    }
-    else{
+    
+    if(!parsed_ScopeType.valid){
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    //cout << "typev\n";
+    Scope.getRoot().addChild(parsed_ScopeType.ast);
+    index = parsed_ScopeType.index;
+    
+    if(!(tokens.at(index).type == "kw_open_curly")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    //cout << "{\n";
+    Scope.getRoot().addChild(Node("kw_open_curly", tokens.at(index), true));
+    index++;
+    variable_table.push_scope();
+    Ret parsed_ScopeBody = parse_ScopeBody(tokens, index);
+    //parsed_ScopeBody.printRet();
+
+    if(!parsed_ScopeBody.valid){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+    }
+
+    Scope.getRoot().addChild(parsed_ScopeBody.ast);
+    index = parsed_ScopeBody.index;
+
+    if(!(tokens.at(index).type == "kw_close_curly")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    variable_table.pop_scope();
+    scope_context.pop_back();
+    Scope.getRoot().addChild(Node("kw_close_curly", tokens.at(index), true));
+    index++;
+
+    Ret okay(true, Scope.getRoot(), index);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_ScopeType(vector<Token>& tokens, int index){
     //cout << "type\n";
     AST ScopeType(Node("ScopeType", {"ScopeType", "", tokens.at(index).line, tokens.at(index).col}, false));
     //cout << tokens.at(index).value << "\n";
+    
     if(tokens.at(index).type == "kw_Pure"){
         scope_context.push_back("Pure");
         ScopeType.getRoot().addChild(Node("kw_Pure", tokens.at(index), true));
@@ -293,18 +295,18 @@ Ret parse_ScopeBody(vector<Token>& tokens, int index){
     AST ScopeBody(Node("ScopeBody", {"ScopeBody", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_Code = parse_Code(tokens, index);
     //parsed_Code.printRet();
-    if(parsed_Code.valid){
-        ScopeBody.getRoot().addChild(parsed_Code.ast);
-        index = parsed_Code.index;
-        Ret okay(true, ScopeBody.getRoot(), index);
-        //okay.printRet();
-        return okay;
-    }
-    else{
+    if(!parsed_Code.valid){
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    ScopeBody.getRoot().addChild(parsed_Code.ast);
+    index = parsed_Code.index;
+    
+    Ret okay(true, ScopeBody.getRoot(), index);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_Code(vector<Token>& tokens, int index){
@@ -319,36 +321,36 @@ Ret parse_Code(vector<Token>& tokens, int index){
         index = parsed_Statement.index;
         Ret parsed_Codep = parse_Codep(tokens, index);
         //parsed_Codep.printRet();
-        if(parsed_Codep.valid){
-            Code.getRoot().addChild(parsed_Codep.ast);
-            index = parsed_Codep.index;
-            Ret okay(true, Code.getRoot(), index);
-            //okay.printRet();
-            return okay;
-        }
-        else{
+        if(!parsed_Codep.valid){
             Ret error(false, Node("error", tokens.at(index), false), index);
             //error.printRet();
             return error;
         }
+
+        Code.getRoot().addChild(parsed_Codep.ast);
+        index = parsed_Codep.index;
+        
+        Ret okay(true, Code.getRoot(), index);
+        //okay.printRet();
+        return okay;
     }
     else if(parsed_Scope.valid){
         Code.getRoot().addChild(parsed_Scope.ast);
         index = parsed_Scope.index;
         Ret parsed_Codep = parse_Codep(tokens, index);
         //parsed_Codep.printRet();
-        if(parsed_Codep.valid){
-            Code.getRoot().addChild(parsed_Codep.ast);
-            index = parsed_Codep.index;
-            Ret okay(true, Code.getRoot(), index);
-            //okay.printRet();
-            return okay;
-        }
-        else{
+        if(!parsed_Codep.valid){
             Ret error(false, Node("error", tokens.at(index), false), index);
             //error.printRet();
             return error;
         }
+
+        Code.getRoot().addChild(parsed_Codep.ast);
+        index = parsed_Codep.index;
+        
+        Ret okay(true, Code.getRoot(), index);
+        //okay.printRet();
+        return okay;
     }
     else{
         Ret error(false, Node("error", tokens.at(index), false), index);
@@ -362,19 +364,20 @@ Ret parse_Codep(vector<Token>& tokens, int index){
     AST Code(Node("Code'", {"Code'", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_Code = parse_Code(tokens, index);
     //parsed_Code.printRet();
-    if(parsed_Code.valid){
-        Code.getRoot().addChild(parsed_Code.ast);
-        index = parsed_Code.index;
-        Ret okay(true, Code.getRoot(), index);
-        //okay.printRet();
-        return okay;
-    }
-    else{
+    
+    if(!parsed_Code.valid){
         Code.getRoot().addChild(Node("empty", {"empty", "", tokens.at(index).line, tokens.at(index).col}, true));
         Ret okay(true, Code.getRoot(), index);
         //okay.printRet();
         return okay;
     }
+
+        Code.getRoot().addChild(parsed_Code.ast);
+        index = parsed_Code.index;
+
+        Ret okay(true, Code.getRoot(), index);
+        //okay.printRet();
+        return okay;
 }
 
 Ret parse_Statement(vector<Token>& tokens, int index){
@@ -423,54 +426,56 @@ Ret parse_IO(vector<Token>& tokens, int index){
     AST IO(Node("IO", {"IO", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_Output = parse_Output(tokens, index);
     //parsed_Output.printRet();
-    if(parsed_Output.valid){
-        IO.getRoot().addChild(parsed_Output.ast);
-        index = parsed_Output.index;
-        Ret okay(true, IO.getRoot(), index);
-        //okay.printRet();
-        return okay;
-    }
-    else{
+
+    if(!parsed_Output.valid){
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    IO.getRoot().addChild(parsed_Output.ast);
+    index = parsed_Output.index;
+
+    Ret okay(true, IO.getRoot(), index);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_Return(vector<Token>& tokens, int index){
     //cout << "ret\n";
     AST Return(Node("Return", {"Return", "", tokens.at(index).line, tokens.at(index).col}, false));
-    if(tokens.at(index).type == "kw_return"){
-        Return.getRoot().addChild(Node("kw_return", tokens.at(index), true));
-        index++;
-        //TODO expand return for more values not just 0
-        if(tokens.at(index).type == "int"){
-            Return.getRoot().addChild(Node("int", tokens.at(index), true));
-            index++;
-            if(tokens.at(index).type == "kw_semicolon"){
-                Return.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
-                index++;
-                Ret okay(true, Return.getRoot(), index);
-                //okay.printRet();
-                return okay;
-            }
-            else{
-                Ret error(false, Node("error", tokens.at(index), false), index);
-                //error.printRet();
-                return error;
-            }
-        }
-        else{
-            Ret error(false, Node("error", tokens.at(index), false), index);
-            //error.printRet();
-            return error;
-        }
-    }
-    else{
+    
+    if(!(tokens.at(index).type == "kw_return")){
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    Return.getRoot().addChild(Node("kw_return", tokens.at(index), true));
+    index++;
+    //TODO expand return for more values not just 0
+
+    if(!(tokens.at(index).type == "int")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Return.getRoot().addChild(Node("int", tokens.at(index), true));
+    index++;
+
+    if(!(tokens.at(index).type == "kw_semicolon")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Return.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+    index++;
+
+    Ret okay(true, Return.getRoot(), index);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_Output(vector<Token>& tokens, int index){
@@ -480,38 +485,39 @@ Ret parse_Output(vector<Token>& tokens, int index){
     //tokens.at(index+ 2).print_token_struct();
     //tokens.at(index+ 3).print_token_struct();
     AST Output(Node("Output", {"Output", "", tokens.at(index).line, tokens.at(index).col}, false));
-    if(tokens.at(index).type == "kw_output"){
-        Output.getRoot().addChild(Node("kw_output", tokens.at(index), true));
-        index++;
-        //TODO expand output for more strings/ string concats not just string
-        Ret parsed_Value = parse_Value(tokens, index);
-        if(parsed_Value.valid){
-            Output.getRoot().addChild(parsed_Value.ast);
-            index = parsed_Value.index;
-            if(tokens.at(index).type == "kw_semicolon"){
-                Output.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
-                index++;
-                Ret okay(true, Output.getRoot(), index);
-                //okay.printRet();
-                return okay;
-            }
-            else{
-                Ret error(false, Node("error", tokens.at(index), false), index);
-                //error.printRet();
-                return error;
-            }
-        }
-        else{
-            Ret error(false, Node("error", tokens.at(index), false), index);
-            //error.printRet();
-            return error;
-        }
-    }
-    else{
+
+    if(!(tokens.at(index).type == "kw_output")){
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    Output.getRoot().addChild(Node("kw_output", tokens.at(index), true));
+    index++;
+    //TODO expand output for more strings/ string concats not just string
+    Ret parsed_Value = parse_Value(tokens, index);
+
+    if(!parsed_Value.valid){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+    }
+
+    Output.getRoot().addChild(parsed_Value.ast);
+    index = parsed_Value.index;
+
+    if(!(tokens.at(index).type == "kw_semicolon")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Output.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+    index++;
+
+    Ret okay(true, Output.getRoot(), index);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_Decloration(vector<Token>& tokens, int index){
@@ -550,74 +556,76 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     Var newVar;
     newVar.line = tokens.at(index).line;
     newVar.col = tokens.at(index).col;
+
     if(tokens.at(index).type == "kw_mut"){
-        Mut.getRoot().addChild(Node("kw_mut", tokens.at(index), true));
-        newVar.mut = true;
-        index++;
-        Ret parsed_Type = parse_Type(tokens, index);
-        if(parsed_Type.valid){
-            newVar.type = parsed_Type.ast.getChildren().at(0).getType();
-            Mut.getRoot().addChild(parsed_Type.ast);
-            index = parsed_Type.index;
-            if(tokens.at(index).type == "ident"){
-                newVar.name = tokens.at(index).value;
-                Mut.getRoot().addChild(Node("idnet", tokens.at(index), true));
-                index++;
-                if(tokens.at(index).type == "kw_equal"){
-                    Mut.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
-                    index++;
-                    if(tokens.at(index).type == "int"){
-                        if(!type_check(newVar, tokens.at(index))){
-                            cerr << "error at line: " << tokens.at(index).line << " column: " << tokens.at(index).col << "\n";
-                            cerr << "type defination mismatch\n";
-                            exit(1);
-                        }
-                        newVar.value = tokens.at(index).value;
-                        Mut.getRoot().addChild(Node("int", tokens.at(index), true));
-                        index++;
-                        if(tokens.at(index).type == "kw_semicolon"){
-                            Mut.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
-                            index++;
-                            Ret okay(true, Mut.getRoot(), index);
-                            variable_table.add_var(newVar);
-                            //variable_table.print_table();
-                            return okay;
-                        }
-                        else{
-                            Ret error(false, Node("error", tokens.at(index), false), index);
-                            //error.printRet();
-                            return error;
-                        }
-                    }
-                    else{
-                        Ret error(false, Node("error", tokens.at(index), false), index);
-                        //error.printRet();
-                        return error;
-                    }
-                }
-                else{
-                    Ret error(false, Node("error", tokens.at(index), false), index);
-                    //error.printRet();
-                    return error;
-                }
-            }
-            else{
-                Ret error(false, Node("error", tokens.at(index), false), index);
-                //error.printRet();
-                return error;
-            }
-        }
-        else{
-            Ret error(false, Node("error", tokens.at(index), false), index);
-            //error.printRet();
-            return error;
-        }
-    }
-    else{
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    Mut.getRoot().addChild(Node("kw_mut", tokens.at(index), true));
+    newVar.mut = true;
+    index++;
+    Ret parsed_Type = parse_Type(tokens, index);
+
+    if(!parsed_Type.valid){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    newVar.type = parsed_Type.ast.getChildren().at(0).getType();
+    Mut.getRoot().addChild(parsed_Type.ast);
+    index = parsed_Type.index;
+
+    if(!(tokens.at(index).type == "ident")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    newVar.name = tokens.at(index).value;
+    Mut.getRoot().addChild(Node("idnet", tokens.at(index), true));
+    index++;
+
+    if(tokens.at(index).type == "kw_equal"){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Mut.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
+    index++;
+
+    if(!(tokens.at(index).type == "int")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    if(!type_check(newVar, tokens.at(index))){
+        cerr << "error at line: " << tokens.at(index).line << " column: " << tokens.at(index).col << "\n";
+        cerr << "type defination mismatch\n";
+        exit(1);
+    }
+
+    newVar.value = tokens.at(index).value;
+    Mut.getRoot().addChild(Node("int", tokens.at(index), true));
+    index++;
+
+    if(!(tokens.at(index).type == "kw_semicolon")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Mut.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+    index++;
+
+    Ret okay(true, Mut.getRoot(), index);
+    variable_table.add_var(newVar);
+    //variable_table.print_table();
+    return okay;
 }
 
 Ret parse_Let(vector<Token>& tokens, int index){
@@ -628,70 +636,72 @@ Ret parse_Let(vector<Token>& tokens, int index){
     newVar.line = tokens.at(index).line;
     newVar.col = tokens.at(index).col;
     newVar.mut = false;
+
     if(parsed_Type.valid){
-        newVar.type = parsed_Type.ast.getChildren().at(0).getType();
-        //cout << "parsed type\n";
-        Let.getRoot().addChild(parsed_Type.ast);
-        index = parsed_Type.index;
-        if(tokens.at(index).type == "ident"){
-            newVar.name = tokens.at(index).value;
-            //cout << tokens.at(index).value << "\n";
-            Let.getRoot().addChild(Node("idnet", tokens.at(index), true));
-            index++;
-            //cout << parsed_Type.ast.getValue().value << "\n";
-            if(tokens.at(index).type == "kw_equal"){
-                //cout << tokens.at(index).value << "\n";
-                Let.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
-                index++;
-                Ret parsed_Value = parse_Value(tokens, index);
-                if(parsed_Value.valid){
-                    if(!type_check(newVar, tokens.at(index))){
-                            cerr << "error at line: " << tokens.at(index).line << " column: " << tokens.at(index).col << "\n";
-                            cerr << "type defination mismatch\n";
-                            exit(1);
-                        }
-                    newVar.value = tokens.at(index).value;
-                    //cout << tokens.at(index).value << "\n";
-                    Let.getRoot().addChild(parsed_Value.ast);
-                    index = parsed_Value.index;
-                    if(tokens.at(index).type == "kw_semicolon"){
-                        //cout << tokens.at(index).value << "\n";
-                        Let.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
-                        index++;
-                        Ret okay(true, Let.getRoot(), index);
-                        variable_table.add_var(newVar);
-                        //okay.printRet();
-                        return okay;
-                    }
-                    else{
-                        Ret error(false, Node("error", tokens.at(index), false), index);
-                        //error.printRet();
-                        return error;
-                    }
-                }
-                else{
-                    Ret error(false, Node("error", tokens.at(index), false), index);
-                    //error.printRet();
-                    return error;
-                }
-            }
-            else{
-                Ret error(false, Node("error", tokens.at(index), false), index);
-                //error.printRet();
-                return error;
-            }
-        }
-        else{
-            Ret error(false, Node("error", tokens.at(index), false), index);
-            //error.printRet();
-            return error;
-        }
-    }
-    else{
         Ret error(false, Node("error", tokens.at(index), false), index);
         //error.printRet();
         return error;
     }
+
+    newVar.type = parsed_Type.ast.getChildren().at(0).getType();
+    //cout << "parsed type\n";
+    Let.getRoot().addChild(parsed_Type.ast);
+    index = parsed_Type.index;
+
+    if(tokens.at(index).type == "ident"){
+       Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error; 
+    }
+
+    newVar.name = tokens.at(index).value;
+    //cout << tokens.at(index).value << "\n";
+    Let.getRoot().addChild(Node("idnet", tokens.at(index), true));
+    index++;
+    //cout << parsed_Type.ast.getValue().value << "\n";
+
+    if(!(tokens.at(index).type == "kw_equal")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    //cout << tokens.at(index).value << "\n";
+    Let.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
+    index++;
+    Ret parsed_Value = parse_Value(tokens, index);
+
+    if(!parsed_Value.valid){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    if(!type_check(newVar, tokens.at(index))){
+            cerr << "error at line: " << tokens.at(index).line << " column: " << tokens.at(index).col << "\n";
+            cerr << "type defination mismatch\n";
+            exit(1);
+    }
+
+    newVar.value = tokens.at(index).value;
+    //cout << tokens.at(index).value << "\n";
+    Let.getRoot().addChild(parsed_Value.ast);
+    index = parsed_Value.index;
+
+    if(!(tokens.at(index).type == "kw_semicolon")){
+        Ret error(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    //cout << tokens.at(index).value << "\n";
+    Let.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+    index++;
+
+    Ret okay(true, Let.getRoot(), index);
+    variable_table.add_var(newVar);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_Type(vector<Token>& tokens, int index){
