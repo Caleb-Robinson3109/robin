@@ -42,17 +42,23 @@
             <p>Input -&gt; input ident Value ;</p>
             <p>Output -&gt; <span class="change"> output <span class="diff"> String (Value) ( output ( String ) ;)</span> ; </span> </p>
             <p>Return -&gt; <span class="done"> return <span class="diff"> Value (int) </span> ; </span></p>
-            <p>Value -&gt; <span class="done"> String </span> | <span class="done">Int </span>| <span class="done"> Char </span>| <span class="done"> Bool</span> | <span class="done"> Float</span</p>
+            <p>Value -&gt; <span class="done"> String </span> | <span class="change">Int </span>| <span class="done"> Char </span>| <span class="done"> Bool</span> | <span class="change"> Float</span> | Expression</p>
             <p>String -&gt; <span class="done"> string </span>| <span class="done"> idnet </span>| StringConcat | Cast </p>
-            <p>Int -&gt; <span class="done"> int </span>| <span class="done"> ident </span>| Expression</p>
+            <p>Int -&gt; <span class="done"> int </span>| <span class="done"> ident </span></p>
             <p>Char -&gt; <span class="done"> char </span>| <span class="done"> ident </span></p>
             <p>Bool -&gt; <span class="done"> bool </span>| <span class="done"> ident</span</p>
-            <p>Float -&gt; <span class="done"> float</span> | <span class="done"> ident </span>| Expression</p>
+            <p>Float -&gt; <span class="done"> float</span> | <span class="done"> ident </span></p>
             <p>Main -&gt; <span class="done">MainDef FuncBody</span></p>
             <p>MainDef -&gt; <span class="change">main '-&gt;' 'int' (int main ( )) </span>| int main ( int argc , string argv )</p>
             <p>Decloration -&gt; <span class="done"> Mut </span>| <span class="done"> Let </span></p>
             <p>Mut -&gt; <span class="done"> mut Type ident = <span class="diff"> Value (int)</span> ;</span></p>
             <p>Let -&gt; <span class="done"> Type ident = Value ;</span></p>
+            <p>Expression -&gt; Term Expression'</p>
+            <p>Expression' -&gt; Operator Term Expression' | e</p>
+            <p>Term -&gt; Factor | ( Expression )</p>
+            <p>Factor -&gt; Number </p>
+            <p>Number -&gt; Int | Float</p>
+            <p>Operator -&gt; + | - | * | / | %</p>
         </div>
         <div style="flex: 1;">
             <h1>Regex</h1>
