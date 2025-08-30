@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <algorithm>
 
 #include "token.hpp"
 #include "regex.hpp"
@@ -15,7 +16,6 @@ TokenData next_token(string& s, int& index, int& line, int& col){
     //TODO check for things like (x + y) where there is no space between tokens for more then one space symbols
     while(index < static_cast<int>(s.size()) && (s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
         if(s[index] == '\n'){
-            //cout << "\n\nLINEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE " << line << "\n\n";
             line++;
             col = 1;
         }
@@ -27,13 +27,33 @@ TokenData next_token(string& s, int& index, int& line, int& col){
 
     while(index < static_cast<int>(s.size()) && !(s[index] == ' ' || s[index] == '\n' || s[index] == '\t')){
         
-        //TODO replace with regex
-        if(s[index] == '{' || s[index] == '}' || s[index] == '=' || s[index] == ';'){
+        if(find(symbols.begin(), symbols.end(), string(1, s[index])) != symbols.end()){
             if(start_col == -1){
                 token += s[index];
                 start_col = col;
                 index++;
                 col++;
+
+                //check for 2 or 3 lenght symbols also
+                while(index < static_cast<int>(s.size())){
+                    string temp = token;
+                    temp += s[index];
+                    //cout << "token: " << token << "\n";
+                    //cout << "temp: " << temp << "\n";
+                    //cout << "index: " << s[index] << "\n";
+                    //cout << "index  + 1: " << s[index + 1] << "\n";
+                    if(find(symbols.begin(), symbols.end(), temp) != symbols.end()){
+                        token += s[index];
+                        index++;
+                        col++;
+                        //cout << "found " << token << "\n";
+                    }
+                    else{
+                        //cout << "final token: " << token << "\n";
+                        break;
+                    }
+                }
+
                 return {token, line, start_col};
             }
             else{
