@@ -35,7 +35,11 @@ int main(int argc, char* argv[]){
 
     robin.close();
 
+    //cout << "tokenizing the code\n";
+
     vector<Token> tokens = tokenizer(contents);
+
+    //cout << "Done tokenizing\n";
 
     //for(Token t : tokens){
     //    t.print_token_struct();
