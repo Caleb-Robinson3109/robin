@@ -16,6 +16,9 @@
     .diff{
         color: gold;
     }
+    .makegen{
+        color: blue;
+    }
     h1{
         margin: 10px;
     }
@@ -53,8 +56,8 @@
             <p>Decloration -&gt; <span class="done"> Mut </span>| <span class="done"> Let </span></p>
             <p>Mut -&gt; <span class="done"> mut Type ident = <span class="diff"> Value (int)</span> ;</span></p>
             <p>Let -&gt; <span class="done"> Type ident = Value ;</span></p>
-            <p>Expression -&gt; Term Expression'</p>
-            <p>Expression' -&gt; Operator Term Expression' | e</p>
+            <p>Expression -&gt; <span class="makegen">Term Expression'</span></p>
+            <p>Expression' -&gt; <span class="makegen"> Operator Term Expression' | e </span></p>
             <p>Term -&gt; Factor | ( Expression )</p>
             <p>Factor -&gt; Number </p>
             <p>Number -&gt; Int | Float</p>
@@ -71,5 +74,9 @@
         </div>
     </div>
     <p>//TODO: check that there is no indirect recurrison</p>
+    <p>Green - completed</p>
+    <p>Red - change syntax</p>
+    <p>Yellow - change single token</p>
+    <p>Blue - implement into code generator</p>
 </body>
 </html>

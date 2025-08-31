@@ -1132,3 +1132,84 @@ Ret parse_Float(vector<Token>& tokens, int index){
         return error;
     }
 }
+
+Ret parse_Expression(vector<Token>& tokens, int index){
+    if(index >= static_cast<int>(tokens.size())){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST Expression(Node("Expression", {"Expression", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Ret parsed_Term = parse_Term(tokens, index);
+
+    if(!parsed_Term.valid){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Expression.getRoot().addChild(parsed_Term.ast);
+    index = parsed_Term.index;
+    Ret parsed_Expressionp = parse_Expressionp(tokens, index);
+
+    if(!parsed_Expressionp.valid){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Expression.getRoot().addChild(parsed_Expressionp.ast);
+    index = parsed_Expressionp.index;
+
+    Ret okay(true, Expression.getRoot(), index);
+    return okay;
+}
+
+Ret parse_Expressionp(vector<Token>& tokens, int index){
+    if(index >= static_cast<int>(tokens.size())){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST Expressionp(Node("Expression'", {"Expression'", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Ret parsed_operator = parse_Operator(tokens, index);
+
+    if(!parsed_operator.valid){
+        Expressionp.getRoot().addChild(Node("empty", {"empty", "", tokens.at(index).line, tokens.at(index).col}, true));
+        Ret okay(true, Code.getRoot(), index);
+        //okay.printRet();
+        return okay; 
+    }
+
+    Expressionp.getRoot().addChild(parsed_operator.ast);
+    index = parsed_operator.index;
+    Ret parsed_Term = parse_Term(tokens, index);
+
+    if(!parsed_Term.valid){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Expressionp.getRoot().addChild(parsed_Term.ast);
+    index = parsed_Term.index;
+    Ret parsed_expressionp = parse_Expressionp(tokens, index);
+
+    if(!parsed_expressionp.valid){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Expressionp.getRoot().addChild(parsed_expressionp.ast);
+    index = parsed_expressionp.index;
+    Ret okay(true, Expressionp.getRoot(), index);
+    return okay;
+}
+
+Ret parse_Term(vector<Token>& tokens, int index);
+Ret parse_Factor(vector<Token>& tokens, int index);
+Ret parse_Operator(vector<Token>& tokens, int index);
+Ret parse_Number(vector<Token>& tokens, int index);
