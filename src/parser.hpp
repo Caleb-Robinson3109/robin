@@ -50,6 +50,11 @@ Ret parse_Int(vector<Token>& tokens, int index);
 Ret parse_Char(vector<Token>& tokens, int index);
 Ret parse_Bool(vector<Token>& tokens, int index);
 Ret parse_Float(vector<Token>& tokens, int index);
-
+Ret parse_Expression(vector<Token>& tokens, int index);
+Ret parse_Expressionp(vector<Token>& tokens, int index);
+Ret parse_Term(vector<Token>& tokens, int index);
+Ret parse_Factor(vector<Token>& tokens, int index);
+Ret parse_Operator(vector<Token>& tokens, int index);
+Ret parse_Number(vector<Token>& tokens, int index);
 
 #endif
