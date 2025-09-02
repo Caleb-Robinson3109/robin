@@ -1178,7 +1178,7 @@ Ret parse_Expressionp(vector<Token>& tokens, int index){
 
     if(!parsed_operator.valid){
         Expressionp.getRoot().addChild(Node("empty", {"empty", "", tokens.at(index).line, tokens.at(index).col}, true));
-        Ret okay(true, Code.getRoot(), index);
+        Ret okay(true, Expressionp.getRoot(), index);
         //okay.printRet();
         return okay; 
     }
@@ -1219,7 +1219,45 @@ Ret parse_Term(vector<Token>& tokens, int index){
     AST Term(Node("Term'", {"Term'", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_Factor = parse_Factor(tokens, index);
 
-    
+    if(tokens.at(index).type == "kw_open_peren"){
+        Term.getRoot().addChild(Node("kw_open_peren", tokens.at(index), true));
+        index++;
+        Ret parsed_Expression = parse_Expression(tokens, index);
+
+        if(!parsed_Expression.valid){
+            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error; 
+        }
+
+        Term.getRoot().addChild(parsed_Expression.ast);
+        index = parsed_Expression.index;
+
+        if(tokens.at(index).type != "kw_close_peren"){
+            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            //error.printRet();
+            return error;
+        }
+
+        Term.getRoot().addChild(Node("kw_close_peren", tokens.at(index), true));
+        index++;
+        Ret okay(true, Term.getRoot(), index);
+        return okay;       
+    }
+
+    else if(parsed_Factor.valid){
+        Term.getRoot().addChild(parsed_Factor.ast);
+        index = parsed_Factor.index;
+
+        Ret okay(true, Term.getRoot(), index);
+        return okay;
+    }
+
+    else{
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
 }
 
 Ret parse_Factor(vector<Token>& tokens, int index);

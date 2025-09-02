@@ -47,7 +47,28 @@ string string_to_token(string& s){
     else if(regex_match(s, re_kw_semicolon)){
         return "kw_semicolon";
     }
-    
+    else if(regex_match(s, re_kw_plus)){
+        return "kw_plus";
+    }
+    else if(regex_match(s, re_kw_minus)){
+        return "kw_minus";
+    }
+    else if(regex_match(s, re_kw_multiply)){
+        return "kw_multiply";
+    }
+    else if(regex_match(s, re_kw_divide)){
+        return "kw_divide";
+    }
+    else if(regex_match(s, re_kw_mod)){
+        return "kw_mod";
+    }
+    else if(regex_match(s, re_kw_open_peren)){
+        return "kw_open_peren";
+    }
+    else if(regex_match(s, re_kw_close_peren)){
+        return "kw_close_peren";
+    }
+
     //Scope
     else if(regex_match(s, re_kw_IO)){
         return "kw_IO";
