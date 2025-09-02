@@ -1209,7 +1209,19 @@ Ret parse_Expressionp(vector<Token>& tokens, int index){
     return okay;
 }
 
-Ret parse_Term(vector<Token>& tokens, int index);
+Ret parse_Term(vector<Token>& tokens, int index){
+    if(index >= static_cast<int>(tokens.size())){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST Term(Node("Term'", {"Term'", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Ret parsed_Factor = parse_Factor(tokens, index);
+
+    
+}
+
 Ret parse_Factor(vector<Token>& tokens, int index);
 Ret parse_Operator(vector<Token>& tokens, int index);
 Ret parse_Number(vector<Token>& tokens, int index);
