@@ -244,17 +244,14 @@ void gen_Value(Node& node, ofstream& file){
      if(children.at(0).getType() == "String"){
         gen_String(children.at(0), file);
      }
-     else if(children.at(0).getType() == "Int"){
-        gen_Int(children.at(0), file);
+     else if(children.at(0).getType() == "Expression"){
+        gen_Expression(children.at(0), file);
      }
      else if(children.at(0).getType() == "Char"){
         gen_Char(children.at(0), file);
      }
      else if(children.at(0).getType() == "Bool"){
         gen_Bool(children.at(0), file);
-     }
-     else if(children.at(0).getType() == "Float"){
-        gen_Float(children.at(0), file);
      }
 }
 
@@ -314,13 +311,21 @@ void gen_Term(Node& node, ofstream& file){
 }
 
 void gen_Factor(Node& node, ofstream& file){
-
+    vector<Node> children = node.getChildren();
+    gen_Number(children.at(0), file);
 }
 
 void gen_Operator(Node& node, ofstream& file){
-
+    vector<Node> children = node.getChildren();
+    file << node_to_cpp(children.at(0));
 }
 
 void gen_Number(Node& node, ofstream& file){
-
+    vector<Node> children = node.getChildren();
+    if(children.at(0).getType() == "Int"){
+        gen_Int(children.at(0), file);
+    }
+    else{
+        gen_Float(children.at(0), file);
+    }
 }
