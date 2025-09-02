@@ -1216,7 +1216,7 @@ Ret parse_Term(vector<Token>& tokens, int index){
         return error;
     }
 
-    AST Term(Node("Term'", {"Term'", "", tokens.at(index).line, tokens.at(index).col}, false));
+    AST Term(Node("Term", {"Term", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_Factor = parse_Factor(tokens, index);
 
     if(tokens.at(index).type == "kw_open_peren"){
@@ -1260,6 +1260,101 @@ Ret parse_Term(vector<Token>& tokens, int index){
     }
 }
 
-Ret parse_Factor(vector<Token>& tokens, int index);
-Ret parse_Operator(vector<Token>& tokens, int index);
-Ret parse_Number(vector<Token>& tokens, int index);
+Ret parse_Factor(vector<Token>& tokens, int index){
+    if(index >= static_cast<int>(tokens.size())){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST Factor(Node("Factor", {"Factor", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Ret parsed_Number = parse_Number(tokens, index);
+
+    if(!parsed_Number.valid){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error; 
+    }
+
+    Factor.getRoot().addChild(parsed_Number.ast);
+    index = parsed_Number.index;
+
+    Ret okay(true, Factor.getRoot(), index);
+    return okay;
+}
+
+Ret parse_Operator(vector<Token>& tokens, int index){
+    if(index >= static_cast<int>(tokens.size())){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST Operator(Node("Operator", {"Operator", "", tokens.at(index).line, tokens.at(index).col}, false));
+    
+    if(tokens.at(index).type == "kw_plus"){
+        Operator.getRoot().addChild(Node("kw_plus", tokens.at(index), true));
+        index++;
+        Ret okay(true, Operator.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "kw_minus"){
+        Operator.getRoot().addChild(Node("kw_minus", tokens.at(index), true));
+        index++;
+        Ret okay(true, Operator.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "kw_multiply"){
+        Operator.getRoot().addChild(Node("kw_multiply", tokens.at(index), true));
+        index++;
+        Ret okay(true, Operator.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "kw_mod"){
+        Operator.getRoot().addChild(Node("kw_mod", tokens.at(index), true));
+        index++;
+        Ret okay(true, Operator.getRoot(), index);
+        return okay;
+    }
+    else if(tokens.at(index).type == "kw_divide"){
+        Operator.getRoot().addChild(Node("kw_divide", tokens.at(index), true));
+        index++;
+        Ret okay(true, Operator.getRoot(), index);
+        return okay;
+    }
+    else{
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}
+
+Ret parse_Number(vector<Token>& tokens, int index){
+    if(index >= static_cast<int>(tokens.size())){
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST Number(Node("Number", {"Number", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Ret parsed_Int = parse_Int(tokens, index);
+    Ret parsed_Float = parse_Float(tokens, index);
+
+    if(parsed_Int.valid){
+        Number.getRoot().addChild(parsed_Int.ast);
+        index = parsed_Int.index;
+        Ret okay(true, Number.getRoot(), index);
+        return okay;
+    }
+    else if(parsed_Float.valid){
+        Number.getRoot().addChild(parsed_Float.ast);
+        index = parsed_Float.index;
+        Ret okay(true, Number.getRoot(), index);
+        return okay;
+    }
+    else{
+        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        //error.printRet();
+        return error;
+    }
+}

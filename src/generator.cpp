@@ -181,6 +181,7 @@ void gen_IO(Node& node, ofstream& file){
         gen_Output(children.at(0), file);
     }
 }
+
 void gen_Return(Node& node, ofstream& file){
     //cout << "ret\n";
     vector<Node> children = node.getChildren();
@@ -282,4 +283,44 @@ void gen_Bool(Node& node, ofstream& file){
 void gen_Float(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
     file << node_to_cpp(children.at(0));
+}
+
+void gen_Expression(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    gen_Term(children.at(0), file);
+    gen_Expressionp(children.at(1), file);
+}
+
+void gen_Expressionp(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    if(children.at(0).getType() == "empty"){
+        return;
+    }
+    gen_Operator(children.at(0), file);
+    gen_Term(children.at(1), file);
+    gen_Expressionp(children.at(2), file);
+}
+
+void gen_Term(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    if(children.at(0).getType() == "Factor"){
+        gen_Factor(children.at(0), file);
+    }
+    else{
+        file << node_to_cpp(children.at(0));
+        gen_Expression(children.at(1), file);
+        file << node_to_cpp(children.at(2));
+    }
+}
+
+void gen_Factor(Node& node, ofstream& file){
+
+}
+
+void gen_Operator(Node& node, ofstream& file){
+
+}
+
+void gen_Number(Node& node, ofstream& file){
+
 }
