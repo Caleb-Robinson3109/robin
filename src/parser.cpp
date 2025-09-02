@@ -885,10 +885,9 @@ Ret parse_Value(vector<Token>& tokens, int index){
     //cout << "parse value\n";
     AST Value(Node("Value", {"Value", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_String = parse_String(tokens, index);
-    Ret parsed_Int = parse_Int(tokens, index);
     Ret parsed_Char = parse_Char(tokens, index);
     Ret parsed_Bool = parse_Bool(tokens, index);
-    Ret parsed_Float = parse_Float(tokens, index);
+    Ret parsed_Expression = parse_Expression(tokens, index);
 
     if(parsed_String.valid){
         Value.getRoot().addChild(parsed_String.ast);
@@ -896,9 +895,9 @@ Ret parse_Value(vector<Token>& tokens, int index){
         Ret okay(true, Value.getRoot(), index);
         return okay;
     }
-    else if(parsed_Int.valid){
-        Value.getRoot().addChild(parsed_Int.ast);
-        index = parsed_Int.index;
+    else if(parsed_Expression.valid){
+        Value.getRoot().addChild(parsed_Expression.ast);
+        index = parsed_Expression.index;
         Ret okay(true, Value.getRoot(), index);
         return okay;
     }
@@ -911,12 +910,6 @@ Ret parse_Value(vector<Token>& tokens, int index){
     else if(parsed_Bool.valid){
         Value.getRoot().addChild(parsed_Bool.ast);
         index = parsed_Bool.index;
-        Ret okay(true, Value.getRoot(), index);
-        return okay;
-    }
-    else if(parsed_Float.valid){
-        Value.getRoot().addChild(parsed_Float.ast);
-        index = parsed_Float.index;
         Ret okay(true, Value.getRoot(), index);
         return okay;
     }

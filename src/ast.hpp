@@ -52,27 +52,9 @@ public:
         return root;
     }
 
-    void printASTHelper(Node& n, int depth){
-        for(int i = 0; i < depth; i++){
-            cout << " ";
-        }
+    void printASTHelper(Node& n, int depth);
 
-        cout << left << setw(20) << n.getType() << right << setw(4) << depth << "\n";
-
-        for (Node child : n.getChildren()){
-            printASTHelper(child, depth + 1);
-        }
-    }
-
-    void printAST() {
-        int depth = 0;
-
-        cout << left << setw(20) << root.getType() << right << setw(4) << depth << "\n";
-
-        for(Node child : root.getChildren()){
-            printASTHelper(child, 1);
-        }
-    }
+    void printAST();
 
     bool has_error_helper(Node& node){
         for(Node child : node.getChildren()){

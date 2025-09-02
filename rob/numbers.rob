@@ -1,0 +1,16 @@
+main -> int{
+    int x = 2;
+    int y = 3;
+    IO{
+        output "x_equals_";
+        output x;
+        output "\n";
+        output "y_equals_";
+        output y;
+        output "\n";
+        output "x_plus_y_equals_";
+        output x + y;
+        output "\n";
+    }
+    return 0;
+}

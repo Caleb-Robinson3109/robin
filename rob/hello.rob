@@ -1,4 +1,6 @@
-main->int{IO{
+main->int{
+    IO{
         output "Hello_World\n" ;
-    }return 0;
+    }
+    return 0;
 }
