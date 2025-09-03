@@ -45,7 +45,7 @@
             <p>Input -&gt; input ident Value ;</p>
             <p>Output -&gt; <span class="change"> output <span class="diff"> String (Value) ( output ( String ) ;)</span> ; </span> </p>
             <p>Return -&gt; <span class="done"> return <span class="diff"> Value (int) </span> ; </span></p>
-            <p>Value -&gt; <span class="done"> String </span> | <span class="change">Int </span>| <span class="done"> Char </span>| <span class="done"> Bool</span> | <span class="change"> Float</span> | Expression</p>
+            <p>Value -&gt; <span class="done"> String </span> | <span class="done"> Char </span>| <span class="done"> Bool</span> | <span class="done"> Expression</span></p>
             <p>String -&gt; <span class="done"> string </span>| <span class="done"> idnet </span>| StringConcat | Cast </p>
             <p>Int -&gt; <span class="done"> int </span>| <span class="done"> ident </span></p>
             <p>Char -&gt; <span class="done"> char </span>| <span class="done"> ident </span></p>
@@ -56,12 +56,12 @@
             <p>Decloration -&gt; <span class="done"> Mut </span>| <span class="done"> Let </span></p>
             <p>Mut -&gt; <span class="done"> mut Type ident = <span class="diff"> Value (int)</span> ;</span></p>
             <p>Let -&gt; <span class="done"> Type ident = Value ;</span></p>
-            <p>Expression -&gt; <span class="makegen">Term Expression'</span></p>
-            <p>Expression' -&gt; <span class="makegen"> Operator Term Expression' | e </span></p>
-            <p>Term -&gt; <span class="makegen"> Factor | ( Expression ) </span></p>
-            <p>Factor -&gt; Number </p>
-            <p>Number -&gt; Int | Float</p>
-            <p>Operator -&gt; + | - | * | / | %</p>
+            <p>Expression -&gt; <span class="done">Term Expression'</span></p>
+            <p>Expression' -&gt; <span class="done"> Operator Term Expression' | e </span></p>
+            <p>Term -&gt; <span class="done"> Factor</span> | <span class="done">( Expression ) </span></p>
+            <p>Factor -&gt; <span class="done">Number </p>
+            <p>Number -&gt; <span class="done">Int </span>| <span class="done">Float</span></p>
+            <p>Operator -&gt; <span class="done">+ </span>| <span class="done">- </span>| <span class="done">*</span> | <span class="done">/</span> | <span class="done">%</span></p>
         </div>
         <div style="flex: 1;">
             <h1>Regex</h1>
@@ -78,6 +78,6 @@
     <p>Green - completed</p>
     <p>Red - change syntax</p>
     <p>Yellow - change single token</p>
-    <p>Blue - implement into code generator</p>
+    <p>Blue - must implement into code generator</p>
 </body>
 </html>
