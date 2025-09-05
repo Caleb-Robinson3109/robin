@@ -62,6 +62,12 @@
             <p>Factor -&gt; <span class="done">Number </p>
             <p>Number -&gt; <span class="done">Int </span>| <span class="done">Float</span></p>
             <p>Operator -&gt; <span class="done">+ </span>| <span class="done">- </span>| <span class="done">*</span> | <span class="done">/</span> | <span class="done">%</span></p>
+            <p>Proposition -&gt; Condition </p>
+            <p>Condition -&gt; Unary Condition'</p>
+            <p>Condition' -&gt; BooleanOperator Unary Condition' | e</p>
+            <p>Unary -&gt;  ! Unary | Primary</p>
+            <p>Primary -&gt; Bool | ( Condition ) </p>
+            <p>LogicalOperator -&gt; || | && | ^^ | -> | == | !=</p>
         </div>
         <div style="flex: 1;">
             <h1>Regex</h1>
