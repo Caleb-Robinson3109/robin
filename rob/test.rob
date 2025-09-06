@@ -1,8 +1,15 @@
 main -> int{
     string x = "hello\n";
     IO{
-        output x;
-        output 12.5;
+        output 12 + 5;
+        output "\n";
+        output 12 - 5;
+        output "\n";
+        output 12 * 5;
+        output "\n";
+        output 12 / 5;
+        output "\n";
+        output 12 % 5;
         output "\n";
     }
     return 0;

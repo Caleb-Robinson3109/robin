@@ -24,7 +24,7 @@ int main(int argc, char* argv[]){
     }
 
     if(!robin){
-        cerr << "Cannot open file";
+        cerr << "Cannot open file\n";
         return 1;
     }
 
