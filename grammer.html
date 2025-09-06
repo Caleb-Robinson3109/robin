@@ -68,12 +68,20 @@
             <p>Unary -&gt;  ! Unary | Primary</p>
             <p>Primary -&gt; Bool | ( Condition ) </p>
             <p>LogicalOperator -&gt; || | && | ^^ | -> | == | !=</p>
+            <p>Branch -&gt; BranchIf BranchElif BranchElse</p>
+            <p>Conditional -&gt; If Elif Else</p>
+            <p>BranchIF -&gt; if ( Proposition ) { Code } </p>
+            <p>BranchElif -&gt; elif ( Proposition ) { Code } BranchElif | e</p>
+            <p>BranchElse -&gt; else { Code } | e</p>
+            <p>If -&gt; if ( Proposition ) { Value }</p>
+            <p>Elif -&gt; elif (Proposition) {Value} Elif | e</p>
+            <p>Else -&gt; else { Value }</p>
         </div>
         <div style="flex: 1;">
             <h1>Regex</h1>
             <p>int = ^-?\d+$</p>
             <p>float = ^-?\d+\.\d+$</p>
-            <p>char = ^'[a-zA-Z0-9_]'</p>
+            <p>char = ^'[a-zA-Z0-9_]'$</p>
             <p>bool = \b(true|false)\b</p>
             <p>string = ^\"([a-zA-Z0-9_]|\\[nt\"\\])*\"$</p>
             <p>ident = ^[a-zA-Z_][a-zA-Z0-9_]*$</p>
