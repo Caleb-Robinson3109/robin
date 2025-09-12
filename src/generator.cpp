@@ -79,7 +79,7 @@ string node_to_cpp2(Node& node){
 }
 
 void generator(AST& tree){
-    ofstream cpp("./gen/out.cpp");
+    ofstream cpp("./gen/gen.cpp");
 
     if(!cpp){
         cerr << "error creating .cpp file\n";
