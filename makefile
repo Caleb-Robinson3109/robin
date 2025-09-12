@@ -1,5 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++23 -Wall -Wextra -O2 -g
+ROBIN ?= "robin.out"
+OUTPUT ?= "gen.cpp"
 
 OBJDIR = obj
 BINDIR = bin
@@ -31,7 +33,7 @@ clean:
 	rm -rf $(OBJDIR)/*.o $(TARGET)
 
 robin:
-	$(CXX) -o gen/a.out $(GENDIR)/out.cpp
+	$(CXX) -o gen/$(ROBIN) $(GENDIR)/$(OUTPUT)
 
 gclean:
 	rm -rf $(GENDIR)/*
