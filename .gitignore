@@ -2,5 +2,5 @@
 *.out
 robin
 .vscode/
-out.cpp
 temp/
+gen/

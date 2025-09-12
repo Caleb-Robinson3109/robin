@@ -3,7 +3,7 @@
 
 #robin bin output
 O_FLAG=false
-O_FILE="a.out"
+O_FILE="robin.out"
 #TODO
 K_FLAG=false
 K_FILE=""
@@ -17,8 +17,8 @@ C_FLAG=false
 R_FLAG=false
 
 #go through opts
-while getopts "ok:atcr" opt; do
-  case $opt in
+while getopts "o:k:atcr" opt; do
+  case ${opt} in
     o)
       O_FILE="$OPTARG"
       O_FLAG=true
@@ -51,14 +51,14 @@ while getopts "ok:atcr" opt; do
 done
 
 #remove opts from args
-shift$((OPTIND - 1))
+shift $((OPTIND - 1))
 
 #check for file
 INPUT_FILE="$1"
 
 
 #compile the compile if -c
-if [$C_FLAG]; then
+if [ "$C_FLAG" = true ]; then
   make -s
   if [ $? -ne 0 ]; then
     echo 'robin.cpp build failed'
@@ -66,6 +66,7 @@ if [$C_FLAG]; then
   fi
 fi
 
+#run ./bin/robin on input file
 ./bin/robin $INPUT_FILE
 if [ $? -ne 0 ]; then
   echo 'robin.cpp failed'
@@ -73,10 +74,10 @@ if [ $? -ne 0 ]; then
 fi
 
 #build robin bin
-MAKE_CMD="make -s"
+MAKE_CMD="make robin -s"
 
-if [$O_FLAG]; then
-  $MAKE_CMD = "$MAKE_CMD ROBIN=$O_FILE"
+if [ "$O_FLAG" = true ]; then
+  MAKE_CMD="$MAKE_CMD ROBIN=$O_FILE"
 fi
 
 $MAKE_CMD
@@ -87,6 +88,6 @@ if [ $? -ne 0 ]; then
 fi
 
 #run the robin bin if -r
-if [$R_FLAG]; then
+if [ "$R_FLAG" = true ]; then
   ./gen/$O_FILE
 fi
