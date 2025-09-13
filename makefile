@@ -33,7 +33,7 @@ clean:
 	rm -rf $(OBJDIR)/*.o $(TARGET)
 
 robin:
-	$(CXX) -o gen/$(ROBIN) $(GENDIR)/$(OUTPUT)
+	$(CXX) -o $(GENDIR)/$(ROBIN) $(GENDIR)/$(OUTPUT)
 
-gclean:
+genclean:
 	rm -rf $(GENDIR)/*

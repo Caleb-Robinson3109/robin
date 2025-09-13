@@ -1,6 +1,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <iostream>
+#include <string>
 
 #include "generator.hpp"
 #include "ast.hpp"
@@ -78,8 +79,8 @@ string node_to_cpp2(Node& node){
     }
 }
 
-void generator(AST& tree){
-    ofstream cpp("./gen/gen.cpp");
+void generator(AST& tree, string filename){
+    ofstream cpp(filename);
 
     if(!cpp){
         cerr << "error creating .cpp file\n";

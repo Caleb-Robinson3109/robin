@@ -1,31 +1,34 @@
 #!/bin/bash
 
-
 #robin bin output
 O_FLAG=false
 O_FILE="robin.out"
-#TODO
-K_FLAG=false
-K_FILE=""
-#TODO
+#TODO the intermeident files name
+I_FLAG=false
+I_FILE=""
+#TODO remove the intermident cpp file
+R_FLAG=false
+#TODO print ast
 A_FLAG=false
-#TODO
+#TODO print tokens
 T_FLAG=false
+#TODO debug mode
+D_FLAG=false
 #compile the compiler
 C_FLAG=false
-#run the final binary
-R_FLAG=false
+#exacute the final binary
+E_FLAG=false
 
 #go through opts
-while getopts "o:k:atcr" opt; do
+while getopts "o:i:atcred" opt; do
   case ${opt} in
     o)
       O_FILE="$OPTARG"
       O_FLAG=true
       ;;
-    k)
-      K_FILE="$OPTARG"
-      K_FLAG=true
+    i)
+      I_FILE="$I_FILE$OPTARG"
+      I_FLAG=true
       ;;
     a)
       A_FLAG=true
@@ -38,6 +41,12 @@ while getopts "o:k:atcr" opt; do
       ;;
     r)
       R_FLAG=true
+      ;;
+    e)
+      E_FLAG=true
+      ;;
+    d)
+      D_FLAG=true
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -53,8 +62,16 @@ done
 #remove opts from args
 shift $((OPTIND - 1))
 
-#check for file
+#get and check for file and names the intermident .cpp file based on -i
 INPUT_FILE="$1"
+
+if [ "$I_FLAG" = false ]; then
+  if [ -z "$INPUT_FILE" ]; then
+    I_FILE = "$hello.rob.cpp"
+  else
+    I_FILE = "$INPUT_FILE.cpp"
+  fi
+fi
 
 
 #compile the compile if -c
@@ -67,7 +84,7 @@ if [ "$C_FLAG" = true ]; then
 fi
 
 #run ./bin/robin on input file
-./bin/robin $INPUT_FILE
+./bin/robin $INPUT_FILE $I_FILE
 if [ $? -ne 0 ]; then
   echo 'robin.cpp failed'
   exit 1
@@ -80,14 +97,21 @@ if [ "$O_FLAG" = true ]; then
   MAKE_CMD="$MAKE_CMD ROBIN=$O_FILE"
 fi
 
+MAKE_CMD="$MAKE_CMD OUTPUT=$I_FILE"
+
 $MAKE_CMD
 
 if [ $? -ne 0 ]; then
-  echo 'out.cpp build failed'
+  echo "$I_FILE build failed"
   exit 1
 fi
 
-#run the robin bin if -r
+#if -r then remove the intermidient .cpp file
 if [ "$R_FLAG" = true ]; then
-  ./gen/$O_FILE
+  rm $I_FILE
+fi
+
+#run the robin bin if -e
+if [ "$E_FLAG" = true ]; then
+  ./gen/$O_FILE 
 fi

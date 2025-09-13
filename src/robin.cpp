@@ -13,14 +13,23 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-    if(argc != 2){
+
+    //parse the args
+    string cpp_filename = "gen/";
+    if(argc == 2){
         cerr << "Needs correct number of arguments\nUsing default hello.rob file\n";
         //return 1;
     }
     fstream robin("rob/hello.rob");
     if(argc == 2){
-            robin.close();
-            robin.open(argv[1], ios::in);
+        robin.close();
+        robin.open(argv[1], ios::in);
+    }
+    if(argc > 2){
+        cpp_filename += argv[2];
+    }
+    else{
+        cpp_filename += "gen.cpp";
     }
 
     if(!robin){
@@ -55,7 +64,7 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-    generator(parsed);
+    generator(parsed, cpp_filename);
     
     return 0;
 }
