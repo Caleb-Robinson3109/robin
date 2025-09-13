@@ -1,8 +1,9 @@
 #include <fstream>
+#include <string>
 
 #include "ast.hpp"
 
-void generator(AST& tree);
+void generator(AST& tree, string filename);
 
 string node_to_cpp(Node& node);
 
