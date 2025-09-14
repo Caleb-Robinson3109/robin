@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robin</title>
+    <!--<link rel="icon" type="image/png" href="favicon.png">-->
+</head>
+<style>
+    .done{
+        color: green;
+    }
+    .change{
+        color: red;
+    }
+    .diff{
+        color: gold;
+    }
+    .makegen{
+        color: blue;
+    }
+    h1{
+        margin: 10px;
+    }
+
+</style>
+<body>
+    <div style="display: flex;">
+        <div style="flex: 1;">
+            <h1>Grammer</h1>
+            <p>Program -&gt; Function <span class="done">Main</span></p>
+            <p>Fucntion -&gt; FuncDef FuncBody Function | e</p>
+            <p>FuncDef -&gt; ident -&gt; Param Type</p>
+            <p>Param -&gt; Type ident -&gt; Param | e</p>
+            <p>Type -&gt; <span class="done"> int </span> | <span class="done"> char </span>| <span class="done"> string </span>| <span class="done"> bool</span> | <span class="done"> float</span></p>
+            <p>FuncBody -&gt; <span class="done">Scope</span></p>
+            <p>Scope -&gt; <span class="done">ScopeType { ScopeBody }</span></p>
+            <p>ScopeType -&gt; <span class="done">'Pure'</span> | <span class="done">'IO'</span> | <span class="done">'State'</span> | 'Loop' | <span class="done">e</span></p>
+            <p>ScopeBody -&gt; Code</p>
+            <p>Code -&gt; <span class="done">Statement Code'</span>| Loop Code'| Conditional Code'| <span class="done">Scope Code'</span></p>
+            <p>Code' -&gt; <span class="done"> Code </span> | <span class="done"> e </span></p>
+            <p>Statement -&gt; <span class="done"> IO </span> | <span class="done"> Return </span> | <span class="done"> Decloration </span> </p>
+            <p>IO -&gt; Print | Input | <span class="done"> Output </span> </p>
+            <p>Print -&gt; print String ;</p>
+            <p>Input -&gt; input ident Value ;</p>
+            <p>Output -&gt; <span class="change"> output <span class="diff"> String (Value) ( output ( String ) ;)</span> ; </span> </p>
+            <p>Return -&gt; <span class="done"> return <span class="diff"> Value (int) </span> ; </span></p>
+            <p>Value -&gt; <span class="done"> String </span> | <span class="done"> Char </span>| <span class="done"> Bool</span> | <span class="done"> Expression</span></p>
+            <p>String -&gt; <span class="done"> string </span>| <span class="done"> idnet </span>| StringConcat | Cast </p>
+            <p>Int -&gt; <span class="done"> int </span>| <span class="done"> ident </span></p>
+            <p>Char -&gt; <span class="done"> char </span>| <span class="done"> ident </span></p>
+            <p>Bool -&gt; <span class="done"> bool </span>| <span class="done"> ident</span</p>
+            <p>Float -&gt; <span class="done"> float</span> | <span class="done"> ident </span></p>
+            <p>Main -&gt; <span class="done">MainDef FuncBody</span></p>
+            <p>MainDef -&gt; <span class="change">main '-&gt;' 'int' (int main ( )) </span>| int main ( int argc , string argv )</p>
+            <p>Decloration -&gt; <span class="done"> Mut </span>| <span class="done"> Let </span></p>
+            <p>Mut -&gt; <span class="done"> mut Type ident = <span class="diff"> Value (int)</span> ;</span></p>
+            <p>Let -&gt; <span class="done"> Type ident = Value ;</span></p>
+            <p>Expression -&gt; <span class="done">Term Expression'</span></p>
+            <p>Expression' -&gt; <span class="done"> Operator Term Expression' | e </span></p>
+            <p>Term -&gt; <span class="done"> Factor</span> | <span class="done">( Expression ) </span></p>
+            <p>Factor -&gt; <span class="done">Number </p>
+            <p>Number -&gt; <span class="done">Int </span>| <span class="done">Float</span></p>
+            <p>Operator -&gt; <span class="done">+ </span>| <span class="done">- </span>| <span class="done">*</span> | <span class="done">/</span> | <span class="done">%</span></p>
+            <p>Proposition -&gt; Condition </p>
+            <p>Condition -&gt; Unary Condition'</p>
+            <p>Condition' -&gt; BooleanOperator Unary Condition' | e</p>
+            <p>Unary -&gt;  ! Unary | Primary</p>
+            <p>Primary -&gt; Bool | ( Condition ) </p>
+            <p>LogicalOperator -&gt; || | && | ^^ | -> | == | !=</p>
+            <p>Branch -&gt; BranchIf BranchElif BranchElse</p>
+            <p>Conditional -&gt; If Elif Else</p>
+            <p>BranchIF -&gt; if ( Proposition ) { Code } </p>
+            <p>BranchElif -&gt; elif ( Proposition ) { Code } BranchElif | e</p>
+            <p>BranchElse -&gt; else { Code } | e</p>
+            <p>If -&gt; if ( Proposition ) { Value }</p>
+            <p>Elif -&gt; elif (Proposition) {Value} Elif | e</p>
+            <p>Else -&gt; else { Value }</p>
+        </div>
+        <div style="flex: 1;">
+            <h1>Regex</h1>
+            <p>int = ^-?\d+$</p>
+            <p>float = ^-?\d+\.\d+$</p>
+            <p>char = ^'[a-zA-Z0-9_]'$</p>
+            <p>bool = \b(true|false)\b</p>
+            <p>string = ^\"([a-zA-Z0-9_]|\\[nt\"\\])*\"$</p>
+            <p>ident = ^[a-zA-Z_][a-zA-Z0-9_]*$</p>
+        </div>
+    </div>
+    <hr>
+    <div style="display: flex;">
+        <div style="flex: 1;">
+            <p>//TODO: check that there is no indirect recurrison</p>
+            <p>Green - completed</p>
+            <p>Red - change syntax</p>
+            <p>Yellow - change single token</p>
+            <p>Blue - must implement into code generator</p>
+        </div>
+        <div style="flex: 1;">
+            <p>-c compile compiler</p>
+            <p>-d debug build</p>
+            <p>-i &lt;filename&gt; intermeident .cpp filename</p>
+            <p>-o &lt;filename&gt; output filename</p>
+            <p>-a print ast</p>
+            <p>-t print tokens</p>
+            <p>-r remove the intermeident .cpp file</p>
+            <p>-e exacute the final binary</p>
+
+        </div>
+    </div>
+</body>
+</html>
