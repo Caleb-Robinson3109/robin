@@ -67,9 +67,9 @@ INPUT_FILE="$1"
 
 if [ "$I_FLAG" = false ]; then
   if [ -z "$INPUT_FILE" ]; then
-    I_FILE = "$hello.rob.cpp"
+    I_FILE="$hello.rob.cpp"
   else
-    I_FILE = "$INPUT_FILE.cpp"
+    I_FILE="$INPUT_FILE.cpp"
   fi
 fi
 
@@ -108,7 +108,7 @@ fi
 
 #if -r then remove the intermidient .cpp file
 if [ "$R_FLAG" = true ]; then
-  rm $I_FILE
+  rm gen/$I_FILE
 fi
 
 #run the robin bin if -e

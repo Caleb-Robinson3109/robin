@@ -83,7 +83,7 @@ void generator(AST& tree, string filename){
     ofstream cpp(filename);
 
     if(!cpp){
-        cerr << "error creating .cpp file\n";
+        cerr << "error creating " << filename << " file\n";
         exit(1);
     }
 

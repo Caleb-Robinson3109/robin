@@ -16,15 +16,20 @@ int main(int argc, char* argv[]){
 
     //parse the args
     string cpp_filename = "gen/";
-    if(argc == 2){
+    string rob_filename = "rob/";
+
+    //argv[1] input filename
+    if(argc > 1){
+        rob_filename += argv[1];
+    }
+    else{
         cerr << "Needs correct number of arguments\nUsing default hello.rob file\n";
+        rob_filename += "hello.rob";
         //return 1;
     }
-    fstream robin("rob/hello.rob");
-    if(argc == 2){
-        robin.close();
-        robin.open(argv[1], ios::in);
-    }
+    fstream robin(rob_filename);
+
+    //argv[2] output filename
     if(argc > 2){
         cpp_filename += argv[2];
     }
@@ -33,7 +38,7 @@ int main(int argc, char* argv[]){
     }
 
     if(!robin){
-        cerr << "Cannot open file\n";
+        cerr << "Cannot open file " << rob_filename << "\n";
         return 1;
     }
 
