@@ -10,9 +10,60 @@
     <a href="index.html">Home</a>
     <h1>Notes</h1>
     <p>functions should have 3 labels strict, lazy, and thunk. These are not required. ex lazy int add(int y, int x). lazy - defer, thunk - delay. you can then do int z = delay add(2, 3). if add has side effects you can then do run(z). strict - do everything, lazy/defer - do the non-side effets when run(foo) do the side effects, thunk/delay dont evaluate do everything at run(foo). if you have a delayed int foo. and you say int bar = foo then you dont need to envoke run it will automatically evauuate. lets say too you still dont want the delay side effects to happen you can defer run(foo).</p>
+    <p>funtion indentifier</p>
     <ul>
         <li>strict</li>
-        <li></li>
+        <li>delay</li>
+        <li>lazy</li>
     </ul>
+    <p>either define a fucntion as one or use it at the call of a function</p>
+    <p>strict int add(int x, int y){ io{print(x+y);} return x+y;}</p>
+    <p>this will alawys run the full function including the side effects</p>
+    <p>delay int add(int x, int y){ io{print(x+y);} return x+y;}</p>
+    <p>this will do the non side effect code ex retrun x+y and not run the io scope</p>
+    <p>lazy int add(int x, int y){ io{print(x+y);} return x+y;}</p>
+    <p>this will wait to run the function</p>
+    <ul>
+        <li>run</li>
+        <li>rerun</li>
+        <li>peek</li>
+        <li>stay</li>
+        <li>from</li>
+        <li>rebind// allows you too look back on a mut var to see what the current val is</li>
+    </ul>
+    <p>if you define a variable ex int z = add(2,4); z will act in the way the function is defined strict, lazy, or delay. but if the function is not defined you can use run or peek to interact it in more "lazy" ways</p>
+    <p>if add does not have a lable you can do: z = lazy add(2,4); or z  = delay add(2,4); or z = add(2,4);</p>
+    <p>without an indentifier the function will run as if it is strict</p>
+    <p>if it has lazy or delay it will act in those ways</p>
+    <p>if the function is delay and the side effects are not run you can run them by doing run(z);</p>
+    <p>if the function is lazy and you want to evalutate the function you can set it to to another var or use peek. int j = z; or peek(z) this evaluates z</p>
+    <p>peek only evaulates the non side effect parts, but with run(z) it will evaluate the full function</p>
+    <p>if you have run(z) you can then explicatly rerun with rerun(z);</p>
+    <p>if you do int j = z it will by defult evaluate all side effets, you can specify not to with int j = peek(z);</p>
+    <p>a globaly defined function will take president over the local scope so strint add(int i, int j); will take presedent over int x = lazy add(1,2); and will throw an error for the missmathc</p>
+    <p>a null value that is the nothing value. this is what z will be before peek or run is called. and if peek fails because it needs side effects to be evaluated then it will remain null.</p>
+    <p>stay allows you to a value equal to z while keeping it null, this does just effcetivally mean your settiing something to null</p>
+    <p>from assignes the function to the var. so int j = z; //j would = int add(z,y)</p>
+    <pre><code> lazy sub(int x, int y){
+        print(x-y);
+        retrun z-y;
+    }
+    int main(){
+        maybe int w = delay sub(3,1); // error sub defined as lazy
+        maybe int z = sub(3,1);
+        maybe int a = stay(z); // a = null
+        maybe int b = from(z); // b = lazy sub (3,1); if sub was not lazy you can do int b = delay from(z);
+        peek(z); // z evaluates to 2
+        maybe int c = stay(z); c = 2 no io
+        run(z); //output 2
+        rerun(z); //output 2
+        maybe int d = rerun(z); d = 2 output 2
+        maybe int e = z; e = 2 no output
+        retrun 0;
+    }
+    </code></pre>
+
+    
+    
 </body>
 </html>
