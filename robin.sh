@@ -18,6 +18,8 @@ D_FLAG=false
 C_FLAG=false
 #exacute the final binary
 E_FLAG=false
+#TODO s scilent flag
+S_FLAG=false
 
 #go through opts
 while getopts "o:i:atcred" opt; do
@@ -62,21 +64,29 @@ done
 #remove opts from args
 shift $((OPTIND - 1))
 
-#get and check for file and names the intermident .cpp file based on -i
+
 INPUT_FILE="$1"
 
+if [ -z "$INPUT_FILE" ]; then
+  echo "robin.sh: \"no input file using hello.rob\""
+  INPUT_FILE="hello.rob"
+fi
+
+#get and check for file and names the intermident .cpp file based on -i
 if [ "$I_FLAG" = false ]; then
-  if [ -z "$INPUT_FILE" ]; then
-    I_FILE="$hello.rob.cpp"
+  if [ -z "$I_FILE" ]; then
+    I_FILE="hello.rob.cpp"
   else
-    I_FILE="$INPUT_FILE.cpp"
+    I_FILE="$I_FILE.cpp"
   fi
 fi
 
+MAKE_CMD="make "
 
 #compile the compile if -c
 if [ "$C_FLAG" = true ]; then
-  make -s
+  echo "$MAKE_CMD"
+  $MAKE_CMD
   if [ $? -ne 0 ]; then
     echo 'robin.cpp build failed'
     exit 1
@@ -84,22 +94,24 @@ if [ "$C_FLAG" = true ]; then
 fi
 
 #run ./bin/robin on input file
-./bin/robin $INPUT_FILE $I_FILE
+echo "./bin/robin $INPUT_FILE $I_FILE $T_FLAG $A_FLAG"
+./bin/robin $INPUT_FILE $I_FILE $T_FLAG $A_FLAG
 if [ $? -ne 0 ]; then
   echo 'robin.cpp failed'
   exit 1
 fi
 
 #build robin bin
-MAKE_CMD="make robin -s"
+MAKE_ROBIN_CMD="make robin "
 
 if [ "$O_FLAG" = true ]; then
-  MAKE_CMD="$MAKE_CMD ROBIN=$O_FILE"
+  MAKE_ROBIN_CMD="$MAKE_ROBIN_CMD ROBIN=$O_FILE"
 fi
 
-MAKE_CMD="$MAKE_CMD OUTPUT=$I_FILE"
+MAKE_ROBIN_CMD="$MAKE_ROBIN_CMD OUTPUT=$I_FILE"
 
-$MAKE_CMD
+echo "$MAKE_ROBIN_CMD"
+$MAKE_ROBIN_CMD
 
 if [ $? -ne 0 ]; then
   echo "$I_FILE build failed"
@@ -108,10 +120,12 @@ fi
 
 #if -r then remove the intermidient .cpp file
 if [ "$R_FLAG" = true ]; then
+  echo "rm gen/$I_FILE"
   rm gen/$I_FILE
 fi
 
 #run the robin bin if -e
 if [ "$E_FLAG" = true ]; then
+  echo "./gen/$O_FILE"
   ./gen/$O_FILE 
 fi

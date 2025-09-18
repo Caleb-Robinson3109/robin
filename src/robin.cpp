@@ -17,6 +17,8 @@ int main(int argc, char* argv[]){
     //parse the args
     string cpp_filename = "gen/";
     string rob_filename = "rob/";
+    string ast_flag;
+    string tokens_flag;
 
     //argv[1] input filename
     if(argc > 1){
@@ -37,6 +39,20 @@ int main(int argc, char* argv[]){
         cpp_filename += "gen.cpp";
     }
 
+    if(argc > 3){
+        tokens_flag = argv[3];
+    }
+    else{
+        tokens_flag = false;
+    }
+
+    if(argc > 4){
+        ast_flag = argv[4];
+    }
+    else{
+        ast_flag = false;
+    }
+
     if(!robin){
         cerr << "Cannot open file " << rob_filename << "\n";
         return 1;
@@ -55,14 +71,18 @@ int main(int argc, char* argv[]){
 
     //cout << "Done tokenizing\n";
 
-    //for(Token t : tokens){
-    //    t.print_token_struct();
-    //}
+    if(tokens_flag == "true"){
+        cout << "Tokens:\n";
+        for(Token t : tokens){
+            t.print_token_struct();
+        }
+    }
 
     AST parsed = parser(tokens);
-
-    //parsed.printAST();
-
+    if(ast_flag == "true"){
+        cout << "AST:\n";
+        parsed.printAST();
+    }
     
     if(parsed.has_error()){
         cerr << "there was an error while parsing the code\n";

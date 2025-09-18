@@ -59,6 +59,10 @@ bool type_check(Var& var, Token& token){
     }
 }
 
+bool safe_at(int index, vector<Token>& tokens){
+    return (index >= 0 && index < (static_cast<int>(tokens.size())) ? true : false);
+}
+
 AST parser (vector<Token>& tokens){
     //cout << "parser\n";
     int index = 0;
@@ -69,7 +73,7 @@ AST parser (vector<Token>& tokens){
         return AST(okay);
     }
     else{
-        Node error = index >= static_cast<int>(tokens.size()) ? Node("error", Token("error", "", -1, -1), false) : Node("error", tokens.at(index), false);
+        Node error("error", Token("error", "", -1, -1), false);
         //Node error("error", tokens.at(index), false);
         return AST(error);
     }
@@ -78,8 +82,8 @@ AST parser (vector<Token>& tokens){
 Ret parse_Program(vector<Token>& tokens, int index){
     //cout << "program\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -89,7 +93,7 @@ Ret parse_Program(vector<Token>& tokens, int index){
     //parsed_Main.printRet();
 
     if(!parsed_Main.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -106,8 +110,8 @@ Ret parse_Program(vector<Token>& tokens, int index){
 Ret parse_Main(vector<Token>& tokens, int index){
     //cout << "main\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -117,7 +121,7 @@ Ret parse_Main(vector<Token>& tokens, int index){
     //parsed_MainDef.printRet();
     
     if(!parsed_MainDef.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -128,7 +132,7 @@ Ret parse_Main(vector<Token>& tokens, int index){
     //parsed_FuncBody.printRet();
 
     if(!parsed_FuncBody.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -146,16 +150,16 @@ Ret parse_Main(vector<Token>& tokens, int index){
 Ret parse_MainDef(vector<Token>& tokens, int index){
     //cout << "def\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 
     AST MainDef(Node("MainDef", {"MainDef", "", tokens.at(index).line, tokens.at(index).col}, false));
     
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_main")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_main")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -163,8 +167,8 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
     MainDef.getRoot().addChild(Node("kw_main", tokens.at(index), true));
     index++;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_arrow")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_arrow")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -172,8 +176,8 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
     MainDef.getRoot().addChild(Node("kw_arrow", tokens.at(index), true));
     index++;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_int")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_int")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -189,8 +193,8 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
 Ret parse_FuncBody(vector<Token>& tokens, int index){
     //cout << "body\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -200,7 +204,7 @@ Ret parse_FuncBody(vector<Token>& tokens, int index){
     //parsed_Scope.printRet();
     
     if(!parsed_Scope.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -216,8 +220,8 @@ Ret parse_FuncBody(vector<Token>& tokens, int index){
 Ret parse_Scope(vector<Token>& tokens, int index){
     //cout << "scope\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -228,7 +232,7 @@ Ret parse_Scope(vector<Token>& tokens, int index){
     //parsed_ScopeType.printRet();
     
     if(!parsed_ScopeType.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -240,8 +244,8 @@ Ret parse_Scope(vector<Token>& tokens, int index){
     //cout << "typev\n";
     //cout << tokens.at(index).value << "\n";
     
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_open_curly")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_open_curly")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -254,16 +258,16 @@ Ret parse_Scope(vector<Token>& tokens, int index){
     //parsed_ScopeBody.printRet();
 
     if(!parsed_ScopeBody.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
-            //error.printRet();
-            return error;
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
     }
 
     Scope.getRoot().addChild(parsed_ScopeBody.ast);
     index = parsed_ScopeBody.index;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_close_curly")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_close_curly")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -281,8 +285,8 @@ Ret parse_Scope(vector<Token>& tokens, int index){
 Ret parse_ScopeType(vector<Token>& tokens, int index){
     //cout << "scope type\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -291,7 +295,7 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
     AST ScopeType(Node("ScopeType", {"ScopeType", "", tokens.at(index).line, tokens.at(index).col}, false));
     ////cout << tokens.at(index).value << "\n";
     
-    if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "kw_Pure"){
+    if(tokens.at(index).type == "kw_Pure"){
         scope_context.push_back("Pure");
         ScopeType.getRoot().addChild(Node("kw_Pure", tokens.at(index), true));
         index++;
@@ -299,7 +303,7 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
         //okay.printRet();
         return okay;
     }
-    else if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "kw_IO"){
+    else if(tokens.at(index).type == "kw_IO"){
         if(find(scope_context.begin(), scope_context.end(), "Pure") != scope_context.end()){
             cerr << "error on line: " << tokens.at(index).line << " column: " << tokens.at(index).line << "\n";
             cerr << "cannot open an IO scope in a Pure scope\n";
@@ -314,7 +318,7 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
         //okay.printRet();
         return okay;
     }
-    else if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "kw_State"){
+    else if(tokens.at(index).type == "kw_State"){
         if(find(scope_context.begin(), scope_context.end(), "Pure") != scope_context.end()){
             cerr << "error on line: " << tokens.at(index).line << " column: " << tokens.at(index).line << "\n";
             cerr << "cannot open a State scope in a Pure scope\n";
@@ -340,8 +344,8 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
 Ret parse_ScopeBody(vector<Token>& tokens, int index){
     //cout << "sbody\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -350,7 +354,7 @@ Ret parse_ScopeBody(vector<Token>& tokens, int index){
     Ret parsed_Code = parse_Code(tokens, index);
     //parsed_Code.printRet();
     if(!parsed_Code.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -366,8 +370,8 @@ Ret parse_ScopeBody(vector<Token>& tokens, int index){
 Ret parse_Code(vector<Token>& tokens, int index){
     //cout << "code\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -383,7 +387,7 @@ Ret parse_Code(vector<Token>& tokens, int index){
         Ret parsed_Codep = parse_Codep(tokens, index);
         //parsed_Codep.printRet();
         if(!parsed_Codep.valid){
-            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
             //error.printRet();
             return error;
         }
@@ -401,7 +405,7 @@ Ret parse_Code(vector<Token>& tokens, int index){
         Ret parsed_Codep = parse_Codep(tokens, index);
         //parsed_Codep.printRet();
         if(!parsed_Codep.valid){
-            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
             //error.printRet();
             return error;
         }
@@ -414,7 +418,7 @@ Ret parse_Code(vector<Token>& tokens, int index){
         return okay;
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -423,8 +427,8 @@ Ret parse_Code(vector<Token>& tokens, int index){
 Ret parse_Codep(vector<Token>& tokens, int index){
     //cout << "code'\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -440,19 +444,19 @@ Ret parse_Codep(vector<Token>& tokens, int index){
         return okay;
     }
 
-        Code.getRoot().addChild(parsed_Code.ast);
-        index = parsed_Code.index;
+    Code.getRoot().addChild(parsed_Code.ast);
+    index = parsed_Code.index;
 
-        Ret okay(true, Code.getRoot(), index);
-        //okay.printRet();
-        return okay;
+    Ret okay(true, Code.getRoot(), index);
+    //okay.printRet();
+    return okay;
 }
 
 Ret parse_Statement(vector<Token>& tokens, int index){
     //cout << "stmt\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -490,7 +494,7 @@ Ret parse_Statement(vector<Token>& tokens, int index){
         return okay;
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -499,8 +503,8 @@ Ret parse_Statement(vector<Token>& tokens, int index){
 Ret parse_IO(vector<Token>& tokens, int index){
     //cout << "io\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -510,7 +514,7 @@ Ret parse_IO(vector<Token>& tokens, int index){
     //parsed_Output.printRet();
 
     if(!parsed_Output.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -526,16 +530,16 @@ Ret parse_IO(vector<Token>& tokens, int index){
 Ret parse_Return(vector<Token>& tokens, int index){
     //cout << "ret\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 
     AST Return(Node("Return", {"Return", "", tokens.at(index).line, tokens.at(index).col}, false));
     
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_return")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_return")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -544,8 +548,8 @@ Ret parse_Return(vector<Token>& tokens, int index){
     index++;
     //TODO expand return for more values not just 0
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "int")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "int")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -553,8 +557,8 @@ Ret parse_Return(vector<Token>& tokens, int index){
     Return.getRoot().addChild(Node("int", tokens.at(index), true));
     index++;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_semicolon")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_semicolon")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -570,8 +574,8 @@ Ret parse_Return(vector<Token>& tokens, int index){
 Ret parse_Output(vector<Token>& tokens, int index){
     //cout << "out\n";
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -582,8 +586,8 @@ Ret parse_Output(vector<Token>& tokens, int index){
     //tokens.at(index+ 3).print_token_struct();
     AST Output(Node("Output", {"Output", "", tokens.at(index).line, tokens.at(index).col}, false));
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_output")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_output")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -594,16 +598,16 @@ Ret parse_Output(vector<Token>& tokens, int index){
     Ret parsed_Value = parse_Value(tokens, index);
 
     if(!parsed_Value.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
-            //error.printRet();
-            return error;
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
     }
 
     Output.getRoot().addChild(parsed_Value.ast);
     index = parsed_Value.index;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_semicolon")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_semicolon")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -618,8 +622,8 @@ Ret parse_Output(vector<Token>& tokens, int index){
 
 Ret parse_Decloration(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -648,7 +652,7 @@ Ret parse_Decloration(vector<Token>& tokens, int index){
         return okay;
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -656,8 +660,8 @@ Ret parse_Decloration(vector<Token>& tokens, int index){
 
 Ret parse_Mut(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -667,8 +671,8 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     newVar.line = tokens.at(index).line;
     newVar.col = tokens.at(index).col;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_mut")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_mut")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -679,7 +683,7 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     Ret parsed_Type = parse_Type(tokens, index);
 
     if(!parsed_Type.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -688,8 +692,8 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     Mut.getRoot().addChild(parsed_Type.ast);
     index = parsed_Type.index;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "ident")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "ident")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -698,8 +702,8 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     Mut.getRoot().addChild(Node("idnet", tokens.at(index), true));
     index++;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_equal")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_equal")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -707,8 +711,8 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     Mut.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
     index++;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "int")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "int")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -723,8 +727,8 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     Mut.getRoot().addChild(Node("int", tokens.at(index), true));
     index++;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_semicolon")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_semicolon")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -740,8 +744,8 @@ Ret parse_Mut(vector<Token>& tokens, int index){
 
 Ret parse_Let(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -755,7 +759,7 @@ Ret parse_Let(vector<Token>& tokens, int index){
     newVar.mut = false;
 
     if(!parsed_Type.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -765,8 +769,8 @@ Ret parse_Let(vector<Token>& tokens, int index){
     Let.getRoot().addChild(parsed_Type.ast);
     index = parsed_Type.index;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "ident")){
-       Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "ident")){
+       Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error; 
     }
@@ -777,8 +781,8 @@ Ret parse_Let(vector<Token>& tokens, int index){
     index++;
     //cout << parsed_Type.ast.getValue().value << "\n";
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_equal")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_equal")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -789,7 +793,7 @@ Ret parse_Let(vector<Token>& tokens, int index){
     Ret parsed_Value = parse_Value(tokens, index);
 
     if(!parsed_Value.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -805,8 +809,8 @@ Ret parse_Let(vector<Token>& tokens, int index){
     Let.getRoot().addChild(parsed_Value.ast);
     index = parsed_Value.index;
 
-    if((index >= static_cast<int>(tokens.size())) || !(tokens.at(index).type == "kw_semicolon")){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_semicolon")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -823,16 +827,16 @@ Ret parse_Let(vector<Token>& tokens, int index){
 
 Ret parse_Type(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 
     AST Type(Node("Type", {"Type", "", tokens.at(index).line, tokens.at(index).col}, false));
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -868,7 +872,7 @@ Ret parse_Type(vector<Token>& tokens, int index){
         return okay;
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -876,8 +880,8 @@ Ret parse_Type(vector<Token>& tokens, int index){
 
 Ret parse_Value(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -914,7 +918,7 @@ Ret parse_Value(vector<Token>& tokens, int index){
         return okay;
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -922,22 +926,22 @@ Ret parse_Value(vector<Token>& tokens, int index){
 
 Ret parse_String(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 
     AST String(Node("String", {"String", "", tokens.at(index).line, tokens.at(index).col}, false));
     //cout << "parse string " << tokens.at(index).value << "\n";
-    if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "string"){
+    if(tokens.at(index).type == "string"){
         //cout << "type string\n";
         String.getRoot().addChild(Node("string", tokens.at(index), true));
         index++;
         Ret okay(true, String.getRoot(), index);
         return okay;
     }
-    else if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "ident"){
+    else if(tokens.at(index).type == "ident"){
         //cout << "str ident\n";
         //cout << tokens.at(index).value << "\n";
         string name = tokens.at(index).value;
@@ -953,14 +957,14 @@ Ret parse_String(vector<Token>& tokens, int index){
         }
         else{
             //cout << "str error\n";
-            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
             //error.printRet();
             return error;
         }
     }
     else{
         //cout << "str error\n";
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -968,8 +972,8 @@ Ret parse_String(vector<Token>& tokens, int index){
 
 Ret parse_Int(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -977,18 +981,18 @@ Ret parse_Int(vector<Token>& tokens, int index){
     //cout << "parse int " << tokens.at(index).value << "\n";
     AST Int(Node("Int", {"Int", "", tokens.at(index).line, tokens.at(index).col}, false));
     
-    if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "ident"){
+    if(tokens.at(index).type == "ident"){
         //cout << "int varrrrr\n";
         //variable_table.get_value(tokens.at(index).value).print_var();
     }
-    if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "int"){
+    if(tokens.at(index).type == "int"){
         Int.getRoot().addChild(Node("int", tokens.at(index), true));
         index++;
         Ret okay(true, Int.getRoot(), index);
         //okay.printRet();
         return okay;
     }
-    else if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "ident"){
+    else if(tokens.at(index).type == "ident"){
         Var v = variable_table.get_value(tokens.at(index).value);
         if(v.type == "kw_int"){
             Int.getRoot().addChild(Node("ident", tokens.at(index), true));
@@ -999,14 +1003,14 @@ Ret parse_Int(vector<Token>& tokens, int index){
         }
         else{
             //cout << v.type << " int error\n";
-            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
             //error.printRet();
             return error;
         }
     }
     else{
         //cout << "int error\n";
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1014,20 +1018,20 @@ Ret parse_Int(vector<Token>& tokens, int index){
 
 Ret parse_Char(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 
     AST Char(Node("Char", {"Char", "", tokens.at(index).line, tokens.at(index).col}, false));
-    if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "string"){
+    if(tokens.at(index).type == "char"){
         Char.getRoot().addChild(Node("char", tokens.at(index), true));
         index++;
         Ret okay(true, Char.getRoot(), index);
         return okay;
     }
-    else if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "ident"){
+    else if(tokens.at(index).type == "ident"){
         Var v = variable_table.get_value(tokens.at(index).value);
         if(v.type == "kw_char"){
             Char.getRoot().addChild(Node("ident", tokens.at(index), true));
@@ -1038,13 +1042,13 @@ Ret parse_Char(vector<Token>& tokens, int index){
         }
         else{
             //cout << "char error\n";
-            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
             //error.printRet();
             return error;
         }
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1052,20 +1056,20 @@ Ret parse_Char(vector<Token>& tokens, int index){
 
 Ret parse_Bool(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 
     AST Bool(Node("Bool", {"Bool", "", tokens.at(index).line, tokens.at(index).col}, false));
-    if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "bool"){
+    if(tokens.at(index).type == "bool"){
         Bool.getRoot().addChild(Node("bool", tokens.at(index), true));
         index++;
         Ret okay(true, Bool.getRoot(), index);
         return okay;
     }
-    else if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "ident"){
+    else if(tokens.at(index).type == "ident"){
         Var v = variable_table.get_value(tokens.at(index).value);
         if(v.type == "kw_bool"){
             Bool.getRoot().addChild(Node("ident", tokens.at(index), true));
@@ -1076,13 +1080,13 @@ Ret parse_Bool(vector<Token>& tokens, int index){
         }
         else{
             //cout << "bool error\n";
-            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
             //error.printRet();
             return error;
         }
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1090,20 +1094,20 @@ Ret parse_Bool(vector<Token>& tokens, int index){
 
 Ret parse_Float(vector<Token>& tokens, int index){
 
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 
     AST Float(Node("Float", {"Float", "", tokens.at(index).line, tokens.at(index).col}, false));
-    if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "float"){
+    if(tokens.at(index).type == "float"){
         Float.getRoot().addChild(Node("float", tokens.at(index), true));
         index++;
         Ret okay(true, Float.getRoot(), index);
         return okay;
     }
-    else if(static_cast<int>(tokens.size()) > index && tokens.at(index).type == "ident"){
+    else if(tokens.at(index).type == "ident"){
         Var v = variable_table.get_value(tokens.at(index).value);
         if(v.type == "kw_float"){
             Float.getRoot().addChild(Node("ident", tokens.at(index), true));
@@ -1114,21 +1118,21 @@ Ret parse_Float(vector<Token>& tokens, int index){
         }
         else{
             //cout << "float error\n";
-            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
             //error.printRet();
             return error;
         }
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 }
 
 Ret parse_Expression(vector<Token>& tokens, int index){
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1137,7 +1141,7 @@ Ret parse_Expression(vector<Token>& tokens, int index){
     Ret parsed_Term = parse_Term(tokens, index);
 
     if(!parsed_Term.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1147,7 +1151,7 @@ Ret parse_Expression(vector<Token>& tokens, int index){
     Ret parsed_Expressionp = parse_Expressionp(tokens, index);
 
     if(!parsed_Expressionp.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1160,8 +1164,8 @@ Ret parse_Expression(vector<Token>& tokens, int index){
 }
 
 Ret parse_Expressionp(vector<Token>& tokens, int index){
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1181,7 +1185,7 @@ Ret parse_Expressionp(vector<Token>& tokens, int index){
     Ret parsed_Term = parse_Term(tokens, index);
 
     if(!parsed_Term.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1191,7 +1195,7 @@ Ret parse_Expressionp(vector<Token>& tokens, int index){
     Ret parsed_expressionp = parse_Expressionp(tokens, index);
 
     if(!parsed_expressionp.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1203,8 +1207,8 @@ Ret parse_Expressionp(vector<Token>& tokens, int index){
 }
 
 Ret parse_Term(vector<Token>& tokens, int index){
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1218,7 +1222,7 @@ Ret parse_Term(vector<Token>& tokens, int index){
         Ret parsed_Expression = parse_Expression(tokens, index);
 
         if(!parsed_Expression.valid){
-            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
             //error.printRet();
             return error; 
         }
@@ -1227,7 +1231,7 @@ Ret parse_Term(vector<Token>& tokens, int index){
         index = parsed_Expression.index;
 
         if(tokens.at(index).type != "kw_close_peren"){
-            Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+            Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
             //error.printRet();
             return error;
         }
@@ -1247,15 +1251,15 @@ Ret parse_Term(vector<Token>& tokens, int index){
     }
 
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 }
 
 Ret parse_Factor(vector<Token>& tokens, int index){
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1264,7 +1268,7 @@ Ret parse_Factor(vector<Token>& tokens, int index){
     Ret parsed_Number = parse_Number(tokens, index);
 
     if(!parsed_Number.valid){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error; 
     }
@@ -1277,8 +1281,8 @@ Ret parse_Factor(vector<Token>& tokens, int index){
 }
 
 Ret parse_Operator(vector<Token>& tokens, int index){
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1316,15 +1320,15 @@ Ret parse_Operator(vector<Token>& tokens, int index){
         return okay;
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 }
 
 Ret parse_Number(vector<Token>& tokens, int index){
-    if(index >= static_cast<int>(tokens.size())){
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
@@ -1346,7 +1350,7 @@ Ret parse_Number(vector<Token>& tokens, int index){
         return okay;
     }
     else{
-        Ret error = index >= static_cast<int>(tokens.size()) ? Ret(false, Node("error", Token("error", "", -1, -1), false), index) : Ret(false, Node("error", tokens.at(index), false), index);
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }

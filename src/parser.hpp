@@ -25,6 +25,7 @@ public:
 };
 
 bool type_check(Var& var, Token& token);
+bool safe_at(int index, vector<Token>& tokens);
 
 AST parser (vector<Token>& tokens);
 Ret parse_Program(vector<Token>& tokens, int index);
