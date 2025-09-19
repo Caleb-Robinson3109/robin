@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
     }
     
     if(parsed.has_error()){
-        cerr << "there was an error while parsing the code\n";
+        cerr << "there was an error while parsing the code at line: " << parsed.getMax_line() << " column: " << parsed.getMax_col() <<"\n";
         return 1;
     }
 

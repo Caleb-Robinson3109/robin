@@ -13,6 +13,9 @@ using namespace std;
 static vector<string> scope_context;
 static Table variable_table;
 
+static int max_line = 0;
+static int max_col = 0;
+
 bool type_check(Var& var, Token& token){
     if(token.type == "ident"){
         Var v = variable_table.get_value(token.value);
@@ -69,19 +72,36 @@ bool safe_at(int index, vector<Token>& tokens){
     return (index >= 0 && index < (static_cast<int>(tokens.size())) ? true : false);
 }
 
+void update_max(Token& t){
+    if(t.line < max_line){
+        return;
+    }
+    if(t.col < max_col){
+        return;
+    }
+    max_line = t.line;
+    max_col = t.col;
+}
+
 AST parser (vector<Token>& tokens){
     //cout << "parser\n";
     int index = 0;
     Ret parsed = parse_Program(tokens, index);
     //parsed.printRet();
     if(parsed.valid){
-        Node okay = parsed.ast;
-        return AST(okay);
+        Node n_okay = parsed.ast;
+        AST okay = AST(n_okay);
+        okay.setMax_line(max_line);
+        okay.setMax_col(max_col);
+        return okay;
     }
     else{
-        Node error("error", Token("error", "", -1, -1), false);
+        Node n_error("error", Token("error", "", -1, -1), false);
         //Node error("error", tokens.at(index), false);
-        return AST(error);
+        AST error = AST(n_error);
+        error.setMax_line(max_line);
+        error.setMax_col(max_col);
+        return error;
     }
 }
 
@@ -171,6 +191,7 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
     }
 
     MainDef.getRoot().addChild(Node("kw_main", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_arrow")){
@@ -180,6 +201,7 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
     }
 
     MainDef.getRoot().addChild(Node("kw_arrow", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_int")){
@@ -189,6 +211,7 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
     }
 
     MainDef.getRoot().addChild(Node("kw_int", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     Ret okay(true, MainDef.getRoot(), index);
@@ -258,6 +281,7 @@ Ret parse_Scope(vector<Token>& tokens, int index){
 
     //cout << "{\n";
     Scope.getRoot().addChild(Node("kw_open_curly", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
     variable_table.push_scope();
     Ret parsed_ScopeBody = parse_ScopeBody(tokens, index);
@@ -281,6 +305,7 @@ Ret parse_Scope(vector<Token>& tokens, int index){
     variable_table.pop_scope();
     scope_context.pop_back();
     Scope.getRoot().addChild(Node("kw_close_curly", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     Ret okay(true, Scope.getRoot(), index);
@@ -304,6 +329,8 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
     if(tokens.at(index).type == "kw_Pure"){
         scope_context.push_back("Pure");
         ScopeType.getRoot().addChild(Node("kw_Pure", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, ScopeType.getRoot(), index);
         //okay.printRet();
@@ -318,6 +345,8 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
         scope_context.push_back("IO");
         ScopeType.getRoot().addChild(Node("kw_IO", tokens.at(index), true));
         //cout << "index: " << index << "\n";
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         //cout << "index: " << index << "\n";
         Ret okay(true, ScopeType.getRoot(), index);
@@ -332,6 +361,8 @@ Ret parse_ScopeType(vector<Token>& tokens, int index){
         }
         scope_context.push_back("State");
         ScopeType.getRoot().addChild(Node("kw_State", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, ScopeType.getRoot(), index);
         //okay.printRet();
@@ -551,6 +582,7 @@ Ret parse_Return(vector<Token>& tokens, int index){
     }
 
     Return.getRoot().addChild(Node("kw_return", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
     //TODO expand return for more values not just 0
 
@@ -561,6 +593,7 @@ Ret parse_Return(vector<Token>& tokens, int index){
     }
 
     Return.getRoot().addChild(Node("int", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_semicolon")){
@@ -570,6 +603,7 @@ Ret parse_Return(vector<Token>& tokens, int index){
     }
 
     Return.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     Ret okay(true, Return.getRoot(), index);
@@ -599,6 +633,7 @@ Ret parse_Output(vector<Token>& tokens, int index){
     }
 
     Output.getRoot().addChild(Node("kw_output", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
     //TODO expand output for more strings/ string concats not just string
     Ret parsed_Value = parse_Value(tokens, index);
@@ -619,6 +654,7 @@ Ret parse_Output(vector<Token>& tokens, int index){
     }
 
     Output.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     Ret okay(true, Output.getRoot(), index);
@@ -685,6 +721,7 @@ Ret parse_Mut(vector<Token>& tokens, int index){
 
     Mut.getRoot().addChild(Node("kw_mut", tokens.at(index), true));
     newVar.mut = true;
+    update_max(tokens.at(index));
     index++;
     Ret parsed_Type = parse_Type(tokens, index);
 
@@ -706,6 +743,7 @@ Ret parse_Mut(vector<Token>& tokens, int index){
 
     newVar.name = tokens.at(index).value;
     Mut.getRoot().addChild(Node("idnet", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_equal")){
@@ -715,6 +753,7 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     }
 
     Mut.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "int")){
@@ -731,6 +770,7 @@ Ret parse_Mut(vector<Token>& tokens, int index){
 
     newVar.value = tokens.at(index).value;
     Mut.getRoot().addChild(Node("int", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_semicolon")){
@@ -740,6 +780,7 @@ Ret parse_Mut(vector<Token>& tokens, int index){
     }
 
     Mut.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     Ret okay(true, Mut.getRoot(), index);
@@ -784,6 +825,7 @@ Ret parse_Let(vector<Token>& tokens, int index){
     newVar.name = tokens.at(index).value;
     //cout << tokens.at(index).value << "\n";
     Let.getRoot().addChild(Node("idnet", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
     //cout << parsed_Type.ast.getValue().value << "\n";
 
@@ -795,6 +837,7 @@ Ret parse_Let(vector<Token>& tokens, int index){
 
     //cout << tokens.at(index).value << "\n";
     Let.getRoot().addChild(Node("kw_equal", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
     Ret parsed_Value = parse_Value(tokens, index);
 
@@ -823,6 +866,7 @@ Ret parse_Let(vector<Token>& tokens, int index){
 
     //cout << tokens.at(index).value << "\n";
     Let.getRoot().addChild(Node("kw_semicolon", tokens.at(index), true));
+    update_max(tokens.at(index));
     index++;
 
     Ret okay(true, Let.getRoot(), index);
@@ -849,30 +893,40 @@ Ret parse_Type(vector<Token>& tokens, int index){
 
     if(tokens.at(index).type == "kw_int"){
         Type.getRoot().addChild(Node("kw_int", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Type.getRoot(), index);
         return okay;
     }
     else if(tokens.at(index).type == "kw_char"){
         Type.getRoot().addChild(Node("kw_char", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Type.getRoot(), index);
         return okay;
     }
     else if(tokens.at(index).type == "kw_string"){
         Type.getRoot().addChild(Node("kw_string", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Type.getRoot(), index);
         return okay;
     }
     else if(tokens.at(index).type == "kw_bool"){
         Type.getRoot().addChild(Node("kw_bool", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Type.getRoot(), index);
         return okay;
     }
     else if(tokens.at(index).type == "kw_float"){
         Type.getRoot().addChild(Node("kw_float", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Type.getRoot(), index);
         return okay;
@@ -943,6 +997,8 @@ Ret parse_String(vector<Token>& tokens, int index){
     if(tokens.at(index).type == "string"){
         //cout << "type string\n";
         String.getRoot().addChild(Node("string", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, String.getRoot(), index);
         return okay;
@@ -956,6 +1012,8 @@ Ret parse_String(vector<Token>& tokens, int index){
         //cout << "hi\n";
         if(v.type == "kw_string"){
             String.getRoot().addChild(Node("ident", tokens.at(index), true));
+            max_line = tokens.at(index).line;
+            max_col = tokens.at(index).col;
             index++;
             Ret okay(true, String.getRoot(), index);
             //okay.printRet();
@@ -993,6 +1051,8 @@ Ret parse_Int(vector<Token>& tokens, int index){
     }
     if(tokens.at(index).type == "int"){
         Int.getRoot().addChild(Node("int", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Int.getRoot(), index);
         //okay.printRet();
@@ -1002,6 +1062,8 @@ Ret parse_Int(vector<Token>& tokens, int index){
         Var v = variable_table.get_value(tokens.at(index).value);
         if(v.type == "kw_int"){
             Int.getRoot().addChild(Node("ident", tokens.at(index), true));
+            max_line = tokens.at(index).line;
+            max_col = tokens.at(index).col;
             index++;
             Ret okay(true, Int.getRoot(), index);
             //okay.printRet();
@@ -1033,6 +1095,8 @@ Ret parse_Char(vector<Token>& tokens, int index){
     AST Char(Node("Char", {"Char", "", tokens.at(index).line, tokens.at(index).col}, false));
     if(tokens.at(index).type == "char"){
         Char.getRoot().addChild(Node("char", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Char.getRoot(), index);
         return okay;
@@ -1041,6 +1105,8 @@ Ret parse_Char(vector<Token>& tokens, int index){
         Var v = variable_table.get_value(tokens.at(index).value);
         if(v.type == "kw_char"){
             Char.getRoot().addChild(Node("ident", tokens.at(index), true));
+            max_line = tokens.at(index).line;
+            max_col = tokens.at(index).col;
             index++;
             Ret okay(true, Char.getRoot(), index);
             //okay.printRet();
@@ -1071,6 +1137,8 @@ Ret parse_Bool(vector<Token>& tokens, int index){
     AST Bool(Node("Bool", {"Bool", "", tokens.at(index).line, tokens.at(index).col}, false));
     if(tokens.at(index).type == "bool"){
         Bool.getRoot().addChild(Node("bool", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Bool.getRoot(), index);
         return okay;
@@ -1079,6 +1147,8 @@ Ret parse_Bool(vector<Token>& tokens, int index){
         Var v = variable_table.get_value(tokens.at(index).value);
         if(v.type == "kw_bool"){
             Bool.getRoot().addChild(Node("ident", tokens.at(index), true));
+            max_line = tokens.at(index).line;
+            max_col = tokens.at(index).col;
             index++;
             Ret okay(true, Bool.getRoot(), index);
             //okay.printRet();
@@ -1109,6 +1179,8 @@ Ret parse_Float(vector<Token>& tokens, int index){
     AST Float(Node("Float", {"Float", "", tokens.at(index).line, tokens.at(index).col}, false));
     if(tokens.at(index).type == "float"){
         Float.getRoot().addChild(Node("float", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Float.getRoot(), index);
         return okay;
@@ -1117,6 +1189,8 @@ Ret parse_Float(vector<Token>& tokens, int index){
         Var v = variable_table.get_value(tokens.at(index).value);
         if(v.type == "kw_float"){
             Float.getRoot().addChild(Node("ident", tokens.at(index), true));
+            max_line = tokens.at(index).line;
+            max_col = tokens.at(index).col;
             index++;
             Ret okay(true, Float.getRoot(), index);
             //okay.printRet();
@@ -1224,6 +1298,8 @@ Ret parse_Term(vector<Token>& tokens, int index){
 
     if(safe_at(index, tokens) && tokens.at(index).type == "kw_open_peren"){
         Term.getRoot().addChild(Node("kw_open_peren", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret parsed_Expression = parse_Expression(tokens, index);
 
@@ -1243,6 +1319,8 @@ Ret parse_Term(vector<Token>& tokens, int index){
         }
 
         Term.getRoot().addChild(Node("kw_close_peren", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Term.getRoot(), index);
         return okay;       
@@ -1297,30 +1375,40 @@ Ret parse_Operator(vector<Token>& tokens, int index){
     
     if(tokens.at(index).type == "kw_plus"){
         Operator.getRoot().addChild(Node("kw_plus", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Operator.getRoot(), index);
         return okay;
     }
     else if(tokens.at(index).type == "kw_minus"){
         Operator.getRoot().addChild(Node("kw_minus", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Operator.getRoot(), index);
         return okay;
     }
     else if(tokens.at(index).type == "kw_multiply"){
         Operator.getRoot().addChild(Node("kw_multiply", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Operator.getRoot(), index);
         return okay;
     }
     else if(tokens.at(index).type == "kw_mod"){
         Operator.getRoot().addChild(Node("kw_mod", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Operator.getRoot(), index);
         return okay;
     }
     else if(tokens.at(index).type == "kw_divide"){
         Operator.getRoot().addChild(Node("kw_divide", tokens.at(index), true));
+        max_line = tokens.at(index).line;
+        max_col = tokens.at(index).col;
         index++;
         Ret okay(true, Operator.getRoot(), index);
         return okay;

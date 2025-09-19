@@ -44,6 +44,8 @@ public:
 class AST {
 private:
     Node root;
+    int max_line = -1;
+    int max_col = -1;
 
 public:
     AST(const Node& node) : root(node) {}
@@ -51,6 +53,11 @@ public:
     Node& getRoot() {
         return root;
     }
+
+    int getMax_line () const { return max_line; }
+    int getMax_col () const { return max_col; }
+    void setMax_line(int l) { max_line = l; }
+    void setMax_col(int c) { max_col = c; }
 
     void printASTHelper(Node& n, int depth);
 

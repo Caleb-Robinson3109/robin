@@ -1,7 +1,7 @@
 main -> int{
     string x = "hello\n";
-    IO{ oishdoishdoi 
-        outpu x;
+    IO{ 
+        output  + x;
     }
     return 0;
 }
