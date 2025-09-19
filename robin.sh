@@ -1,28 +1,28 @@
 #!/bin/bash
 
-#robin bin output
+# -o <filename> robin bin output
 O_FLAG=false
 O_FILE="robin.out"
-#TODO the intermeident files name
+# -i <filename> the intermeident files name
 I_FLAG=false
 I_FILE=""
-#TODO remove the intermident cpp file
+#-r remove the intermident cpp file
 R_FLAG=false
-#TODO print ast
+#-a print ast
 A_FLAG=false
-#TODO print tokens
+#-t print tokens
 T_FLAG=false
 #TODO debug mode
 D_FLAG=false
-#compile the compiler
+#-c compile the compiler
 C_FLAG=false
-#exacute the final binary
+#-e exacute the final binary
 E_FLAG=false
-#TODO s scilent flag
-S_FLAG=false
+#-q scilent flag
+Q_FLAG=false
 
 #go through opts
-while getopts "o:i:atcred" opt; do
+while getopts "o:i:atcredq" opt; do
   case ${opt} in
     o)
       O_FILE="$OPTARG"
@@ -50,6 +50,9 @@ while getopts "o:i:atcred" opt; do
     d)
       D_FLAG=true
       ;;
+    q)
+      Q_FLAG=true
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -68,7 +71,7 @@ shift $((OPTIND - 1))
 INPUT_FILE="$1"
 
 if [ -z "$INPUT_FILE" ]; then
-  echo "robin.sh: \"no input file using hello.rob\""
+  echo "robin.sh: \"no input file using default hello.rob\""
   INPUT_FILE="hello.rob"
 fi
 
@@ -81,11 +84,19 @@ if [ "$I_FLAG" = false ]; then
   fi
 fi
 
-MAKE_CMD="make "
+MAKE_CMD="make"
+
+if [ "$Q_FLAG" = true ]; then
+  MAKE_CMD="$MAKE_CMD -s "
+fi
 
 #compile the compile if -c
 if [ "$C_FLAG" = true ]; then
-  echo "$MAKE_CMD"
+  
+  if [ "$Q_FLAG" = false ]; then
+    echo "$MAKE_CMD"
+  fi
+  
   $MAKE_CMD
   if [ $? -ne 0 ]; then
     echo 'robin.cpp build failed'
@@ -94,7 +105,10 @@ if [ "$C_FLAG" = true ]; then
 fi
 
 #run ./bin/robin on input file
-echo "./bin/robin $INPUT_FILE $I_FILE $T_FLAG $A_FLAG"
+if [ "$Q_FLAG" = false ]; then
+    echo "./bin/robin $INPUT_FILE $I_FILE $T_FLAG $A_FLAG"
+fi
+
 ./bin/robin $INPUT_FILE $I_FILE $T_FLAG $A_FLAG
 if [ $? -ne 0 ]; then
   echo 'robin.cpp failed'
@@ -104,13 +118,20 @@ fi
 #build robin bin
 MAKE_ROBIN_CMD="make robin "
 
+if [ "$Q_FLAG" = true ]; then
+  MAKE_ROBIN_CMD="$MAKE_ROBIN_CMD -s"
+fi
+
 if [ "$O_FLAG" = true ]; then
   MAKE_ROBIN_CMD="$MAKE_ROBIN_CMD ROBIN=$O_FILE"
 fi
 
 MAKE_ROBIN_CMD="$MAKE_ROBIN_CMD OUTPUT=$I_FILE"
 
-echo "$MAKE_ROBIN_CMD"
+if [ "$Q_FLAG" = false ]; then
+  echo "$MAKE_ROBIN_CMD"
+fi
+
 $MAKE_ROBIN_CMD
 
 if [ $? -ne 0 ]; then
@@ -120,12 +141,18 @@ fi
 
 #if -r then remove the intermidient .cpp file
 if [ "$R_FLAG" = true ]; then
-  echo "rm gen/$I_FILE"
+  if [ "$Q_FLAG" = false ]; then
+    echo "rm gen/$I_FILE"
+  fi
+  
   rm gen/$I_FILE
 fi
 
 #run the robin bin if -e
 if [ "$E_FLAG" = true ]; then
-  echo "./gen/$O_FILE"
+  if [ "$Q_FLAG" = false ]; then
+    echo "./gen/$O_FILE"
+  fi
+  
   ./gen/$O_FILE 
 fi
