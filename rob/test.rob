@@ -1,16 +1,7 @@
 main -> int{
     string x = "hello\n";
-    IO{
-        output 12 + 5;
-        output "\n";
-        output 12 - 5;
-        output "\n";
-        output 12 * 5;
-        output "\n";
-        output 12 / 5;
-        output "\n";
-        output 12 % 5;
-        output "\n";
+    IO{ oishdoishdoi 
+        outpu x;
     }
     return 0;
 }

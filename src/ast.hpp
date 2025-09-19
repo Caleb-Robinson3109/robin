@@ -56,7 +56,8 @@ public:
 
     void printAST();
 
-    bool has_error_helper(Node& node){
+    //idk what this was for??? but its commeted out rn
+    /*bool has_error_helper(Node& node){
         for(Node child : node.getChildren()){
             if(child.getValue().type == "error"){
                 return true;
@@ -66,10 +67,10 @@ public:
             }
         }
         return false;
-    }
+    }*/
 
     bool has_error(){
-        return has_error_helper(root);
+        return (root.getValue().type == "error") ? true : false;
     }
 };
 

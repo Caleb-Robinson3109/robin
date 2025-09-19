@@ -60,6 +60,12 @@ bool type_check(Var& var, Token& token){
 }
 
 bool safe_at(int index, vector<Token>& tokens){
+    /*if(index >= 0 && index < (static_cast<int>(tokens.size()))){
+        cout << tokens.at(index).value << "\n";
+    }
+    else{
+        cout << "!!!!!!!!!!!!!!!!!!!!!!!\n";
+    }*/
     return (index >= 0 && index < (static_cast<int>(tokens.size())) ? true : false);
 }
 
@@ -1056,7 +1062,7 @@ Ret parse_Char(vector<Token>& tokens, int index){
 
 Ret parse_Bool(vector<Token>& tokens, int index){
 
-    if(safe_at(index, tokens)){
+    if(!safe_at(index, tokens)){
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
@@ -1216,7 +1222,7 @@ Ret parse_Term(vector<Token>& tokens, int index){
     AST Term(Node("Term", {"Term", "", tokens.at(index).line, tokens.at(index).col}, false));
     Ret parsed_Factor = parse_Factor(tokens, index);
 
-    if(tokens.at(index).type == "kw_open_peren"){
+    if(safe_at(index, tokens) && tokens.at(index).type == "kw_open_peren"){
         Term.getRoot().addChild(Node("kw_open_peren", tokens.at(index), true));
         index++;
         Ret parsed_Expression = parse_Expression(tokens, index);
