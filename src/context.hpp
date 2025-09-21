@@ -3,8 +3,20 @@
 
 #include <string>
 #include <vector>
+#include <exception>
 
 using namespace std;
+
+struct VarNotFound : public exception{
+    string message;
+
+    explicit VarNotFound(const string var_name)
+        : message("Identifyer '" + var_name + "' not found in table") {}
+
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+};
 
 class Var{
 public:

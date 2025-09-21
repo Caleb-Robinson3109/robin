@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstdlib>
+#include <exception>
 
 #include "context.hpp"
 
@@ -56,7 +57,7 @@ Var Table::get_value(string var_name){
         }
     }
     cerr << "error tryed to accuss indentifer without assocated value\n";
-    exit(1);
+    throw VarNotFound(var_name);
 }
 
 void Table::print_table(){

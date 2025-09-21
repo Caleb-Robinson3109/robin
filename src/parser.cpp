@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <cstdlib>
+#include <exception>
 
 #include "token.hpp"
 #include "ast.hpp"
@@ -18,7 +19,14 @@ static int max_col = 0;
 
 bool type_check(Var& var, Token& token){
     if(token.type == "ident"){
-        Var v = variable_table.get_value(token.value);
+        Var v;
+        try{
+            v = variable_table.get_value(token.value);
+        }
+        catch(exception& e){
+            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            exit(1);
+        }
         if(var.type == "kw_int" && v.type == "kw_int"){
             return true;
         }
@@ -1006,8 +1014,17 @@ Ret parse_String(vector<Token>& tokens, int index){
     else if(tokens.at(index).type == "ident"){
         //cout << "str ident\n";
         //cout << tokens.at(index).value << "\n";
+
+        //try catch for if the type of the var does not match string
         string name = tokens.at(index).value;
-        Var v = variable_table.get_value(name);
+        Var v;
+        try{
+            v = variable_table.get_value(name);
+        }
+        catch(exception& e){
+            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            exit(1);
+        }
         
         //cout << "hi\n";
         if(v.type == "kw_string"){
@@ -1045,10 +1062,6 @@ Ret parse_Int(vector<Token>& tokens, int index){
     //cout << "parse int " << tokens.at(index).value << "\n";
     AST Int(Node("Int", {"Int", "", tokens.at(index).line, tokens.at(index).col}, false));
     
-    if(tokens.at(index).type == "ident"){
-        //cout << "int varrrrr\n";
-        //variable_table.get_value(tokens.at(index).value).print_var();
-    }
     if(tokens.at(index).type == "int"){
         Int.getRoot().addChild(Node("int", tokens.at(index), true));
         max_line = tokens.at(index).line;
@@ -1059,7 +1072,16 @@ Ret parse_Int(vector<Token>& tokens, int index){
         return okay;
     }
     else if(tokens.at(index).type == "ident"){
-        Var v = variable_table.get_value(tokens.at(index).value);
+
+        Var v;
+        try{
+            v = variable_table.get_value(tokens.at(index).value);
+        }
+        catch(exception& e){
+            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            exit(1);
+        }
+
         if(v.type == "kw_int"){
             Int.getRoot().addChild(Node("ident", tokens.at(index), true));
             max_line = tokens.at(index).line;
@@ -1102,7 +1124,15 @@ Ret parse_Char(vector<Token>& tokens, int index){
         return okay;
     }
     else if(tokens.at(index).type == "ident"){
-        Var v = variable_table.get_value(tokens.at(index).value);
+        Var v;
+        try{
+            v = variable_table.get_value(tokens.at(index).value);
+        }
+        catch(exception& e){
+            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            exit(1);
+        }
+
         if(v.type == "kw_char"){
             Char.getRoot().addChild(Node("ident", tokens.at(index), true));
             max_line = tokens.at(index).line;
@@ -1144,7 +1174,16 @@ Ret parse_Bool(vector<Token>& tokens, int index){
         return okay;
     }
     else if(tokens.at(index).type == "ident"){
-        Var v = variable_table.get_value(tokens.at(index).value);
+
+        Var v;
+        try{
+            v = variable_table.get_value(tokens.at(index).value);
+        }
+        catch(exception& e){
+            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            exit(1);
+        }
+
         if(v.type == "kw_bool"){
             Bool.getRoot().addChild(Node("ident", tokens.at(index), true));
             max_line = tokens.at(index).line;
@@ -1186,7 +1225,15 @@ Ret parse_Float(vector<Token>& tokens, int index){
         return okay;
     }
     else if(tokens.at(index).type == "ident"){
-        Var v = variable_table.get_value(tokens.at(index).value);
+        Var v;
+        try{
+            v = variable_table.get_value(tokens.at(index).value);
+        }
+        catch(exception& e){
+            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            exit(1);
+        }
+
         if(v.type == "kw_float"){
             Float.getRoot().addChild(Node("ident", tokens.at(index), true));
             max_line = tokens.at(index).line;
