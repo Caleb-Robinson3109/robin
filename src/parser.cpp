@@ -192,6 +192,16 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
 
     AST MainDef(Node("MainDef", {"MainDef", "", tokens.at(index).line, tokens.at(index).col}, false));
     
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_int")){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    MainDef.getRoot().addChild(Node("kw_int", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
     if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_main")){
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
@@ -202,23 +212,24 @@ Ret parse_MainDef(vector<Token>& tokens, int index){
     update_max(tokens.at(index));
     index++;
 
-    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_arrow")){
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_open_peren")){
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 
-    MainDef.getRoot().addChild(Node("kw_arrow", tokens.at(index), true));
+    MainDef.getRoot().addChild(Node("kw_open_peren", tokens.at(index), true));
     update_max(tokens.at(index));
     index++;
 
-    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_int")){
+
+    if(!(safe_at(index, tokens)) || !(tokens.at(index).type == "kw_close_peren")){
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
 
-    MainDef.getRoot().addChild(Node("kw_int", tokens.at(index), true));
+    MainDef.getRoot().addChild(Node("kw_close_peren", tokens.at(index), true));
     update_max(tokens.at(index));
     index++;
 

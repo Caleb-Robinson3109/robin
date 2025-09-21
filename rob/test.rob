@@ -1,4 +1,4 @@
-main -> int{
+int main(){
     string x = "hello\n";
     IO{
         output  yx;

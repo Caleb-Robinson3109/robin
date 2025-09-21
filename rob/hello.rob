@@ -1,4 +1,4 @@
-main->int{
+int main(){
     IO{
         output "Hello_World\n" ;
     }

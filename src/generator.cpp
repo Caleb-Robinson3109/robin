@@ -110,9 +110,11 @@ void gen_Main(Node& node, ofstream& file){
 void gen_MainDef(Node& node, ofstream& file){
     //cout << "maindef\n";
     vector<Node> children = node.getChildren();
-    file << node_to_cpp(children.at(2));
     file << node_to_cpp(children.at(0));
-    file << "()\n";
+    file << node_to_cpp(children.at(1));
+    file << node_to_cpp(children.at(2));
+    file << node_to_cpp(children.at(3));
+    file << "\n";
 }
 
 void gen_FuncBody(Node& node, ofstream& file){

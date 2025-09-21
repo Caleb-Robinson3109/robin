@@ -19,10 +19,9 @@ Instead of relying on **monads** to handle side effects, Robin uses **explicit s
 ## 📦 Example
 
 ```robin
-main -> int
-{
-    IO {
-        output "Hello_World" ;
+int main(){
+    IO{
+        output "Hello_World\n" ;
     }
-    return 0 ;
+    return 0;
 }
