@@ -1,7 +1,4 @@
 int main(){
-    string x = "hello\n";
-    IO{
-        output  yx;
-    }
-    return 0;
+    bool x = true;
+    type_of(x);
 }

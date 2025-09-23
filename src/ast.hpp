@@ -39,6 +39,9 @@ public:
     }
 
     void printNode();
+
+    //gets rid of children and compresses all nodes into one vector
+    vector<Node> compressor();
 };
 
 class AST {

@@ -30,6 +30,12 @@ string string_to_token(string& s){
     else if(regex_match(s, re_kw_mut)){
         return "kw_mut";
     }
+    else if(regex_match(s, re_kw_type_of)){
+        return "kw_type_of";
+    }
+    else if(regex_match(s, re_kw_cast)){
+        return "kw_cast";
+    }
     
     //symbols
     else if(regex_match(s, re_kw_arrow)){
@@ -68,6 +74,10 @@ string string_to_token(string& s){
     else if(regex_match(s, re_kw_close_peren)){
         return "kw_close_peren";
     }
+    else if(regex_match(s, re_kw_comma)){
+        return "kw_comma";
+    }
+
 
     //Scope
     else if(regex_match(s, re_kw_IO)){

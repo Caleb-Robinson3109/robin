@@ -91,6 +91,33 @@ void update_max(Token& t){
     max_col = t.col;
 }
 
+string Value_type(Node& Value){
+    cout << "Value_type()\n";
+    //rn we assume the node type is value
+    Node child = Value.getChildren().at(0);
+
+    if(child.getType() == "Bool"){
+        cout << "is a bool\n";
+        return "bool";
+    }
+    else if (child.getType() == "Char"){
+        return "char";
+    }
+    else if (child.getType() == "String"){
+        return "string";
+    }
+    else{
+        vector<Node> v_nodes = Value.compressor();
+        bool is_int = true;
+        for(Node& n : v_nodes){
+            if(n.getType() == "Float"){
+                is_int = false;
+            }
+        }
+        return is_int ? "int" : "flaot";
+    }
+}
+
 AST parser (vector<Token>& tokens){
     //cout << "parser\n";
     int index = 0;
@@ -521,6 +548,7 @@ Ret parse_Statement(vector<Token>& tokens, int index){
     Ret parsed_IO = parse_IO(tokens, index);
     //parsed_IO.printRet();
     Ret parsed_Return = parse_Return(tokens, index);
+    Ret parsed_KwFuncs = parse_KwFuncs(tokens, index);
     //parsed_Return.printRet();
     //cout << "parsing Delc\n";
     Ret parsed_Delcoration = parse_Decloration(tokens, index);
@@ -546,6 +574,12 @@ Ret parse_Statement(vector<Token>& tokens, int index){
     else if(parsed_Delcoration.valid){
         Statement.getRoot().addChild(parsed_Delcoration.ast);
         index = parsed_Delcoration.index;
+        Ret okay(true, Statement.getRoot(), index);
+        return okay;
+    }
+    else if(parsed_KwFuncs.valid){
+        Statement.getRoot().addChild(parsed_KwFuncs.ast);
+        index = parsed_KwFuncs.index;
         Ret okay(true, Statement.getRoot(), index);
         return okay;
     }
@@ -1220,7 +1254,7 @@ Ret parse_Bool(vector<Token>& tokens, int index){
 
 Ret parse_Float(vector<Token>& tokens, int index){
 
-    if(safe_at(index, tokens)){
+    if(!safe_at(index, tokens)){
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
@@ -1506,4 +1540,93 @@ Ret parse_Number(vector<Token>& tokens, int index){
         //error.printRet();
         return error;
     }
+}
+
+Ret parse_TypeOf(vector<Token>& tokens, int index){
+    cout << "TypeOf\n";
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST Type(Node("TypeOf", {"TypeOf", "", tokens.at(index).line, tokens.at(index).col}, false));
+
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_type_of"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Type.getRoot().addChild(Node("kw_type_of", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_open_peren"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Type.getRoot().addChild(Node("kw_open_peren", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    Ret parsed_Value = parse_Value(tokens, index);
+
+    if(!parsed_Value.valid){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Type.getRoot().addChild(parsed_Value.ast);
+    index = parsed_Value.index;
+
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_close_peren"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Type.getRoot().addChild(Node("kw_close_peren", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    string typeOf_Value = Value_type(parsed_Value.ast);
+
+    Type.getRoot().addChild(Node("metadata", Token("metadata", typeOf_Value, -1, -1), false));
+}
+
+Ret parse_Cast(vector<Token>& tokens, int index){
+    return Ret(false, Node("error", Token("error", "", -1, -1), false), index);
+}
+
+Ret parse_DataType(vector<Token>& tokens, int index){
+    return Ret(false, Node("error", Token("error", "", -1, -1), false), index);
+}
+
+Ret parse_KwFuncs(vector<Token>& tokens, int index){
+    cout << "KwFuncs\n";
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST KwFuncs(Node("KwFuncs", {"KwFuncs", "", tokens.at(index).line, tokens.at(index).col}, false));
+
+    Ret parsed_TypeOf = parse_TypeOf(tokens, index);
+
+    if(!parsed_TypeOf.valid){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    KwFuncs.getRoot().addChild(parsed_TypeOf.ast);
+    index = parsed_TypeOf.index;
+
+    Ret okay(true, KwFuncs.getRoot(), index);
+    return okay;
 }

@@ -35,10 +35,10 @@
     <p>FuncBody -&gt; <span class="done">Scope</span></p>
     <p>Scope -&gt; <span class="done">ScopeType { ScopeBody }</span></p>
     <p>ScopeType -&gt; <span class="done">'Pure'</span> | <span class="done">'IO'</span> | <span class="done">'State'</span> | 'Loop' | <span class="done">e</span></p>
-    <p>ScopeBody -&gt; Code</p>
+    <p>ScopeBody -&gt; <span class="done"> Code</span></p>
     <p>Code -&gt; <span class="done">Statement Code'</span>| Loop Code'| Conditional Code'| <span class="done">Scope Code'</span></p>
     <p>Code' -&gt; <span class="done"> Code </span> | <span class="done"> e </span></p>
-    <p>Statement -&gt; <span class="done"> IO </span> | <span class="done"> Return </span> | <span class="done"> Decloration </span> </p>
+    <p>Statement -&gt; <span class="done"> IO </span> | <span class="done"> Return </span> | <span class="done"> Decloration </span> | KwFuncs</p>
     <p>IO -&gt; Print | Input | <span class="done"> Output </span> </p>
     <p>Print -&gt; print String ;</p>
     <p>Input -&gt; input ident Value ;</p>
@@ -75,5 +75,9 @@
     <p>If -&gt; if ( Proposition ) { Value }</p>
     <p>Elif -&gt; elif (Proposition) {Value} Elif | e</p>
     <p>Else -&gt; else { Value }</p>
+    <p>TypeOf -&gt; type_of ( Value ) ;</p>
+    <p>Cast -&gt; cast ( CastType , Value ) ;</p>
+    <p>CastType -&gt; Type | TypeOf</p>
+    <p>KwFuncs -&gt; TypeOf | Cast</p>
 </body>
 </html>

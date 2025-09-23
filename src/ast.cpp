@@ -39,11 +39,27 @@ void AST::printASTHelper(Node& n, int depth){
 }
 
 void AST::printAST() {
-        int depth = 0;
+    int depth = 0;
 
-        cout << left << setw(20) << root.getType() << right << setw(4) << depth << "\n";
+    cout << left << setw(20) << root.getType() << right << setw(4) << depth << "\n";
 
-        for(Node child : root.getChildren()){
-            printASTHelper(child, 1);
-        }
+    for(Node child : root.getChildren()){
+        printASTHelper(child, 1);
     }
+}
+
+vector<Node> Node::compressor() {
+    vector<Node> compressed_list;
+
+    compressed_list.push_back(Node(this->type, this->value, this->terminal));
+
+    auto helper = [&compressed_list](auto&& self, const Node& node) -> void {
+        for (const Node& child : node.getChildren()) {
+            compressed_list.push_back(Node(child.type, child.value, child.terminal));
+            self(self, child);
+        }
+    };
+
+    helper(helper, *this);
+    return compressed_list;
+}

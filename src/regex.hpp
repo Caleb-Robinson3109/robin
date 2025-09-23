@@ -28,6 +28,8 @@ inline const regex re_kw_string(R"(^string$)");
 
 inline const regex re_kw_main(R"(^main$)");
 inline const regex re_kw_mut(R"(^mut$)");
+inline const regex re_kw_type_of(R"(^type_of$)");
+inline const regex re_kw_cast(R"(^cast$)");
 
 //peren, braces, and brackes oh my! (symbols)
 inline const regex re_kw_arrow(R"(^->$)");
@@ -35,6 +37,7 @@ inline const regex re_kw_open_curly(R"(^\{$)");
 inline const regex re_kw_close_curly(R"(^\}$)");
 inline const regex re_kw_equal(R"(^=$)");
 inline const regex re_kw_semicolon(R"(^;$)");
+inline const regex re_kw_comma(R"(^,$)");
 
 inline const regex re_kw_plus(R"(^\+$)");
 inline const regex re_kw_minus(R"(^-$)");
@@ -65,7 +68,8 @@ inline const vector<string> symbols = {"->",
     "/",
     "%",
     "(",
-    ")"};
+    ")",
+    ","};
 
 string string_to_token(string& s);
 

@@ -2,6 +2,7 @@
 #define PARSER_HPP
 
 #include <vector>
+#include <string>
 
 #include "token.hpp"
 #include "ast.hpp"
@@ -27,6 +28,7 @@ public:
 bool type_check(Var& var, Token& token);
 bool safe_at(int index, vector<Token>& tokens);
 void update_max(Token& t);
+string Value_type(Token& t);
 
 AST parser (vector<Token>& tokens);
 Ret parse_Program(vector<Token>& tokens, int index);
@@ -58,5 +60,9 @@ Ret parse_Term(vector<Token>& tokens, int index);
 Ret parse_Factor(vector<Token>& tokens, int index);
 Ret parse_Operator(vector<Token>& tokens, int index);
 Ret parse_Number(vector<Token>& tokens, int index);
+Ret parse_TypeOf(vector<Token>& tokens, int index);
+Ret parse_Cast(vector<Token>& tokens, int index);
+Ret parse_DataType(vector<Token>& tokens, int index);
+Ret parse_KwFuncs(vector<Token>& tokens, int index);
 
 #endif
