@@ -1,4 +1,4 @@
 int main(){
     bool x = true;
-    type_of(x);
+    type_of(6 % 4)
 }

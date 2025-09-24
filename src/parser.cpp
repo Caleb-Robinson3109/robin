@@ -1594,8 +1594,12 @@ Ret parse_TypeOf(vector<Token>& tokens, int index){
     index++;
 
     string typeOf_Value = Value_type(parsed_Value.ast);
+    cout << typeOf_Value << "\n";
 
     Type.getRoot().addChild(Node("metadata", Token("metadata", typeOf_Value, -1, -1), false));
+
+    Ret okay(true, Type.getRoot(), index);
+    return okay;
 }
 
 Ret parse_Cast(vector<Token>& tokens, int index){

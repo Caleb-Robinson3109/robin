@@ -77,11 +77,11 @@ fi
 
 #get and check for file and names the intermident .cpp file based on -i
 if [ "$I_FLAG" = false ]; then
-  if [ -z "$I_FILE" ]; then
-    I_FILE="hello.rob.cpp"
-  else
-    I_FILE="$I_FILE.cpp"
-  fi
+  I_FILE="$INPUT_FILE.cpp"
+fi
+
+if [[ $I_FILE != *.cpp ]]; then
+  I_FILE="$I_FILE.cpp"
 fi
 
 MAKE_CMD="make"

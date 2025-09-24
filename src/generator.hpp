@@ -35,3 +35,7 @@ void gen_Term(Node& node, ofstream& file);
 void gen_Factor(Node& node, ofstream& file);
 void gen_Operator(Node& node, ofstream& file);
 void gen_Number(Node& node, ofstream& file);
+void gen_TypeOf(Node& node, ofstream& file);
+void gen_Cast(Node& node, ofstream& file);
+void gen_DataType(Node& node, ofstream& file);
+void gen_KwFuncs(Node& node, ofstream& file);

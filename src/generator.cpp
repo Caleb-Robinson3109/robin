@@ -175,6 +175,9 @@ void gen_Statement(Node& node, ofstream& file){
     else if(children.at(0).getType() == "Decloration"){
         gen_Decloration(children.at(0), file);
     }
+    else if(children.at(0).getType() == "KwFuncs"){
+        gen_KwFuncs(children.at(0), file);
+    }
 }
 
 void gen_IO(Node& node, ofstream& file){
@@ -331,4 +334,20 @@ void gen_Number(Node& node, ofstream& file){
     else{
         gen_Float(children.at(0), file);
     }
+}
+
+void gen_TypeOf(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    file << children.at(4).getValue().value; 
+}
+
+void gen_Cast(Node& node, ofstream& file){
+    return;
+}
+void gen_DataType(Node& node, ofstream& file){
+    return;
+}
+void gen_KwFuncs(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    gen_TypeOf(children.at(0), file);
 }
