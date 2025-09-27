@@ -25,11 +25,13 @@ inline const regex re_kw_float(R"(^float$)");
 inline const regex re_kw_char(R"(^char$)");
 inline const regex re_kw_bool(R"(^bool$)");
 inline const regex re_kw_string(R"(^string$)");
+inline const regex re_kw_type(R"(^type$)");
 
 inline const regex re_kw_main(R"(^main$)");
 inline const regex re_kw_mut(R"(^mut$)");
 inline const regex re_kw_type_of(R"(^type_of$)");
 inline const regex re_kw_cast(R"(^cast$)");
+inline const regex re_kw_str(R"(^str$)");
 
 //peren, braces, and brackes oh my! (symbols)
 inline const regex re_kw_arrow(R"(^->$)");

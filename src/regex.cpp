@@ -23,6 +23,9 @@ string string_to_token(string& s){
     else if(regex_match(s, re_kw_string)){
         return "kw_string";
     }
+    else if(regex_match(s, re_kw_type)){
+        return "kw_type";
+    }
     
     else if(regex_match(s, re_kw_main)){
         return "kw_main";
@@ -35,6 +38,10 @@ string string_to_token(string& s){
     }
     else if(regex_match(s, re_kw_cast)){
         return "kw_cast";
+    }
+
+    else if(regex_match(s, re_kw_str)){
+        return "kw_str";
     }
     
     //symbols

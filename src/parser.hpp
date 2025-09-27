@@ -60,9 +60,18 @@ Ret parse_Term(vector<Token>& tokens, int index);
 Ret parse_Factor(vector<Token>& tokens, int index);
 Ret parse_Operator(vector<Token>& tokens, int index);
 Ret parse_Number(vector<Token>& tokens, int index);
+
+Ret parse_RetString(vector<Token>& tokens, int index);
+Ret parse_RetType(vector<Token>& tokens, int index);
+Ret parse_RetVoid(vector<Token>& tokens, int index);
+Ret parse_RetInt(vector<Token>& tokens, int index);
+Ret parse_RetFloat(vector<Token>& tokens, int index);
+Ret parse_RetBool(vector<Token>& tokens, int index);
+Ret parse_RetChar(vector<Token>& tokens, int index);
+Ret parse_RetT(vector<Token>& tokens, int index);
+
 Ret parse_TypeOf(vector<Token>& tokens, int index);
 Ret parse_Cast(vector<Token>& tokens, int index);
-Ret parse_DataType(vector<Token>& tokens, int index);
-Ret parse_KwFuncs(vector<Token>& tokens, int index);
+Ret parse_Str(vector<Token>& tokens, int index);
 
 #endif

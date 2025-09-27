@@ -24,7 +24,7 @@ bool type_check(Var& var, Token& token){
             v = variable_table.get_value(token.value);
         }
         catch(exception& e){
-            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            //cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
             exit(1);
         }
         if(var.type == "kw_int" && v.type == "kw_int"){
@@ -40,6 +40,9 @@ bool type_check(Var& var, Token& token){
             return true;
         }
         else if(var.type == "kw_string" && v.type == "kw_string"){
+            return true;
+        }
+        else if(var.type == "kw_type" && v.type == "kw_type"){
             return true;
         }
         else{
@@ -63,6 +66,9 @@ bool type_check(Var& var, Token& token){
         else if(var.type == "kw_string" && token.type == "string"){
             return true;
         }
+        else if(var.type == "kw_type" && token.type == "type"){
+            return true;
+        }
         else{
             cerr << var.type << " " << token.type << "\n";
             return false;
@@ -71,12 +77,6 @@ bool type_check(Var& var, Token& token){
 }
 
 bool safe_at(int index, vector<Token>& tokens){
-    /*if(index >= 0 && index < (static_cast<int>(tokens.size()))){
-        cout << tokens.at(index).value << "\n";
-    }
-    else{
-        cout << "!!!!!!!!!!!!!!!!!!!!!!!\n";
-    }*/
     return (index >= 0 && index < (static_cast<int>(tokens.size())) ? true : false);
 }
 
@@ -92,12 +92,12 @@ void update_max(Token& t){
 }
 
 string Value_type(Node& Value){
-    cout << "Value_type()\n";
+    //cout << "Value_type()\n";
     //rn we assume the node type is value
     Node child = Value.getChildren().at(0);
 
     if(child.getType() == "Bool"){
-        cout << "is a bool\n";
+        //cout << "is a bool\n";
         return "bool";
     }
     else if (child.getType() == "Char"){
@@ -106,7 +106,7 @@ string Value_type(Node& Value){
     else if (child.getType() == "String"){
         return "string";
     }
-    else{
+    else if (child.getType() == "Expression"){
         vector<Node> v_nodes = Value.compressor();
         bool is_int = true;
         for(Node& n : v_nodes){
@@ -115,6 +115,10 @@ string Value_type(Node& Value){
             }
         }
         return is_int ? "int" : "flaot";
+    }
+    //if not a type like RetT then the last child will be a metadata node
+    else{
+
     }
 }
 
@@ -984,6 +988,7 @@ Ret parse_Type(vector<Token>& tokens, int index){
         Ret okay(true, Type.getRoot(), index);
         return okay;
     }
+    else if(tokens.at(index).type == "TypeOf")
     else{
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
@@ -1067,7 +1072,7 @@ Ret parse_String(vector<Token>& tokens, int index){
             v = variable_table.get_value(name);
         }
         catch(exception& e){
-            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            //cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
             exit(1);
         }
         
@@ -1123,7 +1128,7 @@ Ret parse_Int(vector<Token>& tokens, int index){
             v = variable_table.get_value(tokens.at(index).value);
         }
         catch(exception& e){
-            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            //cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
             exit(1);
         }
 
@@ -1174,7 +1179,7 @@ Ret parse_Char(vector<Token>& tokens, int index){
             v = variable_table.get_value(tokens.at(index).value);
         }
         catch(exception& e){
-            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            //cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
             exit(1);
         }
 
@@ -1225,7 +1230,7 @@ Ret parse_Bool(vector<Token>& tokens, int index){
             v = variable_table.get_value(tokens.at(index).value);
         }
         catch(exception& e){
-            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            //cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
             exit(1);
         }
 
@@ -1275,7 +1280,7 @@ Ret parse_Float(vector<Token>& tokens, int index){
             v = variable_table.get_value(tokens.at(index).value);
         }
         catch(exception& e){
-            cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
+            //cout << e.what() << " at line: " << max_line << " column: " << max_col << "\n";
             exit(1);
         }
 
@@ -1543,7 +1548,7 @@ Ret parse_Number(vector<Token>& tokens, int index){
 }
 
 Ret parse_TypeOf(vector<Token>& tokens, int index){
-    cout << "TypeOf\n";
+    //cout << "TypeOf\n";
     if(!safe_at(index, tokens)){
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
@@ -1594,24 +1599,64 @@ Ret parse_TypeOf(vector<Token>& tokens, int index){
     index++;
 
     string typeOf_Value = Value_type(parsed_Value.ast);
-    cout << typeOf_Value << "\n";
+    //cout << typeOf_Value << "\n";
 
-    Type.getRoot().addChild(Node("metadata", Token("metadata", typeOf_Value, -1, -1), false));
+    Type.getRoot().addChild(Node("metadata", Token("type", typeOf_Value, -1, -1), false));
 
     Ret okay(true, Type.getRoot(), index);
     return okay;
 }
 
 Ret parse_Cast(vector<Token>& tokens, int index){
-    return Ret(false, Node("error", Token("error", "", -1, -1), false), index);
-}
+    //make sure to include metadata about the type being output
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
 
-Ret parse_DataType(vector<Token>& tokens, int index){
-    return Ret(false, Node("error", Token("error", "", -1, -1), false), index);
+    AST Cast(Node("Cast", {"Cast", "", tokens.at(index).line, tokens.at(index).col}, false));
+
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_cast"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Cast.getRoot().addChild(Node("kw_cast", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_open_peren"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Cast.getRoot().addChild(Node("kw_open_peren", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    Ret parsed_Type = parse_Type(tokens, index);
+
+    if(!parsed_Type.valid){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Cast.getRoot().addChild(parsed_Type.ast);
+    index = parsed_Type.index;
+
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_open_peren"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
 }
 
 Ret parse_KwFuncs(vector<Token>& tokens, int index){
-    cout << "KwFuncs\n";
+    //cout << "KwFuncs\n";
     if(!safe_at(index, tokens)){
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
@@ -1634,3 +1679,171 @@ Ret parse_KwFuncs(vector<Token>& tokens, int index){
     Ret okay(true, KwFuncs.getRoot(), index);
     return okay;
 }
+
+Ret parse_Str(vector<Token>& tokens, int index){
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST Str(Node("Str", {"Str", "", tokens.at(index).line, tokens.at(index).col}, false));
+
+    if(!safe_at(index, tokens) || tokens.at(index).value != "kw_str"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error; 
+    }
+
+    Str.getRoot().addChild(Node("kw_str", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_open_peren"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Str.getRoot().addChild(Node("kw_open_peren", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    Ret parsed_Value = parse_Value(tokens, index);
+    Ret parsed_Type = parse_Type(tokens, index);
+
+    if(parsed_Value.valid){
+        Str.getRoot().addChild(parsed_Value.ast);
+        index = parsed_Value.index;
+    }
+    else if(parsed_Type.valid){
+        Str.getRoot().addChild(parsed_Type.ast);
+        index = parsed_Type.index;
+    }
+    else{
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    
+
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_close_peren"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Str.getRoot().addChild(Node("kw_close_peren", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    Ret okay(true, Str.getRoot(), index);
+    return okay;
+}
+
+Ret parse_RetString(vector<Token>& tokens, int index){
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST RetString(Node("RetString", {"RetString", "", tokens.at(index).line, tokens.at(index).col}, false));
+
+    Ret parsed_Str = parse_Str(tokens, index);
+
+    if(!parsed_Str.valid){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    RetString.getRoot().addChild(parsed_Str.ast);
+    index = parsed_Str.index;
+
+    Ret okay(true, RetString.getRoot(), index);
+    return okay;
+}
+
+Ret parse_RetType(vector<Token>& tokens, int index){
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST RetType(Node("RetType", {"RetType", "", tokens.at(index).line, tokens.at(index).col}, false));
+
+    Ret parsed_TypeOf = parse_TypeOf(tokens, index);
+
+    if(!parsed_TypeOf.valid){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    RetType.getRoot().addChild(parsed_TypeOf.ast);
+    index = parsed_TypeOf.index;
+
+    Ret okay(true, RetType.getRoot(), index);
+    return okay;
+}
+
+Ret parse_RetVoid(vector<Token>& tokens, int index){
+    Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+    //error.printRet();
+    return error;
+}
+
+Ret parse_RetInt(vector<Token>& tokens, int index){
+    Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+    //error.printRet();
+    return error;
+}
+
+Ret parse_RetFloat(vector<Token>& tokens, int index){
+    Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+    //error.printRet();
+    return error;
+}
+
+Ret parse_RetBool(vector<Token>& tokens, int index){
+    Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+    //error.printRet();
+    return error;
+}
+
+Ret parse_RetChar(vector<Token>& tokens, int index){
+    Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+    //error.printRet();
+    return error;
+}
+
+Ret parse_RetT(vector<Token>& tokens, int index){
+    if(!safe_at(index, tokens)){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    AST RetT(Node("RetT", {"RetT", "", tokens.at(index).line, tokens.at(index).col}, false));
+
+    Ret parsed_Cast = parse_Cast(tokens, index);
+
+    if(!parsed_Cast.valid){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    RetT.getRoot().addChild(parsed_Cast.ast);
+    index = parsed_Cast.index;
+
+
+    Type.getRoot().addChild(Node("metadata", Token("metadata", typeOf_Value, -1, -1), false));
+
+    Ret okay(true, RetT.getRoot(), index);
+    return okay;
+}
+
