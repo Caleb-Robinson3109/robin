@@ -44,7 +44,7 @@
     <p>Input -&gt; input ident Value ;</p>
     <p>Output -&gt; <span class="change"> output <span class="diff"> String (Value) ( output ( String ) ;)</span> ; </span> </p>
     <p>Return -&gt; <span class="done"> return <span class="diff"> Value (int) </span> ; </span></p>
-    <p>Value -&gt; <span class="done"> String </span> | <span class="done"> Char </span>| <span class="done"> Bool</span> | <span class="done"> Expression</span> | Type</p>
+    <p>Value -&gt; <span class="done"> String </span> | <span class="done"> Char </span>| <span class="done"> Bool</span> | <span class="done"> Expression</span> | Type | Class | Struct</p>
     <p>String -&gt; <span class="done"> string </span>| <span class="done"> idnet </span>| StringConcat | RetString | RetT</p> 
     <p>Int -&gt; <span class="done"> int </span>| <span class="done"> ident | RetInt | RetT</span></p>
     <p>Char -&gt; <span class="done"> char </span>| <span class="done"> ident | RetChar | RetT</span></p>
@@ -75,17 +75,17 @@
     <p>If -&gt; if ( Proposition ) { Value }</p>
     <p>Elif -&gt; elif (Proposition) {Value} Elif | e</p>
     <p>Else -&gt; else { Value }</p>
-    <p>TypeOf -&gt; <span class="done"> ( Value </span>| Type <span class="done">) ;</span></p>
+    <p>TypeOf -&gt; <span class="done"> ( Value </span>| Type <span class="done">) + metadata</span></p>
     <p>Cast -&gt; cast ( Type , Value ) ;</p>
     <p class="change">KwFuncs -&gt; TypeOf | Cast </p>
     <p>Str -&gt; str ( Value | Type )</p>
     <p>RetString -&gt; Str</p>
-    <p>RetType -&gt; TypeOf</p>
+    <p>RetType -&gt; TypeOf + metadata// we should also use type metadata here</p>
     <p>RetVoid -&gt;</p>
     <p>RetChar -&gt;</p>
     <p>RetFloat -&gt;</p>
     <p>RetInt -&gt;</p>
     <p>RetBool -&gt;</p>
-    <p>RetT -&gt; Cast // depending on what RetT is we will then check the type off of that items metadata i.e. Cast must have a metadata child when parsing Sting we will check that the retT metatdata is String</p>
+    <p><span class="makegen">RetT -&gt; Cast + metadata</span>// depending on what RetT is we will then check the type off of that items metadata i.e. Cast must have a metadata child when parsing Sting we will check that the retT metatdata is String</p>
 </body>
 </html>

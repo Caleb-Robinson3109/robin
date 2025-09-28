@@ -114,11 +114,11 @@ string Value_type(Node& Value){
                 is_int = false;
             }
         }
-        return is_int ? "int" : "flaot";
+        return is_int ? "int" : "float";
     }
-    //if not a type like RetT then the last child will be a metadata node
+    //type or maybe ident(class, struct) not rn ill put it in grammer tho
     else{
-
+        return "type";
     }
 }
 
@@ -988,7 +988,14 @@ Ret parse_Type(vector<Token>& tokens, int index){
         Ret okay(true, Type.getRoot(), index);
         return okay;
     }
-    else if(tokens.at(index).type == "TypeOf")
+    else if(tokens.at(index).type == "type"){
+        Type.getRoot().addChild(Node("kw_float", tokens.at(index), true));
+        new tokens.at(index).line;
+        max_col = tokens.at(index).col;
+        index++;
+        Ret okay(true, Type.getRoot(), index);
+        return okay;
+    }
     else{
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
@@ -1648,11 +1655,40 @@ Ret parse_Cast(vector<Token>& tokens, int index){
     Cast.getRoot().addChild(parsed_Type.ast);
     index = parsed_Type.index;
 
-    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_open_peren"){
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_comma"){
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
+
+    Cast.getRoot().addChild(Node("kw_comma", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    Ret parsed_Value = parse_Type(tokens, index);
+
+    if(!parsed_Value.valid){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Cast.getRoot().addChild(parsed_Value.ast);
+    index = parsed_Value.index;
+
+    if(!safe_at(index, tokens) || tokens.at(index).type != "kw_close_peren"){
+        Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
+        //error.printRet();
+        return error;
+    }
+
+    Cast.getRoot().addChild(Node("kw_close_peren", tokens.at(index), true));
+    update_max(tokens.at(index));
+    index++;
+
+    string CastedType = Value_type(parsed_Value.ast);
+
+    Cast.getRoot().addChild(Node("metadata", Token("type", CastedType, -1, -1), false));
 }
 
 Ret parse_KwFuncs(vector<Token>& tokens, int index){
@@ -1786,6 +1822,9 @@ Ret parse_RetType(vector<Token>& tokens, int index){
     RetType.getRoot().addChild(parsed_TypeOf.ast);
     index = parsed_TypeOf.index;
 
+    string RetTypeType = parsed_TypeOf.ast.getChildren().back().getValue().value; 
+    RetType.getRoot().addChild(Node("metadata", Token("type", RetTypeType, -1, -1), false));
+
     Ret okay(true, RetType.getRoot(), index);
     return okay;
 }
@@ -1840,8 +1879,9 @@ Ret parse_RetT(vector<Token>& tokens, int index){
     RetT.getRoot().addChild(parsed_Cast.ast);
     index = parsed_Cast.index;
 
-
-    Type.getRoot().addChild(Node("metadata", Token("metadata", typeOf_Value, -1, -1), false));
+    //the metadata node is the last in the vector
+    string RetTType = parsed_Cast.ast.getChildren().back().getValue().value; 
+    RetT.getRoot().addChild(Node("metadata", Token("type", RetTType, -1, -1), false));
 
     Ret okay(true, RetT.getRoot(), index);
     return okay;
