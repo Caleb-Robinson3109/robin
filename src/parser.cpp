@@ -1017,6 +1017,7 @@ Ret parse_Value(vector<Token>& tokens, int index){
     Ret parsed_Char = parse_Char(tokens, index);
     Ret parsed_Bool = parse_Bool(tokens, index);
     Ret parsed_Expression = parse_Expression(tokens, index);
+    Ret parsed_Type = parse_Type(tokens, index);
 
     if(parsed_String.valid){
         Value.getRoot().addChild(parsed_String.ast);
@@ -1042,6 +1043,12 @@ Ret parse_Value(vector<Token>& tokens, int index){
         Ret okay(true, Value.getRoot(), index);
         return okay;
     }
+    else if(parsed_Type.valid){
+        Value.getRoot().addChild(parsed_Type.ast);
+        index = parsed_Type.index;
+        Ret okay(true, Value.getRoot(), index);
+        return okay;
+    }
     else{
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
@@ -1058,6 +1065,8 @@ Ret parse_String(vector<Token>& tokens, int index){
     }
 
     AST String(Node("String", {"String", "", tokens.at(index).line, tokens.at(index).col}, false));
+    Ret parsed_RetString = parse_RetString(tokens, index);
+    Ret parsed_RetT = parse_RetT(tokens, index);
     //cout << "parse string " << tokens.at(index).value << "\n";
     if(tokens.at(index).type == "string"){
         //cout << "type string\n";
@@ -1100,6 +1109,20 @@ Ret parse_String(vector<Token>& tokens, int index){
             return error;
         }
     }
+    else if (parsed_RetString.valid){
+        String.getRoot().addChild(parsed_RetString.ast);
+        index = parsed_RetString.index;
+        Ret okay(true, String.getRoot(), index);
+        //okay.printRet();
+        return okay;
+    }
+    //.back() bc metadata is the last node in the children
+    else if (parsed_RetT.valid && parsed_RetT.ast.getMetadataValue() == "string"){
+        String.getRoot().addChild(parsed_RetT.ast);
+        index = parsed_RetT.index;
+        Ret okay(true, String.getRoot(), index);
+        return okay;
+    }
     else{
         //cout << "str error\n";
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
@@ -1118,6 +1141,9 @@ Ret parse_Int(vector<Token>& tokens, int index){
 
     //cout << "parse int " << tokens.at(index).value << "\n";
     AST Int(Node("Int", {"Int", "", tokens.at(index).line, tokens.at(index).col}, false));
+
+    Ret parsed_RetInt = parse_RetInt(tokens, index);
+    Ret parsed_RetT = parse_RetT(tokens, index);
     
     if(tokens.at(index).type == "int"){
         Int.getRoot().addChild(Node("int", tokens.at(index), true));
@@ -1154,6 +1180,18 @@ Ret parse_Int(vector<Token>& tokens, int index){
             //error.printRet();
             return error;
         }
+    }
+    else if(parsed_RetInt.valid){
+        Int.getRoot().addChild(parsed_RetInt.ast);
+        index = parsed_RetInt.index;
+        Ret okay(true, Int.getRoot(), index);
+        return okay;
+    }
+    else if(parsed_RetT.valid && parsed_RetT.ast.getMetadataValue() == "int"){
+        Int.getRoot().addChild(parsed_RetT.ast);
+        index = parsed_RetT.index;
+        Ret okay(true, Int.getRoot(), index);
+        return okay;
     }
     else{
         //cout << "int error\n";
@@ -1689,6 +1727,9 @@ Ret parse_Cast(vector<Token>& tokens, int index){
     string CastedType = Value_type(parsed_Value.ast);
 
     Cast.getRoot().addChild(Node("metadata", Token("type", CastedType, -1, -1), false));
+
+    Ret okay(true, Cast.getRoot(), index);
+    return okay;
 }
 
 Ret parse_KwFuncs(vector<Token>& tokens, int index){
@@ -1746,23 +1787,16 @@ Ret parse_Str(vector<Token>& tokens, int index){
     index++;
 
     Ret parsed_Value = parse_Value(tokens, index);
-    Ret parsed_Type = parse_Type(tokens, index);
 
     if(parsed_Value.valid){
         Str.getRoot().addChild(parsed_Value.ast);
         index = parsed_Value.index;
-    }
-    else if(parsed_Type.valid){
-        Str.getRoot().addChild(parsed_Type.ast);
-        index = parsed_Type.index;
     }
     else{
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);
         //error.printRet();
         return error;
     }
-
-    
 
     if(!safe_at(index, tokens) || tokens.at(index).type != "kw_close_peren"){
         Ret error(false, Node("error", Token("error", "", -1, -1), false), index);

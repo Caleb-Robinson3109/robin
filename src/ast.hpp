@@ -27,6 +27,7 @@ public:
     Token getValue() const { return value; }
     bool getTerminal() const { return terminal; }
     const vector<Node>& getChildren() const { return children; }
+    const string getMetadataValue() const; 
 
     // Setters
     void setType(const string& t) { type = t; }
