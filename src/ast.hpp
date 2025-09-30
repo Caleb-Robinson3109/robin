@@ -28,6 +28,7 @@ public:
     bool getTerminal() const { return terminal; }
     const vector<Node>& getChildren() const { return children; }
     const string getMetadataValue() const; 
+    const string getMetadataType() const;
 
     // Setters
     void setType(const string& t) { type = t; }

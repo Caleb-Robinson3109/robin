@@ -15,6 +15,17 @@ const string Node::getMetadataValue() const{
     return this->children.back().value.value;
 } 
 
+const string Node::getMetadataType() const{
+    Node metadata = this->children.back();
+    if(metadata.getValue().type != "metadata"){
+        cerr << "error at line: " << this->value.line << " column: " << this->value.col << "\n";
+        cerr << "called getMetadata on Node without any metadata\n";
+        exit(1);
+    }
+
+    return this->children.back().value.type;
+} 
+
 void Node::printNode() {
     cout << "Node - type: " << type << " terminal: " << terminal << " value: ";
     value.print_token_struct();

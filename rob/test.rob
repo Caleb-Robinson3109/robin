@@ -1,4 +1,5 @@
 int main(){
-    bool x = true;
-    type_of(6 % 4)
+    int x = 4;
+    float y = cast(float, x);
+    return 0;
 }

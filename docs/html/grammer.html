@@ -31,7 +31,7 @@
     <p>Fucntion -&gt; FuncDef FuncBody Function | e</p>
     <p>FuncDef -&gt; ident -&gt; Param Type</p>
     <p>Param -&gt; Type ident -&gt; Param | e</p>
-    <p>Type -&gt; <span class="done"> int </span> | <span class="done"> char </span>| <span class="done"> string </span>| <span class="done"> bool</span> | <span class="done"> float</span> | type | ident | RetType | RetT</p>
+    <p>Type -&gt; <span class="done"> int </span> | <span class="done"> char </span>| <span class="done"> string </span>| <span class="done"> bool</span> | <span class="done"> float</span> | <span class="makegen">type </span>| ident | <span class="makegen"> RetType | RetT</span></p>
     <p>FuncBody -&gt; <span class="done">Scope</span></p>
     <p>Scope -&gt; <span class="done">ScopeType { ScopeBody }</span></p>
     <p>ScopeType -&gt; <span class="done">'Pure'</span> | <span class="done">'IO'</span> | <span class="done">'State'</span> | 'Loop' | <span class="done">e</span></p>
@@ -42,14 +42,14 @@
     <p>IO -&gt; Print | Input | <span class="done"> Output </span> </p>
     <p>Print -&gt; print String ;</p>
     <p>Input -&gt; input ident Value ;</p>
-    <p>Output -&gt; <span class="change"> output <span class="diff"> String (Value) ( output ( String ) ;)</span> ; </span> </p>
+    <p>Output -&gt; <span class="change"> output <span class="diff"> String (Value) ( output ( <span class="makegen"> String </span> ) ;)</span> ; </span> </p>
     <p>Return -&gt; <span class="done"> return <span class="diff"> Value (int) </span> ; </span></p>
-    <p>Value -&gt; <span class="done"> String </span> | <span class="done"> Char </span>| <span class="done"> Bool</span> | <span class="done"> Expression</span> | <span class="makegen">Type</span> | Class | Struct</p>
+    <p>Value -&gt; <span class="done"> String </span> | <span class="done"> Char </span>| <span class="done"> Bool</span> | <span class="done"> Expression</span> | <span class="makegen">Type</span></p>
     <p>String -&gt; <span class="done"> string </span>| <span class="done"> idnet </span>| StringConcat | <span class="makegen"> RetString </span>| <span class="makegen"> RetT</span></p> 
     <p>Int -&gt; <span class="done"> int </span>| <span class="done"> ident </span>|<span class="makegen"> RetInt | RetT</span></p>
-    <p>Char -&gt; <span class="done"> char </span>| <span class="done"> ident </span>| RetChar | RetT</p>
-    <p>Bool -&gt; <span class="done"> bool </span>| <span class="done"> ident </span>| RetBool | RetT</p>
-    <p>Float -&gt; <span class="done"> float</span> | <span class="done"> ident </span>| RetFloat | RetT </p>
+    <p>Char -&gt; <span class="done"> char </span>| <span class="done"> ident </span>| <span class="makegen">RetChar | RetT</span></p>
+    <p>Bool -&gt; <span class="done"> bool </span>| <span class="done"> ident </span>|<span class="makegen"> RetBool | RetT</span></p>
+    <p>Float -&gt; <span class="done"> float</span> | <span class="done"> ident </span>|<span class="makegen"> RetFloat | RetT </span></p>
     <p>Main -&gt; <span class="done">MainDef FuncBody</span></p>
     <p>MainDef -&gt; <span class="done">int main ( )</span>| int main ( int argc , string argv )</p>
     <p>Decloration -&gt; <span class="done"> Mut </span>| <span class="done"> Let </span></p>
