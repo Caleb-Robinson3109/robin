@@ -1,19 +1,9 @@
 int main(){
-    float x = 3.14;
-    int y = 6;
-    char z = 'w';
-    string w = "hello";
-    bool a = false;
+    int x = cast(int, 3.14);
+    float y = cast(float, x);
+    type_of(cast(type_of(y),x)) a = y;
     IO{
-        output str(x);
-        output "\n";
         output str(y);
-        output "\n";
-        output str(z);
-        output "\n";
-        output str(int);
-        output "\n";
-        output str(a);
         output "\n";
     }
     return 0;

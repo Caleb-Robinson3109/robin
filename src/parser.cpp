@@ -83,11 +83,31 @@ string Value_type(const Node& Value){
     else if (child.getType() == "Expression"){
         vector<Node> v_nodes = Value.compressor();
         bool is_int = true;
-        for(Node& n : v_nodes){
+
+        auto helper = [&is_int](auto&& self, const Node& node) -> void {
+            for (const Node& node_child : node.getChildren()) {
+                if(node_child.getType() == "Cast"){
+                    if(node_child.getChildren().at(2).getMetadataValue() == "float"){
+                        is_int = false;
+                    }
+                    //do not go more recursive for Cast
+                    continue;
+                }
+                if(node_child.getType() == "Float"){
+                    is_int = false;
+                }
+                self(self, node_child);
+            }
+        };
+
+        /*for(Node& n : v_nodes){
+
             if(n.getType() == "Float"){
                 is_int = false;
             }
-        }
+        }*/
+
+        helper(helper, Value);
         return is_int ? "int" : "float";
     }
     //type or maybe ident(class, struct) not rn ill put it in grammer tho

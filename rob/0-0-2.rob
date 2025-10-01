@@ -1,0 +1,10 @@
+int main(){
+    int x = cast(int, 3.14);
+    float y = cast(float, x);
+    type_of(cast(type_of(y),x)) a = y;
+    IO{
+        output str(y);
+        output "\n";
+    }
+    return 0;
+}
