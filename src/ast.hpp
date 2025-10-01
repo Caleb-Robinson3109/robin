@@ -43,7 +43,7 @@ public:
     void printNode();
 
     //gets rid of children and compresses all nodes into one vector
-    vector<Node> compressor();
+    vector<Node> compressor() const;
 };
 
 class AST {

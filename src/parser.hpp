@@ -25,10 +25,10 @@ public:
     }
 };
 
-bool type_check(Var& var, Token& token);
+bool type_check(Var& var, Ret& value);
 bool safe_at(int index, vector<Token>& tokens);
 void update_max(Token& t);
-string Value_type(Token& t);
+string Value_type(const Node& Value);
 
 AST parser (vector<Token>& tokens);
 Ret parse_Program(vector<Token>& tokens, int index);

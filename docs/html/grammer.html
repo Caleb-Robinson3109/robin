@@ -31,7 +31,7 @@
     <p>Fucntion -&gt; FuncDef FuncBody Function | e</p>
     <p>FuncDef -&gt; ident -&gt; Param Type</p>
     <p>Param -&gt; Type ident -&gt; Param | e</p>
-    <p>Type -&gt; <span class="done"> int </span> | <span class="done"> char </span>| <span class="done"> string </span>| <span class="done"> bool</span> | <span class="done"> float</span> | <span class="makegen">type </span>| ident | <span class="makegen"> RetType | RetT</span></p>
+    <p>Type -&gt; <span class="done"> int </span> | <span class="done"> char </span>| <span class="done"> string </span>| <span class="done"> bool</span> | <span class="done"> float</span> | <span class="makegen">type </span>| <span class="makegen">ident</span> | <span class="makegen"> RetType | RetT</span> + metadata</p>
     <p>FuncBody -&gt; <span class="done">Scope</span></p>
     <p>Scope -&gt; <span class="done">ScopeType { ScopeBody }</span></p>
     <p>ScopeType -&gt; <span class="done">'Pure'</span> | <span class="done">'IO'</span> | <span class="done">'State'</span> | 'Loop' | <span class="done">e</span></p>
@@ -53,7 +53,7 @@
     <p>Main -&gt; <span class="done">MainDef FuncBody</span></p>
     <p>MainDef -&gt; <span class="done">int main ( )</span>| int main ( int argc , string argv )</p>
     <p>Decloration -&gt; <span class="done"> Mut </span>| <span class="done"> Let </span></p>
-    <p>Mut -&gt; <span class="done"> mut Type ident = <span class="diff"> Value (int)</span> ;</span></p>
+    <p>Mut -&gt; <span class="done"> mut Type ident = <span class="diff"> Value (int)</span> ;</span> //TODO fix up</p>
     <p>Let -&gt; <span class="done"> Type ident = Value ;</span></p>
     <p>Expression -&gt; <span class="done">Term Expression'</span></p>
     <p>Expression' -&gt; <span class="done"> Operator Term Expression' | e </span></p>

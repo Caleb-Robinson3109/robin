@@ -35,7 +35,16 @@ void gen_Term(Node& node, ofstream& file);
 void gen_Factor(Node& node, ofstream& file);
 void gen_Operator(Node& node, ofstream& file);
 void gen_Number(Node& node, ofstream& file);
+
+void gen_RetString(Node& node, ofstream& file);
+void gen_RetType(Node& node, ofstream& file);
+void gen_RetVoid(Node& node, ofstream& file);
+void gen_RetInt(Node& node, ofstream& file);
+void gen_RetFloat(Node& node, ofstream& file);
+void gen_RetBool(Node& node, ofstream& file);
+void gen_RetChar(Node& node, ofstream& file);
+void gen_RetT(Node& node, ofstream& file);
+
 void gen_TypeOf(Node& node, ofstream& file);
 void gen_Cast(Node& node, ofstream& file);
-void gen_DataType(Node& node, ofstream& file);
-void gen_KwFuncs(Node& node, ofstream& file);
+void gen_Str(Node& node, ofstream& file);

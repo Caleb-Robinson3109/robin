@@ -5,10 +5,9 @@
 using namespace std;
 
 const string Node::getMetadataValue() const{
-    Node metadata = this->children.back();
-    if(metadata.getValue().type != "metadata"){
+    if(this->children.back().type != "metadata"){
         cerr << "error at line: " << this->value.line << " column: " << this->value.col << "\n";
-        cerr << "called getMetadata on Node without any metadata\n";
+        cerr << "called getMetadataValue on Node without any metadata\n";
         exit(1);
     }
 
@@ -16,10 +15,9 @@ const string Node::getMetadataValue() const{
 } 
 
 const string Node::getMetadataType() const{
-    Node metadata = this->children.back();
-    if(metadata.getValue().type != "metadata"){
+    if(this->children.back().type != "metadata"){
         cerr << "error at line: " << this->value.line << " column: " << this->value.col << "\n";
-        cerr << "called getMetadata on Node without any metadata\n";
+        cerr << "called getMetadataType on Node without any metadata\n";
         exit(1);
     }
 
@@ -70,7 +68,7 @@ void AST::printAST() {
     }
 }
 
-vector<Node> Node::compressor() {
+vector<Node> Node::compressor() const{
     vector<Node> compressed_list;
 
     compressed_list.push_back(Node(this->type, this->value, this->terminal));

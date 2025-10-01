@@ -6,77 +6,12 @@
 #include "generator.hpp"
 #include "ast.hpp"
 #include "token.hpp"
+#include "parser.hpp"
 
 using namespace std;
 
 string node_to_cpp(Node& node){
     return node.getValue().value + (string)" ";
-}
-
-string node_to_cpp2(Node& node){
-    if(node.getValue().type == "int"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "float"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "bool"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "char"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "string"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_int"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_float"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_bool"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_char"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_string"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_main"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_arrow"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_open_curly"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_close_curly"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_semicolon"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_IO"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_State"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_Pure"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_output"){
-        return node.getValue().value + (string)" ";
-    }
-    else if(node.getValue().type == "kw_return"){
-        return node.getValue().value + (string)" ";
-    }
-    else{
-        return "";
-    }
 }
 
 void generator(AST& tree, string filename){
@@ -175,8 +110,8 @@ void gen_Statement(Node& node, ofstream& file){
     else if(children.at(0).getType() == "Decloration"){
         gen_Decloration(children.at(0), file);
     }
-    else if(children.at(0).getType() == "KwFuncs"){
-        gen_KwFuncs(children.at(0), file);
+    else if(children.at(0).getType() == "RetVoid"){
+        gen_RetVoid(children.at(0), file);
     }
 }
 
@@ -201,7 +136,7 @@ void gen_Output(Node& node, ofstream& file){
     //cout << "out\n";
     vector<Node> children = node.getChildren();
     file << "std::cout << ";
-    gen_Value(children.at(1), file);
+    gen_String(children.at(1), file);
     file << node_to_cpp(children.at(2));
     file << "\n";
 }
@@ -228,6 +163,11 @@ void gen_Mut(Node& node, ofstream& file){
 
 void gen_Let(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
+
+    //type is internally handles if you declare a "nickname" for a type so dont handle it in cpp file
+    if(children.at(0).getMetadataValue() == "type"){
+        return;
+    }
     file << "const ";
     gen_Type(children.at(0), file);
     file << node_to_cpp(children.at(1));
@@ -242,7 +182,7 @@ void gen_Type(Node& node, ofstream& file){
     if(children.at(0).getType() == "kw_string"){
         file << "std::";
     }
-    file << node_to_cpp(children.at(0));
+    file << node_to_cpp(children.back());
 }
 
 void gen_Value(Node& node, ofstream& file){
@@ -259,33 +199,74 @@ void gen_Value(Node& node, ofstream& file){
      else if(children.at(0).getType() == "Bool"){
         gen_Bool(children.at(0), file);
      }
+     else if(children.at(0).getType() == "Type"){
+        gen_Type(children.at(0), file);
+     }
 }
 
 void gen_String(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
-    file << node_to_cpp(children.at(0));
+    if(children.at(0).getType() == "ident" || children.at(0).getType() == "string"){
+        file << node_to_cpp(children.at(0));
+    }
+    else if(children.at(0).getType() == "RetString"){
+        gen_RetString(children.at(0), file);
+    }
+    else if(children.at(0).getType() == "RetT"){
+        gen_RetT(children.at(0), file);
+    }
 }
 
 void gen_Int(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
-    //cout << "gen int\n";
-    //children.at(0).printNode();
-    file << node_to_cpp(children.at(0));
+    if(children.at(0).getType() == "ident" || children.at(0).getType() == "int"){
+        file << node_to_cpp(children.at(0));
+    }
+    else if(children.at(0).getType() == "RetInt"){
+        gen_RetInt(children.at(0), file);
+    }
+    else if(children.at(0).getType() == "RetT"){
+        gen_RetT(children.at(0), file);
+    }
 }
 
 void gen_Char(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
-    file << node_to_cpp(children.at(0));
+    if(children.at(0).getType() == "ident" || children.at(0).getType() == "char"){
+        file << node_to_cpp(children.at(0));
+    }
+    else if(children.at(0).getType() == "RetChar"){
+        gen_RetChar(children.at(0), file);
+    }
+    else if(children.at(0).getType() == "RetT"){
+        gen_RetT(children.at(0), file);
+    }
 }
 
 void gen_Bool(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
-    file << node_to_cpp(children.at(0));
+    if(children.at(0).getType() == "ident" || children.at(0).getType() == "bool"){
+        file << node_to_cpp(children.at(0));
+    }
+    else if(children.at(0).getType() == "RetBool"){
+        gen_RetBool(children.at(0), file);
+    }
+    else if(children.at(0).getType() == "RetT"){
+        gen_RetT(children.at(0), file);
+    }
 }
 
 void gen_Float(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
-    file << node_to_cpp(children.at(0));
+    if(children.at(0).getType() == "ident" || children.at(0).getType() == "float"){
+        file << node_to_cpp(children.at(0));
+    }
+    else if(children.at(0).getType() == "RetFloat"){
+        gen_RetFloat(children.at(0), file);
+    }
+    else if(children.at(0).getType() == "RetT"){
+        gen_RetT(children.at(0), file);
+    }
 }
 
 void gen_Expression(Node& node, ofstream& file){
@@ -336,18 +317,66 @@ void gen_Number(Node& node, ofstream& file){
     }
 }
 
+void gen_RetString(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    gen_Str(children.at(0), file);
+}
+
+void gen_RetType(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    gen_TypeOf(children.at(0), file);
+}
+
+void gen_RetVoid(Node& node, ofstream& file){
+    return;
+}
+
+void gen_RetInt(Node& node, ofstream& file){
+    return;
+}
+
+void gen_RetFloat(Node& node, ofstream& file){
+    return;
+}
+
+void gen_RetBool(Node& node, ofstream& file){
+    return;
+}
+
+void gen_RetChar(Node& node, ofstream& file){
+    return;
+}
+
+void gen_RetT(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    gen_Cast(children.at(0), file);
+}
+
 void gen_TypeOf(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
-    file << children.at(4).getValue().value; 
+    file << node.getMetadataValue();
 }
 
 void gen_Cast(Node& node, ofstream& file){
-    return;
-}
-void gen_DataType(Node& node, ofstream& file){
-    return;
-}
-void gen_KwFuncs(Node& node, ofstream& file){
     vector<Node> children = node.getChildren();
-    gen_TypeOf(children.at(0), file);
+    file << "static_cast<"; 
+    gen_Type(children.at(2), file);
+    file << ">(";
+    gen_Value(children.at(4), file);
+    file << ")"; 
+}
+
+void gen_Str(Node& node, ofstream& file){
+    vector<Node> children = node.getChildren();
+    string node_type = Value_type(children.at(2));
+    if(node_type == "type" || node_type == "kw_type"){
+        file << "\"";
+        gen_Value(children.at(2), file);
+        file << "\"";
+    }
+    else{
+        file << "std::to_string(";
+        gen_Value(children.at(2), file);
+        file << ")";
+    }
 }
